@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Content Manager | Arash Pashazadeh</title>
+  <meta name="description" content="Private website content manager." />
+  <meta name="author" content="Arash Pashazadeh" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Content Manager | Arash Pashazadeh" />
+  <meta property="og:description" content="Private website content manager." />
+  <meta property="og:url" content="https://arashpashazadeh1-oss.github.io/admin.html" />
+  <meta property="og:site_name" content="Arash Pashazadeh" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://arashpashazadeh1-oss.github.io/admin.html" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Person",
+    "name":"Arash Pashazadeh",
+    "jobTitle":"Civil Engineer and Ph.D. Researcher",
+    "url":"https://arashpashazadeh1-oss.github.io/",
+    "affiliation":{"@type":"CollegeOrUniversity","name":"University of South Alabama"},
+    "sameAs":["https://scholar.google.com/citations?user=2cJQkEkAAAAJ&hl=en","https://www.linkedin.com/in/arash-pashazadeh-b34b1a111","https://www.instagram.com/arash6612330/","https://t.me/ArashCivilEngineering"],
+    "knowsAbout":["Civil Engineering","Systems Engineering","Hydraulic Structures","Coastal Infrastructure","Floating Aquaculture Systems","IMU Signal Processing","OpenFOAM","Experimental Hydrodynamics"]
+  }
+  </script>
+</head><body data-page="">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">AP</span>
+        <span class="brand-text"><strong>Arash Pashazadeh</strong><small>Civil Engineer · Ph.D. Researcher</small></span>
+      </a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span><span></span><span></span></button>
+      <nav id="site-nav" class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="research.html">Research</a>
+        <a href="projects.html">Projects</a>
+        <a href="publications.html">Publications</a>
+        <a href="conferences.html">Conferences</a>
+        <a href="insights.html">Insights</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+<main id="main" class="admin-main">
+<section class="admin-hero"><div class="container"><p class="eyebrow">Private Content Manager</p><h1>Update the website without editing code.</h1><p>Enter the ADMIN_SECRET stored in Cloudflare. The secret is kept only in this browser tab (sessionStorage) and is never included in the website files.</p></div></section>
+<section class="section"><div class="container">
+  <div id="admin-login" class="admin-login-card"><div><h2>Unlock content manager</h2><p>Use the same ADMIN_SECRET value configured in Cloudflare Worker settings.</p></div><form id="admin-login-form" class="admin-login-form"><input id="admin-secret" type="password" autocomplete="current-password" placeholder="ADMIN_SECRET" required><button class="btn btn-primary" type="submit">Unlock</button></form><p id="admin-login-message" class="form-message"></p></div>
+  <div id="admin-dashboard" class="admin-dashboard" hidden>
+    <div class="admin-toolbar"><div><p class="eyebrow">Content Manager</p><h2>Projects, publications, and conferences</h2></div><div class="admin-toolbar-actions"><a class="btn btn-quiet" href="index.html" target="_blank">Open website ↗</a><button id="admin-logout" class="btn btn-quiet" type="button">Lock</button></div></div>
+    <div class="admin-tabs" role="tablist"><button class="admin-tab active" data-tab="publication" type="button">Publications</button><button class="admin-tab" data-tab="project" type="button">Projects</button><button class="admin-tab" data-tab="conference" type="button">Conferences</button></div>
+
+    <section class="admin-panel active" data-panel="publication"><div class="admin-two-col"><form id="publication-form" class="content-form"><div class="form-title"><h3 id="publication-form-title">Add publication</h3><button id="publication-reset" class="text-button" type="button">Clear</button></div><input id="publication-id" type="hidden"><div class="doi-row"><label>DOI<input id="pub-doi" type="text" placeholder="10.xxxx/xxxxx"></label><button id="doi-lookup" class="btn btn-quiet" type="button">Auto-fill DOI</button></div><label>Title<input id="pub-title" type="text" required></label><label>Authors<textarea id="pub-authors" rows="2"></textarea></label><div class="form-grid"><label>Journal / Venue<input id="pub-journal" type="text"></label><label>Year<input id="pub-year" type="number" min="1900" max="2100"></label></div><div class="form-grid"><label>Status<select id="pub-status"><option>Published</option><option>Accepted</option><option>In Press</option><option>Under Review</option><option>In Preparation</option></select></label><label class="checkbox-label"><input id="pub-featured" type="checkbox"> Feature on homepage</label></div><label>Publication URL<input id="pub-url" type="url" placeholder="https://..."></label><label>PDF URL<input id="pub-pdf" type="url" placeholder="https://..."></label><label>Abstract / Note<textarea id="pub-abstract" rows="4"></textarea></label><button class="btn btn-primary" type="submit">Save publication</button><p id="publication-message" class="form-message"></p></form><div><div class="admin-list-head"><h3>Existing publications</h3><button class="text-button" data-refresh="publications" type="button">Refresh</button></div><div id="admin-publications" class="admin-list"></div></div></div></section>
+
+    <section class="admin-panel" data-panel="project"><div class="admin-two-col"><form id="project-form" class="content-form"><div class="form-title"><h3 id="project-form-title">Add project</h3><button id="project-reset" class="text-button" type="button">Clear</button></div><input id="project-id" type="hidden"><label>Project title<input id="proj-title" type="text" required></label><div class="form-grid"><label>Category<input id="proj-category" type="text" placeholder="Coastal Engineering"></label><label>Type<select id="proj-kind"><option value="research">Research</option><option value="engineering">Engineering</option><option value="study">Study</option></select></label></div><div class="form-grid"><label>Status<input id="proj-status" type="text" placeholder="Ongoing"></label><label class="checkbox-label"><input id="proj-featured" type="checkbox"> Feature on homepage</label></div><div class="form-grid"><label>Start year<input id="proj-start-year" type="number" min="1900" max="2100"></label><label>End year<input id="proj-end-year" type="number" min="1900" max="2100" placeholder="Leave blank if ongoing"></label></div><label>Short summary<textarea id="proj-summary" rows="3" required></textarea></label><label>Full description<textarea id="proj-description" rows="5"></textarea></label><label>Methods / keywords<input id="proj-methods" type="text" placeholder="Wave flume, OpenFOAM, IMU"></label><label>Image URL<input id="proj-image" type="url" placeholder="https://..."></label><div id="project-image-preview" class="image-preview" hidden><img alt="Project preview"></div><label>External project URL<input id="proj-url" type="url" placeholder="https://..."></label><button class="btn btn-primary" type="submit">Save project</button><p id="project-message" class="form-message"></p></form><div><div class="admin-list-head"><h3>Existing projects</h3><button class="text-button" data-refresh="projects" type="button">Refresh</button></div><div id="admin-projects" class="admin-list"></div></div></div></section>
+
+    <section class="admin-panel" data-panel="conference"><div class="admin-two-col"><form id="conference-form" class="content-form"><div class="form-title"><h3 id="conference-form-title">Add conference</h3><button id="conference-reset" class="text-button" type="button">Clear</button></div><input id="conference-id" type="hidden"><label>Title<input id="conf-title" type="text" required></label><div class="form-grid"><label>Event / Organization<input id="conf-event" type="text"></label><label>Type<input id="conf-type" type="text" placeholder="Conference / Poster / Workshop"></label></div><div class="form-grid"><label>Year<input id="conf-year" type="number" min="1900" max="2100"></label><label>Location<input id="conf-location" type="text"></label></div><label>Description<textarea id="conf-description" rows="4"></textarea></label><label>URL<input id="conf-url" type="url" placeholder="https://..."></label><label class="checkbox-label"><input id="conf-featured" type="checkbox"> Feature on homepage</label><button class="btn btn-primary" type="submit">Save conference</button><p id="conference-message" class="form-message"></p></form><div><div class="admin-list-head"><h3>Existing conferences</h3><button class="text-button" data-refresh="conferences" type="button">Refresh</button></div><div id="admin-conferences" class="admin-list"></div></div></div></section>
+  </div>
+</div></section></main>
+  <footer class="site-footer">
+    <div class="container footer-stack">
+      <div class="footer-top">
+        <div>
+          <strong>Arash Pashazadeh</strong>
+          <p>Civil Engineering · Research · Innovation</p>
+        </div>
+        <div class="social-links social-links-compact" aria-label="Social and academic profiles">
+      <a class="social-link" href="https://scholar.google.com/citations?user=2cJQkEkAAAAJ&hl=en" target="_blank" rel="noopener noreferrer"><span>GS</span><strong>Google Scholar</strong></a>
+      <a class="social-link" href="https://www.linkedin.com/in/arash-pashazadeh-b34b1a111" target="_blank" rel="noopener noreferrer"><span>in</span><strong>LinkedIn</strong></a>
+      <a class="social-link" href="https://www.instagram.com/arash6612330/" target="_blank" rel="noopener noreferrer"><span>IG</span><strong>Instagram</strong></a>
+    </div>
+      </div>
+      <div class="footer-inner"><p>© <span id="year"></span> Arash Pashazadeh</p><p><a href="admin.html" class="admin-link">Manage content</a></p></div>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

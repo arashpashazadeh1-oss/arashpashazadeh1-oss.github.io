@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://arashpashazadeh.github.io/sitemap.xml
+Sitemap: https://arashpashazadeh1-oss.github.io/sitemap.xml

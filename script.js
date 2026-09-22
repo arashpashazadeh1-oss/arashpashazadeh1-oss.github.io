@@ -38,11 +38,20 @@ document.querySelectorAll(".reveal").forEach((el) => {
 const TELEGRAM_API_URL =
   "https://arash-api.arash-pashazadeh1.workers.dev/posts";
 
+const TELEGRAM_MEDIA_URL =
+  "https://arash-api.arash-pashazadeh1.workers.dev/media";
+
 const telegramContainer =
   document.getElementById("telegram-posts");
 
 const telegramRefreshButton =
   document.getElementById("feed-refresh");
+
+const telegramFilterButton =
+  document.getElementById("feed-filter-toggle");
+
+let cachedTelegramPosts = [];
+let showAllTelegramPosts = false;
 
 function formatTelegramDate(dateString) {
   const date = new Date(dateString);
@@ -58,10 +67,132 @@ function formatTelegramDate(dateString) {
   }).format(date);
 }
 
+function extractHashtags(text = "") {
+  const matches = String(text).match(/#[\p{L}\p{N}_-]+/gu);
+  return matches ? [...new Set(matches)] : [];
+}
+
+function inferCategory(text = "", hashtags = []) {
+  if (hashtags.length > 0) {
+    return hashtags[0].replace(/^#/, "").replace(/_/g, " ");
+  }
+
+  const t = String(text).toLowerCase();
+
+  if (t.includes("digital twin")) return "Digital Twin";
+  if (/\b(ai|artificial intelligence|machine learning|deep learning)\b/.test(t)) return "AI";
+  if (/\b(concrete|cement|admixture)\b/.test(t)) return "Concrete";
+  if (/\b(hydraulic|hydraulics|water resources|flow|river)\b/.test(t)) return "Hydraulics";
+  if (/\b(coastal|marine|oyster|wave|mooring|offshore)\b/.test(t)) return "Coastal";
+  if (/\b(bridge|structure|structural|beam|column)\b/.test(t)) return "Structures";
+  if (/\b(3d print|3d printing|construction|robotic construction)\b/.test(t)) return "Construction";
+  if (/\b(sensor|imu|monitoring|instrumentation)\b/.test(t)) return "Monitoring";
+
+  return "Civil Engineering";
+}
+
+function cleanTextForBody(text = "") {
+  return String(text)
+    .replace(/#[\p{L}\p{N}_-]+/gu, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function deriveTitle(text = "", category = "Civil Engineering") {
+  const cleaned = cleanTextForBody(text);
+
+  if (!cleaned) {
+    return category;
+  }
+
+  const firstLine = cleaned.split(/\n+/)[0].trim();
+  const firstSentence = firstLine.split(/(?<=[.!?])\s+/)[0].trim();
+  const candidate = firstSentence || firstLine;
+
+  if (candidate.length <= 82) {
+    return candidate;
+  }
+
+  return candidate.slice(0, 79).trimEnd() + "…";
+}
+
+function deriveBody(text = "", title = "") {
+  const cleaned = cleanTextForBody(text);
+
+  if (!cleaned) {
+    return "";
+  }
+
+  if (cleaned === title) {
+    return "";
+  }
+
+  if (cleaned.startsWith(title)) {
+    return cleaned.slice(title.length).replace(/^[\s:–—-]+/, "").trim();
+  }
+
+  return cleaned;
+}
+
+function isSubstantivePost(post) {
+  const text = String(post.text || "").trim();
+  const hashtags = extractHashtags(text);
+
+  if (post.media_file_id) return true;
+  if (hashtags.length > 0) return true;
+  if (text.length >= 20) return true;
+
+  return false;
+}
+
+function createChip(label, className = "") {
+  const chip = document.createElement("span");
+  chip.className = `telegram-chip ${className}`.trim();
+  chip.textContent = label;
+  return chip;
+}
+
 function createTelegramPostCard(post) {
   const article = document.createElement("article");
   article.className = "telegram-post-card";
 
+  const rawText = String(post.text || "");
+  const hashtags = extractHashtags(rawText);
+  const category = inferCategory(rawText, hashtags);
+  const titleText = deriveTitle(rawText, category);
+  const bodyText = deriveBody(rawText, titleText);
+
+  // Media
+  if (post.media_file_id) {
+    const mediaWrap = document.createElement("a");
+    mediaWrap.className = "telegram-media";
+    mediaWrap.target = "_blank";
+    mediaWrap.rel = "noopener noreferrer";
+
+    const channelName =
+      post.channel_username || "ArashCivilEngineering";
+
+    mediaWrap.href =
+      `https://t.me/${encodeURIComponent(channelName)}/${encodeURIComponent(post.telegram_message_id)}`;
+
+    const img = document.createElement("img");
+    img.loading = "lazy";
+    img.alt = titleText;
+    img.src =
+      `${TELEGRAM_MEDIA_URL}?file_id=${encodeURIComponent(post.media_file_id)}`;
+
+    img.addEventListener("error", () => {
+      mediaWrap.remove();
+    });
+
+    mediaWrap.appendChild(img);
+    article.appendChild(mediaWrap);
+  }
+
+  const content = document.createElement("div");
+  content.className = "telegram-post-content";
+
+  // Meta header
   const header = document.createElement("div");
   header.className = "telegram-post-header";
 
@@ -97,18 +228,36 @@ function createTelegramPostCard(post) {
   header.appendChild(source);
   header.appendChild(date);
 
-  const text = document.createElement("p");
-  text.className = "telegram-post-text";
-  text.dir = "auto";
+  // Chips
+  const chips = document.createElement("div");
+  chips.className = "telegram-chip-row";
+  chips.appendChild(createChip(category, "category-chip"));
 
-  if (post.text && String(post.text).trim()) {
-    text.textContent = post.text;
+  hashtags.slice(0, 4).forEach((tag) => {
+    chips.appendChild(createChip(tag, "hashtag-chip"));
+  });
+
+  // Title
+  const title = document.createElement("h3");
+  title.className = "telegram-post-title";
+  title.dir = "auto";
+  title.textContent = titleText;
+
+  // Body
+  const body = document.createElement("p");
+  body.className = "telegram-post-text";
+  body.dir = "auto";
+
+  if (bodyText) {
+    body.textContent = bodyText;
+  } else if (!rawText.trim()) {
+    body.textContent = "Media update published on Telegram.";
+    body.classList.add("is-empty");
   } else {
-    text.textContent =
-      "Media update published on Telegram.";
-    text.classList.add("is-empty");
+    body.classList.add("compact");
   }
 
+  // Footer
   const footer = document.createElement("div");
   footer.className = "telegram-post-footer";
 
@@ -128,11 +277,45 @@ function createTelegramPostCard(post) {
   footer.appendChild(link);
   footer.appendChild(messageId);
 
-  article.appendChild(header);
-  article.appendChild(text);
-  article.appendChild(footer);
+  content.appendChild(header);
+  content.appendChild(chips);
+  content.appendChild(title);
+
+  if (bodyText || !rawText.trim()) {
+    content.appendChild(body);
+  }
+
+  content.appendChild(footer);
+  article.appendChild(content);
 
   return article;
+}
+
+function renderTelegramPosts() {
+  if (!telegramContainer) return;
+
+  telegramContainer.innerHTML = "";
+
+  const postsToShow = showAllTelegramPosts
+    ? cachedTelegramPosts
+    : cachedTelegramPosts.filter(isSubstantivePost);
+
+  if (postsToShow.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "posts-empty";
+    empty.textContent =
+      showAllTelegramPosts
+        ? "No Telegram posts have been published yet."
+        : "No engineering posts are available yet. Use “Show all posts” to include short test posts.";
+    telegramContainer.appendChild(empty);
+    return;
+  }
+
+  postsToShow.forEach((post) => {
+    telegramContainer.appendChild(
+      createTelegramPostCard(post)
+    );
+  });
 }
 
 async function loadTelegramPosts({ silent = false } = {}) {
@@ -162,22 +345,11 @@ async function loadTelegramPosts({ silent = false } = {}) {
     }
 
     const posts = await response.json();
-    telegramContainer.innerHTML = "";
 
-    if (!Array.isArray(posts) || posts.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "posts-empty";
-      empty.textContent =
-        "No engineering insights have been published yet.";
-      telegramContainer.appendChild(empty);
-      return;
-    }
+    cachedTelegramPosts =
+      Array.isArray(posts) ? posts : [];
 
-    posts.forEach((post) => {
-      telegramContainer.appendChild(
-        createTelegramPostCard(post)
-      );
-    });
+    renderTelegramPosts();
 
   } catch (error) {
     console.error("Telegram feed error:", error);
@@ -209,9 +381,26 @@ if (telegramRefreshButton) {
   });
 }
 
+if (telegramFilterButton) {
+  telegramFilterButton.addEventListener("click", () => {
+    showAllTelegramPosts = !showAllTelegramPosts;
+
+    telegramFilterButton.setAttribute(
+      "aria-pressed",
+      String(showAllTelegramPosts)
+    );
+
+    telegramFilterButton.textContent =
+      showAllTelegramPosts
+        ? "Hide test posts"
+        : "Show all posts";
+
+    renderTelegramPosts();
+  });
+}
+
 loadTelegramPosts();
 
-// Refresh every 60 seconds while the page is open.
 setInterval(() => {
   if (document.visibilityState === "visible") {
     loadTelegramPosts({ silent: true });

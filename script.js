@@ -42,6 +42,52 @@ function showError(el, message="Content is temporarily unavailable."){
 function splitMethods(value=""){ return String(value).split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean); }
 function yearLabel(item){ if(item.start_year && item.end_year) return `${item.start_year}–${item.end_year}`; if(item.start_year) return `${item.start_year}–Present`; return item.status || ""; }
 
+function galleryImageUrl(mediaId){ return mediaId ? `${API_BASE}/gallery-media/${encodeURIComponent(mediaId)}` : ""; }
+async function loadGallery(entityType, entityId){
+  if(!entityId) return [];
+  return apiGet(`/gallery?entity_type=${encodeURIComponent(entityType)}&entity_id=${encodeURIComponent(entityId)}`);
+}
+function getCoverUrl(item){ return item.cover_media_id ? galleryImageUrl(item.cover_media_id) : (item.image_url || ""); }
+
+function ensureLightbox(){
+  let box=document.getElementById("site-lightbox");
+  if(box) return box;
+  box=document.createElement("div");
+  box.id="site-lightbox";
+  box.className="site-lightbox";
+  box.hidden=true;
+  box.innerHTML=`<button class="lightbox-close" type="button" aria-label="Close gallery">×</button>
+    <button class="lightbox-prev" type="button" aria-label="Previous image">‹</button>
+    <figure><img alt=""><figcaption></figcaption></figure>
+    <button class="lightbox-next" type="button" aria-label="Next image">›</button>`;
+  document.body.appendChild(box);
+  box.querySelector(".lightbox-close").addEventListener("click",()=>closeLightbox());
+  box.addEventListener("click",(e)=>{if(e.target===box)closeLightbox();});
+  document.addEventListener("keydown",(e)=>{
+    if(box.hidden)return;
+    if(e.key==="Escape")closeLightbox();
+    if(e.key==="ArrowLeft")box.querySelector(".lightbox-prev").click();
+    if(e.key==="ArrowRight")box.querySelector(".lightbox-next").click();
+  });
+  return box;
+}
+let currentLightboxItems=[];let currentLightboxIndex=0;
+function openLightbox(items,index=0){
+  const box=ensureLightbox();currentLightboxItems=items;currentLightboxIndex=index;
+  const render=()=>{const item=currentLightboxItems[currentLightboxIndex];if(!item)return;const img=box.querySelector("img");img.src=item.url;img.alt=item.alt_text||item.caption||"Gallery image";box.querySelector("figcaption").textContent=item.caption||"";box.querySelector(".lightbox-prev").disabled=currentLightboxItems.length<2;box.querySelector(".lightbox-next").disabled=currentLightboxItems.length<2;};
+  box.querySelector(".lightbox-prev").onclick=()=>{currentLightboxIndex=(currentLightboxIndex-1+currentLightboxItems.length)%currentLightboxItems.length;render();};
+  box.querySelector(".lightbox-next").onclick=()=>{currentLightboxIndex=(currentLightboxIndex+1)%currentLightboxItems.length;render();};
+  box.hidden=false;document.body.classList.add("lightbox-open");render();
+}
+function closeLightbox(){const box=document.getElementById("site-lightbox");if(box){box.hidden=true;document.body.classList.remove("lightbox-open");}}
+function createGallerySection(items,title="Photo Gallery"){
+  const section=document.createElement("section");section.className="detail-gallery-section";
+  const head=document.createElement("div");head.className="detail-gallery-head";const h=document.createElement("h2");h.textContent=title;const count=document.createElement("span");count.textContent=`${items.length} photo${items.length===1?"":"s"}`;head.append(h,count);
+  const grid=document.createElement("div");grid.className="detail-gallery-grid";
+  items.forEach((item,index)=>{const button=document.createElement("button");button.className="detail-gallery-item";button.type="button";const img=document.createElement("img");img.loading="lazy";img.src=item.url;img.alt=item.alt_text||item.caption||"Gallery image";button.appendChild(img);if(item.caption){const cap=document.createElement("span");cap.textContent=item.caption;button.appendChild(cap);}button.addEventListener("click",()=>openLightbox(items,index));grid.appendChild(button);});
+  section.append(head,grid);return section;
+}
+
 function createProjectRow(item){
   const article=document.createElement("article"); article.className="project-row reveal";
   const kicker=document.createElement("div"); kicker.className="project-kicker"; kicker.textContent=item.category || (item.kind ? item.kind[0].toUpperCase()+item.kind.slice(1) : "Project");
@@ -55,7 +101,7 @@ function createProjectRow(item){
 function createProjectCard(item){
   const card=document.createElement("article"); card.className="data-card reveal";
   const media=document.createElement("div"); media.className="data-card-media";
-  if(item.image_url){const img=document.createElement("img");img.loading="lazy";img.alt=item.title;img.src=item.image_url;img.addEventListener("error",()=>{media.classList.add("placeholder");img.remove();});media.appendChild(img);} else {media.classList.add("placeholder");}
+  const projectCover=getCoverUrl(item);if(projectCover){const img=document.createElement("img");img.loading="lazy";img.alt=item.title;img.src=projectCover;img.addEventListener("error",()=>{media.classList.add("placeholder");img.remove();});media.appendChild(img);} else {media.classList.add("placeholder");}
   const body=document.createElement("div"); body.className="data-card-body";
   const meta=document.createElement("div");meta.className="data-card-meta";meta.innerHTML=`<span></span><span></span>`;meta.children[0].textContent=item.category||item.kind||"Project";meta.children[1].textContent=yearLabel(item);
   const h=document.createElement("h3");h.textContent=item.title;const p=document.createElement("p");p.textContent=item.summary||"";
@@ -77,7 +123,17 @@ function createPublicationCard(item){
   card.append(y,body,actions);return card;
 }
 function createConferenceCard(item){
-  const card=document.createElement("article");card.className="conference-card reveal";const type=document.createElement("span");type.className="conference-type";type.textContent=item.type||"Academic Event";const h=document.createElement("h3");h.textContent=item.title;const p=document.createElement("p");p.textContent=item.description||"";const meta=document.createElement("div");meta.className="conference-meta";[item.event,item.location,item.year].filter(Boolean).forEach(v=>{const s=document.createElement("span");s.textContent=v;meta.appendChild(s);});card.append(type,h,p,meta);if(item.url){const a=document.createElement("a");a.className="conference-link";a.href=item.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Event / material ↗";card.appendChild(a);}return card;
+  const card=document.createElement("article");card.className="conference-card reveal";
+  if(item.cover_media_id){const media=document.createElement("a");media.className="conference-card-media";media.href=`conference.html?id=${encodeURIComponent(item.id)}`;const img=document.createElement("img");img.loading="lazy";img.src=galleryImageUrl(item.cover_media_id);img.alt=item.title;media.appendChild(img);card.appendChild(media);}
+  const content=document.createElement("div");content.className="conference-card-content";
+  const type=document.createElement("span");type.className="conference-type";type.textContent=item.type||"Academic Event";
+  const h=document.createElement("h3");const detail=document.createElement("a");detail.href=`conference.html?id=${encodeURIComponent(item.id)}`;detail.textContent=item.title;h.appendChild(detail);
+  const p=document.createElement("p");p.textContent=item.description||"";
+  const meta=document.createElement("div");meta.className="conference-meta";[item.event,item.location,item.year].filter(Boolean).forEach(v=>{const s=document.createElement("span");s.textContent=v;meta.appendChild(s);});
+  content.append(type,h,p,meta);
+  const links=document.createElement("div");links.className="conference-links";const view=document.createElement("a");view.className="conference-link";view.href=`conference.html?id=${encodeURIComponent(item.id)}`;view.textContent="View details →";links.appendChild(view);
+  if(item.url){const external=document.createElement("a");external.className="conference-link";external.href=item.url;external.target="_blank";external.rel="noopener noreferrer";external.textContent="Event / material ↗";links.appendChild(external);}
+  content.appendChild(links);card.appendChild(content);return card;
 }
 
 async function loadHomeContent(){
@@ -103,10 +159,24 @@ async function loadProjectPages(){
 loadProjectPages();
 
 async function loadProjectDetail(){
-  const el=document.getElementById("project-detail");if(!el)return;const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,"Project ID is missing.");return;}
-  try{const rows=await apiGet(`/projects?id=${encodeURIComponent(id)}`);const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,"Project not found.");return;}clear(el);
-    const main=document.createElement("article");main.className="project-detail-main";if(item.image_url){const img=document.createElement("img");img.className="project-detail-image";img.src=item.image_url;img.alt=item.title;main.appendChild(img);}const copy=document.createElement("div");copy.className="project-detail-copy";const e=document.createElement("p");e.className="eyebrow";e.textContent=item.category||item.kind||"Project";const h=document.createElement("h1");h.textContent=item.title;const s=document.createElement("p");s.className="summary";s.textContent=item.summary||"";copy.append(e,h,s);const chips=document.createElement("div");chips.className="chip-row";splitMethods(item.methods).forEach(m=>{const sp=document.createElement("span");sp.textContent=m;chips.appendChild(sp);});copy.appendChild(chips);if(item.description){const d=document.createElement("p");d.className="project-detail-description";d.textContent=item.description;copy.appendChild(d);}if(item.project_url){const a=document.createElement("a");a.className="btn btn-primary";a.href=item.project_url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="External project link ↗";a.style.marginTop="24px";copy.appendChild(a);}main.appendChild(copy);
-    const side=document.createElement("aside");side.className="project-detail-side";[["Type",item.kind],["Status",item.status],["Category",item.category],["Period",yearLabel(item)]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});el.append(main,side);
+  const el=document.getElementById("project-detail");if(!el)return;
+  const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,"Project ID is missing.");return;}
+  try{
+    const [rows,gallery]=await Promise.all([apiGet(`/projects?id=${encodeURIComponent(id)}`),loadGallery("project",id)]);
+    const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,"Project not found.");return;}clear(el);
+    const main=document.createElement("article");main.className="project-detail-main";
+    const cover=gallery.find(x=>x.is_cover)||gallery[0];
+    const heroUrl=cover?.url||item.image_url;
+    if(heroUrl){const img=document.createElement("img");img.className="project-detail-image";img.src=heroUrl;img.alt=cover?.alt_text||item.title;main.appendChild(img);}
+    const copy=document.createElement("div");copy.className="project-detail-copy";const e=document.createElement("p");e.className="eyebrow";e.textContent=item.category||item.kind||"Project";const h=document.createElement("h1");h.textContent=item.title;const s=document.createElement("p");s.className="summary";s.textContent=item.summary||"";copy.append(e,h,s);
+    const chips=document.createElement("div");chips.className="chip-row";splitMethods(item.methods).forEach(m=>{const sp=document.createElement("span");sp.textContent=m;chips.appendChild(sp);});copy.appendChild(chips);
+    if(item.description){const d=document.createElement("p");d.className="project-detail-description";d.textContent=item.description;copy.appendChild(d);}
+    if(item.project_url){const a=document.createElement("a");a.className="btn btn-primary";a.href=item.project_url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="External project link ↗";a.style.marginTop="24px";copy.appendChild(a);}
+    main.appendChild(copy);
+    const side=document.createElement("aside");side.className="project-detail-side";[["Type",item.kind],["Status",item.status],["Category",item.category],["Period",yearLabel(item)]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});
+    el.append(main,side);
+    if(gallery.length){const gallerySection=createGallerySection(gallery,"Project Gallery");gallerySection.classList.add("project-gallery-wide");el.parentElement.appendChild(gallerySection);}
+    document.title=`${item.title} | Arash Pashazadeh`;
   }catch{showError(el);}
 }
 loadProjectDetail();
@@ -115,6 +185,24 @@ async function loadPublications(){
   const el=document.getElementById("publications-list");if(!el)return;try{const rows=await apiGet("/publications");const search=document.getElementById("publication-search"),yearF=document.getElementById("publication-year-filter"),statusF=document.getElementById("publication-status-filter");[...new Set(rows.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;yearF.appendChild(o);});[...new Set(rows.map(x=>x.status).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;statusF.appendChild(o);});const render=()=>{clear(el);const q=(search.value||"").toLowerCase(),y=yearF.value,s=statusF.value;const filtered=rows.filter(x=>(!q||`${x.title} ${x.authors} ${x.journal} ${x.doi}`.toLowerCase().includes(q))&&(!y||String(x.year)===y)&&(!s||x.status===s));filtered.forEach(r=>el.appendChild(createPublicationCard(r)));if(!filtered.length)showError(el,"No matching publications.");observeReveals(el);};search.addEventListener("input",render);yearF.addEventListener("change",render);statusF.addEventListener("change",render);render();}catch{showError(el);}
 }
 loadPublications();
+
+async function loadConferenceDetail(){
+  const el=document.getElementById("conference-detail");if(!el)return;
+  const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,"Conference ID is missing.");return;}
+  try{
+    const [rows,gallery]=await Promise.all([apiGet(`/conferences?id=${encodeURIComponent(id)}`),loadGallery("conference",id)]);
+    const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,"Conference entry not found.");return;}clear(el);
+    const main=document.createElement("article");main.className="project-detail-main";
+    const cover=gallery.find(x=>x.is_cover)||gallery[0];if(cover){const img=document.createElement("img");img.className="project-detail-image";img.src=cover.url;img.alt=cover.alt_text||item.title;main.appendChild(img);}
+    const copy=document.createElement("div");copy.className="project-detail-copy";const e=document.createElement("p");e.className="eyebrow";e.textContent=item.type||"Conference";const h=document.createElement("h1");h.textContent=item.title;const s=document.createElement("p");s.className="summary";s.textContent=item.description||"";copy.append(e,h,s);
+    if(item.url){const a=document.createElement("a");a.className="btn btn-primary";a.href=item.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Event / material ↗";a.style.marginTop="24px";copy.appendChild(a);}main.appendChild(copy);
+    const side=document.createElement("aside");side.className="project-detail-side";[["Event",item.event],["Type",item.type],["Year",item.year],["Location",item.location]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});
+    el.append(main,side);
+    if(gallery.length){const gallerySection=createGallerySection(gallery,"Conference Gallery");gallerySection.classList.add("project-gallery-wide");el.parentElement.appendChild(gallerySection);}
+    document.title=`${item.title} | Arash Pashazadeh`;
+  }catch{showError(el);}
+}
+loadConferenceDetail();
 
 async function loadConferences(){
   const el=document.getElementById("conferences-list");if(!el)return;try{const rows=await apiGet("/conferences");const search=document.getElementById("conference-search"),yearF=document.getElementById("conference-year-filter");[...new Set(rows.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;yearF.appendChild(o);});const render=()=>{clear(el);const q=(search.value||"").toLowerCase(),y=yearF.value;const filtered=rows.filter(x=>(!q||`${x.title} ${x.event} ${x.location} ${x.description}`.toLowerCase().includes(q))&&(!y||String(x.year)===y));filtered.forEach(r=>el.appendChild(createConferenceCard(r)));if(!filtered.length)showError(el,"No matching conference entries.");observeReveals(el);};search.addEventListener("input",render);yearF.addEventListener("change",render);render();}catch{showError(el);}

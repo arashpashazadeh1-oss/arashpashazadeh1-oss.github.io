@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" role="img" aria-labelledby="t">
+  <title id="t">Civil engineering projects: water, structures, and hydropower</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="26" y="30" width="308" height="180" rx="26" fill="#0d2730" stroke="#2d5964" stroke-width="2"/>
+    <path d="M55 156h96l-20-64H73z" stroke="#45c5d1" stroke-width="4"/>
+    <path d="M75 116h58M68 135h72" stroke="#7aa1aa" stroke-width="3"/>
+    <path d="M57 164c25 10 48 10 72 0 23-10 43-10 66 0" stroke="#4ba6b2" stroke-width="3"/>
+    <circle cx="211" cy="92" r="28" stroke="#e1bd66" stroke-width="4"/>
+    <circle cx="211" cy="92" r="10" stroke="#8fb2ba" stroke-width="3"/>
+    <path d="M239 92h48v25h-34v40" stroke="#e1bd66" stroke-width="5"/>
+    <path d="M172 156h138" stroke="#7f9ea6" stroke-width="5"/>
+    <path d="M186 156v-28m110 28v-28" stroke="#7f9ea6" stroke-width="5"/>
+    <path d="M176 125h126" stroke="#45c5d1" stroke-width="3"/>
+    <path d="M184 74h55M184 62h82" stroke="#577a82" stroke-width="3"/>
+  </g>
+</svg>

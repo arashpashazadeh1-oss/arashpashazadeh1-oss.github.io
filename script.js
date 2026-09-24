@@ -135,26 +135,59 @@ function createConferenceCard(item){
   if(item.url){const external=document.createElement("a");external.className="conference-link";external.href=item.url;external.target="_blank";external.rel="noopener noreferrer";external.textContent="Event / material ↗";links.appendChild(external);}
   content.appendChild(links);card.appendChild(content);return card;
 }
+function conferenceIndexTitle(item){
+  const raw=String(item.event||item.title||"Academic Event").trim();
+  const year=String(item.year||"").trim();
+  if(!year) return raw;
+
+  // The year already has its own column on the conference index.
+  // Remove only a standalone occurrence from the displayed Event text
+  // so entries such as "... - 2026 NSF Research" do not repeat 2026.
+  const escaped=year.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  const cleaned=raw
+    .replace(new RegExp(`(^|[\\s–—-])${escaped}(?=($|[\\s–—-]))`,"g"),"$1")
+    .replace(/\s{2,}/g," ")
+    .replace(/\s+([–—-])\s*([–—-])\s*/g," $1 ")
+    .replace(/^[\s–—-]+|[\s–—-]+$/g,"")
+    .trim();
+  return cleaned||raw;
+}
 function createConferenceCompactRow(item){
   const row=document.createElement("article");row.className="conference-compact-row reveal";
 
+  const mediaCell=document.createElement("div");mediaCell.className="conference-compact-media";
+  const mediaLink=document.createElement("a");mediaLink.href=`conference.html?id=${encodeURIComponent(item.id)}`;mediaLink.setAttribute("aria-label",`Open ${item.title||item.event||"conference"} details`);
+  if(item.cover_media_id){
+    const img=document.createElement("img");
+    img.loading="lazy";
+    img.src=galleryImageUrl(item.cover_media_id);
+    img.alt=item.title||item.event||"Conference image";
+    mediaLink.appendChild(img);
+  }else{
+    const placeholder=document.createElement("span");
+    placeholder.className="conference-compact-placeholder";
+    placeholder.textContent="AP";
+    mediaLink.appendChild(placeholder);
+  }
+  mediaCell.appendChild(mediaLink);
+
   const eventCell=document.createElement("div");eventCell.className="conference-compact-cell conference-compact-event";
   const eventLabel=document.createElement("span");eventLabel.className="conference-compact-label";eventLabel.textContent="Event";
-  const eventLink=document.createElement("a");eventLink.href=`conference.html?id=${encodeURIComponent(item.id)}`;eventLink.textContent=item.event||item.title||"Academic Event";
+  const eventLink=document.createElement("a");eventLink.href=`conference.html?id=${encodeURIComponent(item.id)}`;eventLink.textContent=conferenceIndexTitle(item);
   if(item.title&&item.event&&item.title!==item.event) eventLink.title=item.title;
   eventCell.append(eventLabel,eventLink);
 
-  const yearCell=document.createElement("div");yearCell.className="conference-compact-cell";
+  const yearCell=document.createElement("div");yearCell.className="conference-compact-cell conference-compact-year";
   const yearLabel=document.createElement("span");yearLabel.className="conference-compact-label";yearLabel.textContent="Year";
   const yearValue=document.createElement("strong");yearValue.textContent=item.year||"—";
   yearCell.append(yearLabel,yearValue);
 
-  const locationCell=document.createElement("div");locationCell.className="conference-compact-cell";
+  const locationCell=document.createElement("div");locationCell.className="conference-compact-cell conference-compact-location";
   const locationLabel=document.createElement("span");locationLabel.className="conference-compact-label";locationLabel.textContent="Location";
   const locationValue=document.createElement("strong");locationValue.textContent=item.location||"—";
   locationCell.append(locationLabel,locationValue);
 
-  row.append(eventCell,yearCell,locationCell);
+  row.append(mediaCell,eventCell,yearCell,locationCell);
   return row;
 }
 

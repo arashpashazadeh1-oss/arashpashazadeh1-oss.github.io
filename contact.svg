@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" role="img" aria-labelledby="t">
+  <title id="t">Professional engineering collaboration and contact</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="26" y="30" width="308" height="180" rx="26" fill="#0d2730" stroke="#2d5964" stroke-width="2"/>
+    <rect x="118" y="78" width="124" height="82" rx="12" stroke="#45c5d1" stroke-width="4"/>
+    <path d="M125 90l55 42 55-42" stroke="#e1bd66" stroke-width="4"/>
+    <circle cx="74" cy="75" r="12" stroke="#7cb9c1" stroke-width="3"/>
+    <circle cx="286" cy="72" r="12" stroke="#e1bd66" stroke-width="3"/>
+    <circle cx="75" cy="177" r="12" stroke="#45c5d1" stroke-width="3"/>
+    <circle cx="286" cy="179" r="12" stroke="#7cb9c1" stroke-width="3"/>
+    <path d="M85 82l34 20M275 80l-33 21M87 169l31-21M274 170l-32-22" stroke="#6f9198" stroke-width="3"/>
+    <path d="M65 75h18M74 66v18M277 72h18M286 63v18M66 177h18M75 168v18M277 179h18M286 170v18" stroke="#73949b" stroke-width="2"/>
+  </g>
+</svg>

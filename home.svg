@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" role="img" aria-labelledby="t">
+  <title id="t">Civil engineering, coding, and infrastructure</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="28" y="28" width="304" height="184" rx="26" fill="#0d2730" stroke="#2d5964" stroke-width="2"/>
+    <path d="M54 166h252" stroke="#73949b" stroke-width="3"/>
+    <path d="M82 166v-34m48 34v-55m50 55v-72m51 72v-46m47 46v-28" stroke="#45c5d1" stroke-width="5"/>
+    <path d="M74 132c36-34 75-40 108-20 33 20 69 16 105-20" stroke="#e1bd66" stroke-width="4"/>
+    <circle cx="74" cy="132" r="5" fill="#45c5d1" stroke="none"/>
+    <circle cx="182" cy="112" r="5" fill="#45c5d1" stroke="none"/>
+    <circle cx="287" cy="92" r="5" fill="#e1bd66" stroke="none"/>
+    <path d="M62 73l18-16m-18 16 18 16M110 57l18 16-18 16" stroke="#8fb2ba" stroke-width="4"/>
+    <path d="M150 69h56M150 84h39" stroke="#577a82" stroke-width="4"/>
+    <path d="M246 56h42v38h-42z" stroke="#45c5d1" stroke-width="3"/>
+    <path d="M255 83l8-10 8 6 9-14" stroke="#e1bd66" stroke-width="3"/>
+  </g>
+</svg>

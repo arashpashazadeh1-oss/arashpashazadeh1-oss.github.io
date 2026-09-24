@@ -1,0 +1,29 @@
+V11.4 FINAL — Upload manifest
+
+This package is cumulative and includes all requested changes through V11.4.
+
+For the easiest update, extract this ZIP and upload/replace these items in the GitHub repository root:
+
+HTML / JS / CSS
+- index.html
+- about.html
+- research.html
+- projects.html
+- publications.html
+- conferences.html
+- insights.html
+- contact.html
+- admin.html
+- admin.js
+- admin-cv-v95.js
+- cv-builder.html
+- script.js
+- styles.css
+
+Assets
+- assets/illustrations/ (new folder; all SVG files)
+- assets/cv/Arash_Pashazadeh_CV_2025.pdf
+
+No Cloudflare Worker, D1, Telegram, or ADMIN_SECRET changes are required.
+
+New public-page vector assets are simple hand-coded SVG line illustrations, not AI-generated images.

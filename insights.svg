@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" role="img" aria-labelledby="t">
+  <title id="t">Live civil engineering insights and digital feed</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="26" y="30" width="308" height="180" rx="26" fill="#0d2730" stroke="#2d5964" stroke-width="2"/>
+    <rect x="57" y="63" width="110" height="65" rx="10" stroke="#45c5d1" stroke-width="3"/>
+    <rect x="193" y="55" width="110" height="65" rx="10" stroke="#7fa3aa" stroke-width="3"/>
+    <rect x="116" y="145" width="130" height="42" rx="10" stroke="#e1bd66" stroke-width="3"/>
+    <path d="M73 88h65M73 103h46M209 80h75M209 96h52M132 166h94" stroke="#7898a0" stroke-width="3"/>
+    <circle cx="178" cy="95" r="6" fill="#45c5d1" stroke="none"/>
+    <circle cx="178" cy="151" r="6" fill="#e1bd66" stroke="none"/>
+    <path d="M167 95h-1M184 95h9M178 101v44" stroke="#6fa5ad" stroke-width="3"/>
+    <path d="M68 151c19-17 37-17 56 0M252 151c17-17 32-17 49 0" stroke="#45c5d1" stroke-width="3"/>
+    <circle cx="62" cy="151" r="4" fill="#45c5d1" stroke="none"/>
+    <circle cx="306" cy="151" r="4" fill="#e1bd66" stroke="none"/>
+  </g>
+</svg>

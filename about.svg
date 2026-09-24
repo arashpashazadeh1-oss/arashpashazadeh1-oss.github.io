@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" role="img" aria-labelledby="t">
+  <title id="t">Professional profile and civil engineering career</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="26" y="30" width="308" height="180" rx="26" fill="#0d2730" stroke="#2d5964" stroke-width="2"/>
+    <circle cx="110" cy="92" r="28" stroke="#45c5d1" stroke-width="4"/>
+    <path d="M67 164c10-28 28-42 43-42s33 14 43 42" stroke="#45c5d1" stroke-width="4"/>
+    <path d="M192 73h91M192 96h68M192 119h88M192 142h54" stroke="#8aa7ae" stroke-width="4"/>
+    <path d="M192 168h102" stroke="#e1bd66" stroke-width="4"/>
+  </g>
+</svg>

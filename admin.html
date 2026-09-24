@@ -169,6 +169,21 @@ Persian</textarea></label>
               </select>
             </label>
           </div>
+
+          <div class="form-grid">
+            <label>Long CV images per project
+              <select id="long-cv-image-count">
+                <option value="2" selected>2 images</option>
+                <option value="3">3 images</option>
+                <option value="4">4 images</option>
+              </select>
+            </label>
+            <label>Long CV image layout
+              <select id="long-cv-image-layout">
+                <option value="below" selected>Two-column images below project text</option>
+              </select>
+            </label>
+          </div>
           <label class="checkbox-label"><input id="include-conferences" type="checkbox" checked> Include conferences / workshops in CV outputs</label>
           <label class="checkbox-label"><input id="include-publications" type="checkbox" checked> Include publications in CV outputs</label>
           <label class="checkbox-label"><input id="portfolio-include-conferences" type="checkbox" checked> Add conference / workshop slides to portfolio</label>
@@ -177,20 +192,21 @@ Persian</textarea></label>
             <button id="generate-academic-cv" class="btn btn-primary" type="button">Generate Academic CV — Word + PDF</button>
             <button id="generate-engineering-cv" class="btn btn-primary" type="button">Generate Engineering CV — Word + PDF</button>
             <button id="generate-europass-cv" class="btn btn-primary" type="button">Generate Europass-style CV — Word + PDF</button>
+            <button id="generate-long-cv" class="btn btn-primary" type="button">Generate Long CV with Images — Word + PDF</button>
             <button id="generate-portfolio" class="btn btn-primary" type="button">Generate Long Portfolio — PPTX + PDF</button>
           </div>
-          <p class="cv-engine-version">Generator engine: V9.4</p><p id="cv-status" class="form-message"></p>
+          <p class="cv-engine-version">Generator engine: V9.5</p><p id="cv-status" class="form-message"></p>
           <div class="cv-data-summary" id="cv-data-summary">Open this tab to load website data.</div>
         </section>
       </div>
 
       <section class="content-form cv-builder-card cv-selection-card">
         <div class="form-title">
-          <h3>Select projects for portfolio</h3>
+          <h3>Select projects for portfolio / long CV</h3>
           <button id="select-featured-projects" class="text-button" type="button">Featured only</button>
           <button id="select-all-projects" class="text-button" type="button">Select all</button>
         </div>
-        <p>Each project uses a 16:9 PowerPoint-size page. The title and description are above the images; the default description font is 12 pt.</p>
+        <p>The same project selection is used for the Long Portfolio and Long CV. Portfolio pages are 16:9; Long CV project sections include project text followed by two-column images with preserved aspect ratio.</p>
         <div id="cv-project-selector" class="cv-selector-grid"></div>
       </section>
     </section>
@@ -215,6 +231,6 @@ Persian</textarea></label>
   </footer>
   <script src="script.js"></script>
   <script src="admin.js"></script>
-  <script src="admin-cv-v94.js?v=9.4"></script>
+  <script src="admin-cv-v95.js?v=9.5"></script>
 </body>
 </html>

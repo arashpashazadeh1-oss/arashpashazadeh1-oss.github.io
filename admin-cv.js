@@ -9,6 +9,35 @@
   const cv$ = (id) => document.getElementById(id);
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+  async function ensurePptxLibrary() {
+    if (typeof window.PptxGenJS !== "undefined") return window.PptxGenJS;
+
+    const existing = document.querySelector('script[data-pptxgen-fallback="1"]');
+    if (existing) {
+      await new Promise((resolve, reject) => {
+        if (typeof window.PptxGenJS !== "undefined") return resolve();
+        existing.addEventListener("load", resolve, { once: true });
+        existing.addEventListener("error", reject, { once: true });
+      });
+      if (typeof window.PptxGenJS !== "undefined") return window.PptxGenJS;
+    }
+
+    await new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.bundle.js";
+      script.async = true;
+      script.dataset.pptxgenFallback = "1";
+      script.onload = resolve;
+      script.onerror = () => reject(new Error("Unable to load the PowerPoint export library from jsDelivr."));
+      document.head.appendChild(script);
+    });
+
+    if (typeof window.PptxGenJS === "undefined") {
+      throw new Error("PowerPoint export library loaded, but PptxGenJS was not found.");
+    }
+    return window.PptxGenJS;
+  }
+
   function setStatus(message, tone = "") {
     const el = cv$("cv-status");
     if (!el) return;
@@ -387,8 +416,8 @@
   }
 
   async function generatePortfolioPptx(projects, includeConferences) {
-    if (typeof window.pptxgen === "undefined") throw new Error("PowerPoint export library did not load.");
-    const pptx = new window.pptxgen();
+    const PptxGenJS = await ensurePptxLibrary();
+    const pptx = new PptxGenJS();
     pptx.layout = "LAYOUT_WIDE";
     const profile = getProfile();
     pptx.author = profile.name;

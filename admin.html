@@ -16,6 +16,10 @@
   <link rel="canonical" href="https://arashpashazadeh1-oss.github.io/admin.html" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -54,8 +58,8 @@
 <section class="section"><div class="container">
   <div id="admin-login" class="admin-login-card"><div><h2>Unlock content manager</h2><p>Use the same ADMIN_SECRET value configured in Cloudflare Worker settings.</p></div><form id="admin-login-form" class="admin-login-form"><input id="admin-secret" type="password" autocomplete="current-password" placeholder="ADMIN_SECRET" required><button class="btn btn-primary" type="submit">Unlock</button></form><p id="admin-login-message" class="form-message"></p></div>
   <div id="admin-dashboard" class="admin-dashboard" hidden>
-    <div class="admin-toolbar"><div><p class="eyebrow">Content Manager</p><h2>Projects, publications, and conferences</h2></div><div class="admin-toolbar-actions"><a class="btn btn-quiet" href="cv-builder.html">CV Builder ↗</a><a class="btn btn-quiet" href="index.html" target="_blank">Open website ↗</a><button id="admin-logout" class="btn btn-quiet" type="button">Lock</button></div></div>
-    <div class="admin-tabs" role="tablist"><button class="admin-tab active" data-tab="publication" type="button">Publications</button><button class="admin-tab" data-tab="project" type="button">Projects</button><button class="admin-tab" data-tab="conference" type="button">Conferences</button></div>
+    <div class="admin-toolbar"><div><p class="eyebrow">Content Manager</p><h2>Projects, publications, conferences, CV & portfolio</h2></div><div class="admin-toolbar-actions"><a class="btn btn-quiet" href="index.html" target="_blank">Open website ↗</a><button id="admin-logout" class="btn btn-quiet" type="button">Lock</button></div></div>
+    <div class="admin-tabs" role="tablist"><button class="admin-tab active" data-tab="publication" type="button">Publications</button><button class="admin-tab" data-tab="project" type="button">Projects</button><button class="admin-tab" data-tab="conference" type="button">Conferences</button><button class="admin-tab" data-tab="cv" type="button">CV & Portfolio</button></div>
 
     <section class="admin-panel active" data-panel="publication"><div class="admin-two-col"><form id="publication-form" class="content-form"><div class="form-title"><h3 id="publication-form-title">Add publication</h3><button id="publication-reset" class="text-button" type="button">Clear</button></div><input id="publication-id" type="hidden"><div class="doi-row"><label>DOI<input id="pub-doi" type="text" placeholder="10.xxxx/xxxxx"></label><button id="doi-lookup" class="btn btn-quiet" type="button">Auto-fill DOI</button></div><label>Title<input id="pub-title" type="text" required></label><label>Authors<textarea id="pub-authors" rows="2"></textarea></label><div class="form-grid"><label>Journal / Venue<input id="pub-journal" type="text"></label><label>Year<input id="pub-year" type="number" min="1900" max="2100"></label></div><div class="form-grid"><label>Status<select id="pub-status"><option>Published</option><option>Accepted</option><option>In Press</option><option>Under Review</option><option>In Preparation</option></select></label><label class="checkbox-label"><input id="pub-featured" type="checkbox"> Feature on homepage</label></div><label>Publication URL<input id="pub-url" type="url" placeholder="https://..."></label><label>PDF URL<input id="pub-pdf" type="url" placeholder="https://..."></label><label>Abstract / Note<textarea id="pub-abstract" rows="4"></textarea></label><button class="btn btn-primary" type="submit">Save publication</button><p id="publication-message" class="form-message"></p></form><div><div class="admin-list-head"><h3>Existing publications</h3><button class="text-button" data-refresh="publications" type="button">Refresh</button></div><div id="admin-publications" class="admin-list"></div></div></div></section>
 
@@ -92,6 +96,105 @@
   <div id="conference-admin-gallery" class="admin-gallery-grid"></div>
 </div>
 </form><div><div class="admin-list-head"><h3>Existing conferences</h3><button class="text-button" data-refresh="conferences" type="button">Refresh</button></div><div id="admin-conferences" class="admin-list"></div></div></div></section>
+
+    <section class="admin-panel" data-panel="cv" id="admin-cv-panel">
+      <div class="admin-toolbar cv-toolbar">
+        <div>
+          <p class="eyebrow">Document Generator</p>
+          <h2>CV & Portfolio Builder</h2>
+          <p>This section uses the same Admin login. No second password is required.</p>
+        </div>
+        <div class="admin-toolbar-actions">
+          <button id="cv-refresh-data" class="btn btn-quiet" type="button">Refresh website data</button>
+        </div>
+      </div>
+
+      <div class="cv-grid-layout">
+        <section class="content-form cv-builder-card">
+          <h3>Personal information</h3>
+          <div class="form-grid">
+            <label>Full name<input id="cv-name" type="text" value="Arash Pashazadeh"></label>
+            <label>Professional title<input id="cv-title" type="text" value="Civil Engineer · Ph.D. Researcher in Systems Engineering"></label>
+          </div>
+          <div class="form-grid">
+            <label>Email<input id="cv-email" type="email" placeholder="your university email"></label>
+            <label>Location<input id="cv-location" type="text" placeholder="City, State, Country"></label>
+          </div>
+          <div class="form-grid">
+            <label>Google Scholar<input id="cv-scholar" type="url" value="https://scholar.google.com/citations?user=2cJQkEkAAAAJ&hl=en"></label>
+            <label>LinkedIn<input id="cv-linkedin" type="url" value="https://www.linkedin.com/in/arash-pashazadeh-b34b1a111"></label>
+          </div>
+          <label>Professional summary<textarea id="cv-summary" rows="5">Civil Engineer and Ph.D. Researcher focused on coastal and hydraulic infrastructure, floating systems, experimental hydrodynamics, CFD modeling, IMU-based motion reconstruction, and resilient engineering systems.</textarea></label>
+          <label>Education<textarea id="cv-education" rows="5">Ph.D. in Systems Engineering, University of South Alabama, USA
+M.Sc. in Civil Engineering – Hydraulic Structures
+B.Sc. in Civil Engineering</textarea></label>
+          <label>Experience / roles<textarea id="cv-experience" rows="5">Graduate Research Assistant
+Civil / Hydraulic Engineering professional experience</textarea></label>
+          <label>Skills<textarea id="cv-skills" rows="4">OpenFOAM, MATLAB, IMU data processing, CFD modeling, wave flume testing, hydraulic structures, coastal infrastructure, technical writing, experimental design</textarea></label>
+          <label>Languages<textarea id="cv-languages" rows="2">English
+Persian</textarea></label>
+        </section>
+
+        <section class="content-form cv-builder-card">
+          <h3>Document options</h3>
+          <div class="form-grid">
+            <label>Portfolio images per project
+              <select id="portfolio-image-count">
+                <option value="3">3 images</option>
+                <option value="4" selected>4 images</option>
+              </select>
+            </label>
+            <label>Portfolio text size
+              <select id="portfolio-font-size">
+                <option value="11">11 pt</option>
+                <option value="12" selected>12 pt</option>
+                <option value="13">13 pt</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-grid">
+            <label>Include project types
+              <select id="portfolio-kind-filter">
+                <option value="all" selected>All projects</option>
+                <option value="research">Research only</option>
+                <option value="engineering">Engineering only</option>
+                <option value="study">Studies only</option>
+              </select>
+            </label>
+            <label>Portfolio format
+              <select id="portfolio-format">
+                <option value="both" selected>PPTX + PDF</option>
+                <option value="pptx">PPTX only</option>
+                <option value="pdf">PDF only</option>
+              </select>
+            </label>
+          </div>
+          <label class="checkbox-label"><input id="include-conferences" type="checkbox" checked> Include conferences / workshops in CV outputs</label>
+          <label class="checkbox-label"><input id="include-publications" type="checkbox" checked> Include publications in CV outputs</label>
+          <label class="checkbox-label"><input id="portfolio-include-conferences" type="checkbox" checked> Add conference / workshop slides to portfolio</label>
+
+          <div class="cv-actions-stack">
+            <button id="generate-academic-cv" class="btn btn-primary" type="button">Generate Academic CV — Word + PDF</button>
+            <button id="generate-engineering-cv" class="btn btn-primary" type="button">Generate Engineering CV — Word + PDF</button>
+            <button id="generate-europass-cv" class="btn btn-primary" type="button">Generate Europass-style CV — Word + PDF</button>
+            <button id="generate-portfolio" class="btn btn-primary" type="button">Generate Long Portfolio — PPTX + PDF</button>
+          </div>
+          <p id="cv-status" class="form-message"></p>
+          <div class="cv-data-summary" id="cv-data-summary">Open this tab to load website data.</div>
+        </section>
+      </div>
+
+      <section class="content-form cv-builder-card cv-selection-card">
+        <div class="form-title">
+          <h3>Select projects for portfolio</h3>
+          <button id="select-featured-projects" class="text-button" type="button">Featured only</button>
+          <button id="select-all-projects" class="text-button" type="button">Select all</button>
+        </div>
+        <p>Each project uses a 16:9 PowerPoint-size page. The title and description are above the images; the default description font is 12 pt.</p>
+        <div id="cv-project-selector" class="cv-selector-grid"></div>
+      </section>
+    </section>
+
   </div>
 </div></section></main>
   <footer class="site-footer">
@@ -112,5 +215,6 @@
   </footer>
   <script src="script.js"></script>
   <script src="admin.js"></script>
+  <script src="admin-cv.js"></script>
 </body>
 </html>

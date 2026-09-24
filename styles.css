@@ -802,99 +802,108 @@ body.lightbox-open{overflow:hidden}
 
 .cv-personal-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px}.cv-personal-strip>div{padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:#fff}.cv-personal-strip span{display:block;color:#789097;font-size:.66rem;text-transform:uppercase;font-weight:900;letter-spacing:.08em}.cv-personal-strip strong{display:block;margin-top:5px;color:#173740;font-size:.9rem}@media (max-width:700px){.cv-personal-strip{grid-template-columns:1fr}}
 
-/* V11.2 — Conference index: image + Event / Year / Location.
-   Full descriptions stay on conference.html detail pages. */
-.conference-compact-list{display:grid;gap:14px}
-.conference-compact-head{
+
+/* V11.8 — Conference index redesigned as square-style cards.
+   Each event now shows:
+   image on top, event name, year, then location. */
+.conference-compact-list{
   display:grid;
-  grid-template-columns:150px minmax(0,2fr) 92px minmax(190px,1fr);
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:22px;
-  align-items:end;
-  padding:0 24px 10px;
-  color:#6f858c;
-  font-size:.72rem;
-  font-weight:900;
-  letter-spacing:.1em;
-  text-transform:uppercase
+  align-items:stretch
 }
+.conference-compact-head{display:none}
+
 .conference-compact-row{
   display:grid;
-  grid-template-columns:150px minmax(0,2fr) 92px minmax(190px,1fr);
-  gap:22px;
-  align-items:center;
-  padding:18px 24px;
+  grid-template-columns:1fr;
+  gap:14px;
+  align-content:start;
+  padding:18px;
   border:1px solid var(--line);
-  border-radius:20px;
+  border-radius:24px;
   background:#fff;
   box-shadow:0 10px 28px rgba(16,37,45,.045);
-  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+  min-height:100%;
 }
-.conference-compact-row:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(16,37,45,.075);border-color:rgba(24,166,180,.28)}
-.conference-compact-media{min-width:0}
+.conference-compact-row:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 34px rgba(16,37,45,.075);
+  border-color:rgba(24,166,180,.28)
+}
+.conference-compact-media{
+  min-width:0;
+  width:100%;
+}
 .conference-compact-media>a{
   display:block;
-  width:150px;
-  aspect-ratio:16/10;
+  width:100%;
+  aspect-ratio:1 / 1;
   overflow:hidden;
-  border-radius:14px;
+  border-radius:18px;
   background:linear-gradient(135deg,#e8f5f7,#d8ecef);
   border:1px solid #d5e6e9
 }
-.conference-compact-media img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
-.conference-compact-placeholder{display:grid;width:100%;height:100%;place-items:center;color:#0b5360;font-size:1rem;font-weight:950;letter-spacing:.08em}
-.conference-compact-cell{min-width:0}
-.conference-compact-cell strong{
+.conference-compact-media img{
   display:block;
-  color:#49646b;
-  font-size:.95rem;
-  font-weight:750;
-  line-height:1.45;
-  overflow-wrap:anywhere
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center
+}
+.conference-compact-placeholder{
+  display:grid;
+  width:100%;
+  height:100%;
+  place-items:center;
+  color:#0b5360;
+  font-size:1rem;
+  font-weight:950;
+  letter-spacing:.08em
+}
+.conference-compact-cell{min-width:0}
+.conference-compact-label{
+  display:block;
+  margin-bottom:5px;
+  color:#7b9096;
+  font-size:.68rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase
 }
 .conference-compact-event a{
   display:block;
   max-width:100%;
   color:#10252d;
-  font-size:1.04rem;
+  font-size:1.08rem;
   font-weight:900;
-  line-height:1.42;
+  line-height:1.4;
   text-decoration:none;
   overflow-wrap:anywhere;
   word-break:normal
 }
 .conference-compact-event a:hover{color:#0e7582}
-.conference-compact-year{align-self:center}
+.conference-compact-year strong,
+.conference-compact-location strong{
+  display:block;
+  color:#49646b;
+  font-size:.98rem;
+  font-weight:750;
+  line-height:1.45;
+  overflow-wrap:anywhere
+}
 .conference-compact-year strong{white-space:nowrap}
-.conference-compact-location{align-self:center}
-.conference-compact-label{display:none;margin-bottom:5px;color:#7b9096;font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.conference-compact-location{margin-top:auto}
 
-@media(max-width:900px){
-  .conference-compact-head{grid-template-columns:120px minmax(0,1.7fr) 82px minmax(150px,1fr);gap:16px}
-  .conference-compact-row{grid-template-columns:120px minmax(0,1.7fr) 82px minmax(150px,1fr);gap:16px}
-  .conference-compact-media>a{width:120px}
+@media(max-width:1100px){
+  .conference-compact-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media(max-width:700px){
-  .conference-compact-head{display:none}
-  .conference-compact-row{
-    grid-template-columns:112px minmax(0,1fr);
-    gap:14px 16px;
-    align-items:start;
-    padding:16px
-  }
-  .conference-compact-media{grid-row:1/4}
-  .conference-compact-media>a{width:112px;aspect-ratio:4/3}
-  .conference-compact-event,.conference-compact-year,.conference-compact-location{grid-column:2}
-  .conference-compact-label{display:block}
-  .conference-compact-event a{font-size:1rem}
+@media(max-width:640px){
+  .conference-compact-list{grid-template-columns:1fr}
+  .conference-compact-row{padding:16px}
+  .conference-compact-media>a{aspect-ratio:4 / 3}
 }
-@media(max-width:480px){
-  .conference-compact-row{grid-template-columns:1fr}
-  .conference-compact-media{grid-row:auto}
-  .conference-compact-media>a{width:100%;aspect-ratio:16/8.5}
-  .conference-compact-event,.conference-compact-year,.conference-compact-location{grid-column:1}
-}
-
-
 
 
 /* V11.6 — About page rendered as a simple CV sheet */

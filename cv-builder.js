@@ -1,6 +1,5 @@
-const CV_API_BASE = "https://arash-api.arash-pashazadeh1.workers.dev";
-const CV_SECRET_KEY = "arash_admin_session_secret";
-let cvSecret = sessionStorage.getItem(CV_SECRET_KEY) || sessionStorage.getItem("ADMIN_SECRET") || "";
+const API_BASE = "https://arash-api.arash-pashazadeh1.workers.dev";
+let cvSecret = sessionStorage.getItem("ADMIN_SECRET") || "";
 let cvData = { projects: [], publications: [], conferences: [], galleries: new Map() };
 
 const $ = (id) => document.getElementById(id);
@@ -41,7 +40,7 @@ function dateRange(item) {
 }
 
 async function api(path) {
-  const res = await fetch(`${CV_API_BASE}${path}`, { cache: "no-store" });
+  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
   if (!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
   return await res.json();
 }
@@ -51,14 +50,7 @@ async function adminPing(secret) {
     headers: { Authorization: `Bearer ${secret}` },
     cache: "no-store"
   });
-  if (!res.ok) {
-    let message = `Unlock failed (HTTP ${res.status}).`;
-    try {
-      const data = await res.json();
-      if (data?.error) message += ` ${data.error}`;
-    } catch {}
-    throw new Error(message);
-  }
+  if (!res.ok) throw new Error("Invalid ADMIN_SECRET or Worker is not ready.");
   return await res.json();
 }
 
@@ -434,12 +426,11 @@ async function generatePortfolio() {
 function wireEvents() {
   $("cv-login-form")?.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const secret = $("cv-secret").value;
-    $("cv-login-message").textContent = "Checking…";
+    const secret = $("cv-secret").value.trim();
     try {
       await adminPing(secret);
       cvSecret = secret;
-      sessionStorage.setItem(CV_SECRET_KEY, secret);
+      sessionStorage.setItem("ADMIN_SECRET", secret);
       $("cv-login").hidden = true;
       $("cv-dashboard").hidden = false;
       await loadAllData();
@@ -471,7 +462,6 @@ async function boot() {
       $("cv-dashboard").hidden = false;
       await loadAllData();
     } catch {
-      sessionStorage.removeItem(CV_SECRET_KEY);
       sessionStorage.removeItem("ADMIN_SECRET");
     }
   }

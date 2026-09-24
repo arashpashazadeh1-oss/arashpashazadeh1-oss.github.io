@@ -1,0 +1,15 @@
+about.html
+about.js
+index.html
+research.html
+projects.html
+publications.html
+conferences.html
+contact.html
+styles.css
+admin.html
+admin-cv-v95.js
+cv-builder.html
+README.md
+assets/profile/arash-pashazadeh.jpg
+assets/cv/Arash_Pashazadeh_CV_2025.pdf

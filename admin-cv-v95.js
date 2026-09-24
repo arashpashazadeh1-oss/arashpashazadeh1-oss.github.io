@@ -170,7 +170,11 @@
       education: splitLines(cv$("cv-education")?.value || ""),
       experience: splitLines(cv$("cv-experience")?.value || ""),
       skills: splitLines(cv$("cv-skills")?.value || ""),
-      languages: splitLines(cv$("cv-languages")?.value || "")
+      languages: splitLines(cv$("cv-languages")?.value || ""),
+      interests: splitLines(cv$("cv-interests")?.value || ""),
+      honors: splitLines(cv$("cv-honors")?.value || ""),
+      memberships: splitLines(cv$("cv-memberships")?.value || ""),
+      certifications: splitLines(cv$("cv-certifications")?.value || "")
     };
   }
 
@@ -248,6 +252,10 @@
       });
     }
 
+    sections.push({ title: "Research & Work Interests", items: profile.interests });
+    sections.push({ title: "Honors & Distinctions", items: profile.honors });
+    sections.push({ title: "Professional Memberships", items: profile.memberships });
+    sections.push({ title: "Certifications", items: profile.certifications });
     sections.push({ title: "Technical Skills", items: profile.skills });
     sections.push({ title: "Languages", items: profile.languages });
     return { profile, sections };
@@ -764,6 +772,18 @@
       });
     }
 
+    children.push(sectionHeadingDocx("Research & Work Interests"));
+    profile.interests.forEach((item) => children.push(bulletDocx(item)));
+
+    children.push(sectionHeadingDocx("Honors & Distinctions"));
+    profile.honors.forEach((item) => children.push(bulletDocx(item)));
+
+    children.push(sectionHeadingDocx("Professional Memberships"));
+    profile.memberships.forEach((item) => children.push(bulletDocx(item)));
+
+    children.push(sectionHeadingDocx("Certifications"));
+    profile.certifications.forEach((item) => children.push(bulletDocx(item)));
+
     children.push(sectionHeadingDocx("Technical Skills"));
     profile.skills.forEach((item) => children.push(bulletDocx(item)));
 
@@ -952,6 +972,18 @@
       ));
     }
 
+    sectionHeading("Research & Work Interests");
+    addBulletLines(profile.interests);
+
+    sectionHeading("Honors & Distinctions");
+    addBulletLines(profile.honors);
+
+    sectionHeading("Professional Memberships");
+    addBulletLines(profile.memberships);
+
+    sectionHeading("Certifications");
+    addBulletLines(profile.certifications);
+
     sectionHeading("Technical Skills");
     addBulletLines(profile.skills);
 
@@ -1030,11 +1062,11 @@
   wireEvents();
 
   // Visible diagnostic marker for cache verification.
-  window.__ARASH_CV_ENGINE_VERSION__ = "v9.5";
+  window.__ARASH_CV_ENGINE_VERSION__ = "v10.0";
   const originalCvTabHandler = () => {
     const status = document.getElementById("cv-status");
     if (status && !status.textContent) {
-      status.textContent = "CV/Portfolio engine v9.5 loaded.";
+      status.textContent = "CV/Portfolio engine v10.0 loaded.";
       status.className = "form-message success";
     }
   };

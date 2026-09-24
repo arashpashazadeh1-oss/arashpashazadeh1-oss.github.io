@@ -1,26 +1,21 @@
+# Arash Pashazadeh Personal Website — V10 Comprehensive CV / About
 
+This version consolidates the uploaded 2024–2025 CV materials into a comprehensive public About/CV page while preserving the existing visual palette and the V8/V9 dynamic site architecture.
 
-## V9 CV & Portfolio Builder
+## Key upgrades
+- Comprehensive typed CV in `about.html`
+- Education, professional experience, hydropower / consulting project experience, publication record, honors, memberships, languages, research interests, digital skills and advanced computational methods
+- Profile photo extracted from the supplied September 2025 CV
+- Download link to the supplied September 2025 CV PDF
+- Dynamic CV-style summaries of current Research, Projects, Publications, and Conferences/Workshops from D1 (`about.js`)
+- Home page professional-experience section
+- Expanded Research / Projects / Publications / Conferences introductions
+- Contact page adds university email, professional email, and ResearchGate
+- ResearchGate added to structured data / social profile surfaces
+- Integrated Admin CV Builder defaults upgraded from the combined CV materials
+- Academic/Engineering/Europass/Long CV outputs now include research interests, honors, memberships and certifications
+- Existing V9.5 Long CV / aspect-ratio fixes retained
 
-This version adds a private CV and portfolio generator:
-
-- `cv-builder.html`
-- `cv-builder.js`
-
-Outputs:
-
-1. Academic CV — Word `.docx` + PDF `.pdf`
-2. Engineering CV — Word `.docx` + PDF `.pdf`
-3. Europass-style CV — Word `.docx` + PDF `.pdf`
-4. Long portfolio — PowerPoint `.pptx` + 16:9 landscape PDF `.pdf`
-
-The long portfolio uses the current Projects and Gallery system:
-
-- 16:9 PowerPoint size
-- one slide/page per project
-- project title and description at the top
-- default text size 12 pt
-- 3 or 4 images per project
-- images are pulled from the private Telegram media gallery through the Cloudflare Worker
-
-No Cloudflare Worker or D1 migration is required for V9 if V8 Free is already working.
+## GitHub deployment
+Upload/replace the entire contents of this package in the `arashpashazadeh1-oss.github.io` repository.
+No Cloudflare Worker, D1 schema, Telegram, or ADMIN_SECRET changes are required.

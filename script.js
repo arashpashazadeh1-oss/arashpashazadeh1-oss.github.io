@@ -135,6 +135,28 @@ function createConferenceCard(item){
   if(item.url){const external=document.createElement("a");external.className="conference-link";external.href=item.url;external.target="_blank";external.rel="noopener noreferrer";external.textContent="Event / material ↗";links.appendChild(external);}
   content.appendChild(links);card.appendChild(content);return card;
 }
+function createConferenceCompactRow(item){
+  const row=document.createElement("article");row.className="conference-compact-row reveal";
+
+  const eventCell=document.createElement("div");eventCell.className="conference-compact-cell conference-compact-event";
+  const eventLabel=document.createElement("span");eventLabel.className="conference-compact-label";eventLabel.textContent="Event";
+  const eventLink=document.createElement("a");eventLink.href=`conference.html?id=${encodeURIComponent(item.id)}`;eventLink.textContent=item.event||item.title||"Academic Event";
+  if(item.title&&item.event&&item.title!==item.event) eventLink.title=item.title;
+  eventCell.append(eventLabel,eventLink);
+
+  const yearCell=document.createElement("div");yearCell.className="conference-compact-cell";
+  const yearLabel=document.createElement("span");yearLabel.className="conference-compact-label";yearLabel.textContent="Year";
+  const yearValue=document.createElement("strong");yearValue.textContent=item.year||"—";
+  yearCell.append(yearLabel,yearValue);
+
+  const locationCell=document.createElement("div");locationCell.className="conference-compact-cell";
+  const locationLabel=document.createElement("span");locationLabel.className="conference-compact-label";locationLabel.textContent="Location";
+  const locationValue=document.createElement("strong");locationValue.textContent=item.location||"—";
+  locationCell.append(locationLabel,locationValue);
+
+  row.append(eventCell,yearCell,locationCell);
+  return row;
+}
 
 async function loadHomeContent(){
   const projectsEl=document.getElementById("home-featured-projects");
@@ -205,7 +227,7 @@ async function loadConferenceDetail(){
 loadConferenceDetail();
 
 async function loadConferences(){
-  const el=document.getElementById("conferences-list");if(!el)return;try{const rows=await apiGet("/conferences");const search=document.getElementById("conference-search"),yearF=document.getElementById("conference-year-filter");[...new Set(rows.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;yearF.appendChild(o);});const render=()=>{clear(el);const q=(search.value||"").toLowerCase(),y=yearF.value;const filtered=rows.filter(x=>(!q||`${x.title} ${x.event} ${x.location} ${x.description}`.toLowerCase().includes(q))&&(!y||String(x.year)===y));filtered.forEach(r=>el.appendChild(createConferenceCard(r)));if(!filtered.length)showError(el,"No matching conference entries.");observeReveals(el);};search.addEventListener("input",render);yearF.addEventListener("change",render);render();}catch{showError(el);}
+  const el=document.getElementById("conferences-list");if(!el)return;try{const rows=await apiGet("/conferences");const search=document.getElementById("conference-search"),yearF=document.getElementById("conference-year-filter");[...new Set(rows.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;yearF.appendChild(o);});const render=()=>{clear(el);const q=(search.value||"").toLowerCase(),y=yearF.value;const filtered=rows.filter(x=>(!q||`${x.title} ${x.event} ${x.location} ${x.description}`.toLowerCase().includes(q))&&(!y||String(x.year)===y));filtered.forEach(r=>el.appendChild(createConferenceCompactRow(r)));if(!filtered.length)showError(el,"No matching conference entries.");observeReveals(el);};search.addEventListener("input",render);yearF.addEventListener("change",render);render();}catch{showError(el);}
 }
 loadConferences();
 

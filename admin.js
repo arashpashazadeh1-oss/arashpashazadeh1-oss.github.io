@@ -801,3 +801,12 @@ $("conference-form")?.addEventListener("submit", async (event) => {
 // Initial gallery state.
 setGalleryEnabled("project", false);
 setGalleryEnabled("conference", false);
+
+
+// V11: allow old cv-builder.html bookmarks to open the integrated CV tab.
+window.addEventListener("load", () => {
+  if (location.hash === "#cv") {
+    const cvTab = document.querySelector('.admin-tab[data-tab="cv"]');
+    if (cvTab) setTimeout(() => cvTab.click(), 120);
+  }
+});

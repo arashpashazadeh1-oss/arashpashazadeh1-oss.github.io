@@ -174,7 +174,9 @@
       interests: splitLines(cv$("cv-interests")?.value || ""),
       honors: splitLines(cv$("cv-honors")?.value || ""),
       memberships: splitLines(cv$("cv-memberships")?.value || ""),
-      certifications: splitLines(cv$("cv-certifications")?.value || "")
+      certifications: splitLines(cv$("cv-certifications")?.value || ""),
+      references: splitLines(cv$("cv-references")?.value || ""),
+      admissions: splitLines(cv$("cv-admissions")?.value || "")
     };
   }
 
@@ -256,6 +258,8 @@
     sections.push({ title: "Honors & Distinctions", items: profile.honors });
     sections.push({ title: "Professional Memberships", items: profile.memberships });
     sections.push({ title: "Certifications", items: profile.certifications });
+    sections.push({ title: "References & Recommendations", items: profile.references });
+    sections.push({ title: "Admissions / Academic Record", items: profile.admissions });
     sections.push({ title: "Technical Skills", items: profile.skills });
     sections.push({ title: "Languages", items: profile.languages });
     return { profile, sections };
@@ -784,6 +788,12 @@
     children.push(sectionHeadingDocx("Certifications"));
     profile.certifications.forEach((item) => children.push(bulletDocx(item)));
 
+    children.push(sectionHeadingDocx("References & Recommendations"));
+    profile.references.forEach((item) => children.push(bulletDocx(item)));
+
+    children.push(sectionHeadingDocx("Admissions / Academic Record"));
+    profile.admissions.forEach((item) => children.push(bulletDocx(item)));
+
     children.push(sectionHeadingDocx("Technical Skills"));
     profile.skills.forEach((item) => children.push(bulletDocx(item)));
 
@@ -984,6 +994,12 @@
     sectionHeading("Certifications");
     addBulletLines(profile.certifications);
 
+    sectionHeading("References & Recommendations");
+    addBulletLines(profile.references);
+
+    sectionHeading("Admissions / Academic Record");
+    addBulletLines(profile.admissions);
+
     sectionHeading("Technical Skills");
     addBulletLines(profile.skills);
 
@@ -1062,11 +1078,11 @@
   wireEvents();
 
   // Visible diagnostic marker for cache verification.
-  window.__ARASH_CV_ENGINE_VERSION__ = "v10.0";
+  window.__ARASH_CV_ENGINE_VERSION__ = "v11.0";
   const originalCvTabHandler = () => {
     const status = document.getElementById("cv-status");
     if (status && !status.textContent) {
-      status.textContent = "CV/Portfolio engine v10.0 loaded.";
+      status.textContent = "CV/Portfolio engine v11.0 loaded.";
       status.className = "form-message success";
     }
   };

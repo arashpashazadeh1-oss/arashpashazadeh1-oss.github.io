@@ -895,60 +895,190 @@ body.lightbox-open{overflow:hidden}
 }
 
 
-/* V11.3 — detailed recommendation records */
-.cv-recommendation-stack{
-  display:grid;
-  gap:18px;
-  margin-top:20px
+
+
+/* V11.6 — About page rendered as a simple CV sheet */
+body[data-page="about"]{
+  background:#eef4f5;
 }
-.cv-recommendation-card{
-  display:grid;
-  grid-template-columns:minmax(240px,.72fr) minmax(0,1.7fr);
-  gap:28px;
-  padding:24px 26px;
-  border:1px solid var(--line);
-  border-radius:22px;
+.cv-paper-main{
+  padding:42px 18px 70px;
+}
+.cv-paper{
+  width:min(8.27in, calc(100% - 8px));
+  margin:0 auto;
+  padding:.68in .72in;
   background:#fff;
-  box-shadow:0 12px 30px rgba(16,37,45,.045)
+  color:#17292f;
+  border:1px solid #d9e1e3;
+  box-shadow:0 16px 44px rgba(16,37,45,.08);
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:12pt;
+  line-height:1.42;
 }
-.cv-recommendation-head span{
-  display:inline-block;
-  margin-bottom:8px;
-  color:#0e7582;
-  font-size:.72rem;
-  font-weight:900;
-  letter-spacing:.08em;
-  text-transform:uppercase
+.cv-paper p,
+.cv-paper li,
+.cv-paper a,
+.cv-paper span{
+  font-size:12pt;
 }
-.cv-recommendation-head h3{
-  margin:0 0 8px;
+.cv-paper a{
+  color:#0b6f7c;
+  text-decoration:none;
+}
+.cv-paper a:hover{
+  text-decoration:underline;
+}
+.cv-paper-header{
+  text-align:center;
+  padding-bottom:14px;
+  border-bottom:1.5px solid #17292f;
+  margin-bottom:18px;
+}
+.cv-paper-header h1{
+  margin:0 0 4px;
   color:#10252d;
-  font-size:1.12rem;
-  line-height:1.35
+  font-size:21pt;
+  line-height:1.15;
+  letter-spacing:.01em;
 }
-.cv-recommendation-head p{
+.cv-paper-title{
+  margin:0 0 5px;
+  font-weight:700;
+}
+.cv-paper-contact{
   margin:0;
-  color:#667d84;
-  line-height:1.55
+  font-size:10.5pt!important;
+  line-height:1.5;
 }
-.cv-recommendation-body p{
-  margin:0 0 12px;
-  color:#405d65;
-  line-height:1.75
+.cv-paper-contact a{
+  font-size:10.5pt;
 }
-.cv-recommendation-body ul{
-  margin:0;
-  padding-left:20px;
-  color:#405d65
+.cv-paper-section{
+  margin:0 0 18px;
+  padding:0;
 }
-.cv-recommendation-body li{
+.cv-paper-section h2{
   margin:0 0 8px;
-  line-height:1.65
+  padding-bottom:3px;
+  border-bottom:1px solid #9aa9ad;
+  color:#10252d;
+  font-size:12pt;
+  line-height:1.3;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.035em;
+}
+.cv-paper-section h3{
+  margin:14px 0 6px;
+  color:#10252d;
+  font-size:12pt;
+}
+.cv-paper-section p{
+  margin:0 0 7px;
+}
+.cv-paper-section ul,
+.cv-paper-section ol{
+  margin:5px 0 8px 20px;
+  padding:0;
+}
+.cv-paper-section li{
+  margin:0 0 5px;
+}
+.cv-paper-entry{
+  display:grid;
+  grid-template-columns:108px minmax(0,1fr);
+  gap:16px;
+  margin:0 0 13px;
+  page-break-inside:avoid;
+}
+.cv-paper-entry p{
+  margin:0 0 4px;
+}
+.cv-paper-entry ul{
+  margin-top:5px;
+}
+.cv-paper-date{
+  font-weight:700;
+  color:#304b53;
+  white-space:nowrap;
+}
+.cv-paper-lines p,
+.cv-paper-skill-list p{
+  margin-bottom:6px;
+}
+.cv-paper-publications{
+  margin-left:22px!important;
+}
+.cv-paper-publications li{
+  padding-left:3px;
+  margin-bottom:8px;
+}
+.cv-paper-sync-note{
+  color:#667b82;
+  font-size:10pt!important;
+  font-style:italic;
+  margin-bottom:10px!important;
+}
+.cv-paper-muted{
+  color:#667b82;
+  font-style:italic;
+}
+.cv-paper-live-section{
+  margin-top:26px;
+  padding-top:2px;
+}
+.cv-paper-live-list{
+  margin-bottom:14px;
+}
+.cv-paper-live-row{
+  margin:0 0 7px!important;
+  padding-left:0;
+}
+.cv-paper-live-row strong{
+  font-weight:700;
+}
+.cv-paper-footer{
+  margin-top:20px;
+  padding-top:10px;
+  border-top:1px solid #9aa9ad;
+  text-align:right;
+}
+.cv-paper-footer p{
+  margin:0;
 }
 @media(max-width:760px){
-  .cv-recommendation-card{
-    grid-template-columns:1fr;
-    gap:14px;
-    padding:20px
+  .cv-paper-main{padding:20px 8px 48px}
+  .cv-paper{
+    width:100%;
+    padding:28px 20px;
+    font-size:11pt;
   }
+  .cv-paper p,.cv-paper li,.cv-paper a,.cv-paper span{font-size:11pt}
+  .cv-paper-entry{grid-template-columns:1fr;gap:2px}
+  .cv-paper-date{margin-top:4px}
+  .cv-paper-header h1{font-size:19pt}
+}
+@media print{
+  .site-header,.site-footer,.skip-link{display:none!important}
+  body[data-page="about"]{background:#fff}
+  .cv-paper-main{padding:0}
+  .cv-paper{
+    width:auto;
+    margin:0;
+    padding:.45in .5in;
+    border:0;
+    box-shadow:none;
+    font-size:12pt;
+  }
+}
+
+.cv-paper-kicker{
+  margin:0 0 5px!important;
+  color:#10252d;
+  font-size:12pt!important;
+  line-height:1.2;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
 }

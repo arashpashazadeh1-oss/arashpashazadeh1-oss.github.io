@@ -157,17 +157,39 @@ function createConferenceCompactRow(item){
 
   const mediaCell=document.createElement("div");mediaCell.className="conference-compact-media";
   const mediaLink=document.createElement("a");mediaLink.href=`conference.html?id=${encodeURIComponent(item.id)}`;mediaLink.setAttribute("aria-label",`Open ${item.title||item.event||"conference"} details`);
-  if(item.cover_media_id){
-    const img=document.createElement("img");
-    img.loading="lazy";
-    img.src=galleryImageUrl(item.cover_media_id);
-    img.alt=item.title||item.event||"Conference image";
-    mediaLink.appendChild(img);
+
+  const img=document.createElement("img");
+  img.loading="lazy";
+  img.alt=item.title||item.event||"Conference image";
+  img.hidden=true;
+  mediaLink.appendChild(img);
+
+  const placeholder=document.createElement("span");
+  placeholder.className="conference-compact-placeholder";
+  placeholder.textContent="Loading";
+  mediaLink.appendChild(placeholder);
+
+  const directCover=getCoverUrl(item);
+  if(directCover){
+    img.src=directCover;
+    img.hidden=false;
+    placeholder.remove();
   }else{
-    const placeholder=document.createElement("span");
-    placeholder.className="conference-compact-placeholder";
-    placeholder.textContent="AP";
-    mediaLink.appendChild(placeholder);
+    // /conferences may not expose cover_media_id. Fall back to the actual
+    // conference gallery so the list page still shows the event photo.
+    loadGallery("conference",item.id).then((gallery)=>{
+      const cover=(gallery||[]).find((g)=>Number(g.is_cover)===1)||(gallery||[])[0];
+      const src=cover?.url||galleryImageUrl(cover?.id);
+      if(src){
+        img.src=src;
+        img.hidden=false;
+        if(placeholder.isConnected) placeholder.remove();
+      }else if(placeholder.isConnected){
+        placeholder.textContent="No photo";
+      }
+    }).catch(()=>{
+      if(placeholder.isConnected) placeholder.textContent="No photo";
+    });
   }
   mediaCell.appendChild(mediaLink);
 

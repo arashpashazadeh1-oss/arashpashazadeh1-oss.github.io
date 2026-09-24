@@ -1,151 +1,150 @@
 (() => {
   "use strict";
 
-  const q = (id) => document.getElementById(id);
+  const el = (id) => document.getElementById(id);
   const clean = (v) => String(v ?? "").trim();
-  const escYear = (item) => {
+
+  function yearRange(item) {
     if (item.start_year && item.end_year) return `${item.start_year}–${item.end_year}`;
     if (item.start_year) return `${item.start_year}–Present`;
     if (item.year) return String(item.year);
-    return clean(item.status) || "—";
-  };
+    return "";
+  }
 
-  function empty(container, message) {
+  function setMessage(container, message) {
     if (!container) return;
     container.innerHTML = "";
-    const el = document.createElement("div");
-    el.className = "about-live-empty";
-    el.textContent = message;
-    container.appendChild(el);
+    const p = document.createElement("p");
+    p.className = "cv-paper-muted";
+    p.textContent = message;
+    container.appendChild(p);
   }
 
-  function projectRow(item) {
-    const row = document.createElement("article");
-    row.className = "about-live-row";
-    const date = document.createElement("div");
-    date.className = "about-live-date";
-    date.textContent = escYear(item);
-    const body = document.createElement("div");
-    const title = document.createElement("h4");
-    const link = document.createElement("a");
-    link.href = `project.html?id=${encodeURIComponent(item.id)}`;
-    link.textContent = item.title || "Project";
-    title.appendChild(link);
-    const meta = document.createElement("p");
-    meta.className = "about-live-meta";
-    meta.textContent = [item.category, item.kind, item.status].filter(Boolean).join(" · ");
-    const desc = document.createElement("p");
-    desc.textContent = item.summary || item.description || "";
-    body.append(title, meta, desc);
-    row.append(date, body);
-    return row;
-  }
+  function publicationItem(item) {
+    const li = document.createElement("li");
+    const line = document.createElement("span");
 
-  function publicationRow(item) {
-    const row = document.createElement("article");
-    row.className = "about-live-row";
-    const date = document.createElement("div");
-    date.className = "about-live-date";
-    date.textContent = item.year || "—";
-    const body = document.createElement("div");
-    const title = document.createElement("h4");
+    const parts = [];
+    if (item.authors) parts.push(item.authors);
+    if (item.year) parts.push(`(${item.year})`);
+    if (item.title) parts.push(item.title);
+    if (item.journal) parts.push(item.journal);
+    if (item.status) parts.push(item.status);
+
+    line.textContent = parts.join(". ").replace(/\.\s*\./g, ".") + (parts.length ? "." : "");
+    li.appendChild(line);
+
     if (item.doi || item.url) {
       const a = document.createElement("a");
       a.href = item.url || `https://doi.org/${item.doi}`;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
-      a.textContent = item.title || "Publication";
-      title.appendChild(a);
-    } else title.textContent = item.title || "Publication";
-    const meta = document.createElement("p");
-    meta.className = "about-live-meta";
-    meta.textContent = [item.authors, item.journal, item.status].filter(Boolean).join(" · ");
-    const desc = document.createElement("p");
-    desc.textContent = item.abstract || (item.doi ? `DOI: ${item.doi}` : "");
-    body.append(title, meta, desc);
-    row.append(date, body);
+      a.textContent = item.doi ? ` DOI: ${item.doi}` : " Link";
+      li.appendChild(a);
+    }
+
+    return li;
+  }
+
+  function projectLine(item) {
+    const row = document.createElement("p");
+    row.className = "cv-paper-live-row";
+
+    const a = document.createElement("a");
+    a.href = `project.html?id=${encodeURIComponent(item.id)}`;
+    a.textContent = item.title || "Project";
+
+    const prefix = [yearRange(item), item.category, item.status].filter(Boolean).join(" · ");
+    if (prefix) {
+      const strong = document.createElement("strong");
+      strong.textContent = `${prefix} — `;
+      row.appendChild(strong);
+    }
+    row.appendChild(a);
+
+    const summary = clean(item.summary || item.description);
+    if (summary) row.append(document.createTextNode(`. ${summary}`));
     return row;
   }
 
-  function conferenceRow(item) {
-    const row = document.createElement("article");
-    row.className = "about-live-row";
-    const date = document.createElement("div");
-    date.className = "about-live-date";
-    date.textContent = item.year || "—";
-    const body = document.createElement("div");
-    const title = document.createElement("h4");
+  function conferenceLine(item) {
+    const row = document.createElement("p");
+    row.className = "cv-paper-live-row";
+
     const a = document.createElement("a");
     a.href = `conference.html?id=${encodeURIComponent(item.id)}`;
     a.textContent = item.title || item.event || "Conference / Workshop";
-    title.appendChild(a);
-    const meta = document.createElement("p");
-    meta.className = "about-live-meta";
-    meta.textContent = [item.event, item.type, item.location].filter(Boolean).join(" · ");
-    const desc = document.createElement("p");
-    desc.textContent = item.description || "";
-    body.append(title, meta, desc);
-    row.append(date, body);
+
+    const prefix = [item.year, item.event, item.location].filter(Boolean).join(" · ");
+    if (prefix) {
+      const strong = document.createElement("strong");
+      strong.textContent = `${prefix} — `;
+      row.appendChild(strong);
+    }
+    row.appendChild(a);
     return row;
   }
 
-  function render(container, items, factory, emptyMessage) {
+  function renderLines(container, items, factory, emptyText) {
     if (!container) return;
     container.innerHTML = "";
-    if (!items.length) return empty(container, emptyMessage);
+    if (!items.length) return setMessage(container, emptyText);
     items.forEach((item) => container.appendChild(factory(item)));
   }
 
-  function renderCounts(research, projects, publications, conferences) {
-    const box = q("about-live-counts");
-    if (!box) return;
-    box.innerHTML = "";
-    [
-      [research.length, "Research"],
-      [projects.length, "Projects / Studies"],
-      [publications.length, "Publications"],
-      [conferences.length, "Conferences / Workshops"]
-    ].forEach(([count, label]) => {
-      const card = document.createElement("div");
-      const strong = document.createElement("strong");
-      strong.textContent = count;
-      const span = document.createElement("span");
-      span.textContent = label;
-      card.append(strong, span);
-      box.appendChild(card);
-    });
-  }
+  async function load() {
+    const publicationsList = el("about-publications-live");
+    const researchList = el("about-research-live");
+    const projectList = el("about-projects-live");
+    const conferenceList = el("about-conferences-live");
 
-  async function loadAboutRecord() {
     try {
-      const [allProjects, publications, conferences] = await Promise.all([
+      const [projectData, publicationData, conferenceData] = await Promise.all([
         apiGet("/projects?limit=500"),
         apiGet("/publications?limit=500"),
         apiGet("/conferences?limit=500")
       ]);
 
-      const projects = Array.isArray(allProjects) ? allProjects : [];
-      const pubs = Array.isArray(publications) ? publications : [];
-      const confs = Array.isArray(conferences) ? conferences : [];
-      const research = projects.filter((p) => clean(p.kind).toLowerCase() === "research");
-      const engineering = projects.filter((p) => clean(p.kind).toLowerCase() !== "research");
+      const projects = Array.isArray(projectData) ? projectData : [];
+      const publications = Array.isArray(publicationData) ? publicationData : [];
+      const conferences = Array.isArray(conferenceData) ? conferenceData : [];
 
-      render(q("about-research-live"), research, projectRow, "No research projects are currently stored in the website database.");
-      render(q("about-projects-live"), engineering, projectRow, "No engineering projects or technical studies are currently stored in the website database.");
-      render(q("about-publications-live"), pubs, publicationRow, "No publications are currently stored in the website database.");
-      render(q("about-conferences-live"), confs, conferenceRow, "No conferences or workshops are currently stored in the website database.");
-      renderCounts(research, engineering, pubs, confs);
-      if (typeof observeReveals === "function") observeReveals(document);
+      const research = projects
+        .filter((p) => clean(p.kind).toLowerCase() === "research")
+        .sort((a, b) => Number(b.start_year || b.year || 0) - Number(a.start_year || a.year || 0));
+
+      const engineering = projects
+        .filter((p) => clean(p.kind).toLowerCase() !== "research")
+        .sort((a, b) => Number(b.start_year || b.year || 0) - Number(a.start_year || a.year || 0));
+
+      publications.sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
+      conferences.sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
+
+      if (publicationsList) {
+        publicationsList.innerHTML = "";
+        if (!publications.length) {
+          const li = document.createElement("li");
+          li.textContent = "No publications are currently stored in the Publications database.";
+          publicationsList.appendChild(li);
+        } else {
+          publications.forEach((item) => publicationsList.appendChild(publicationItem(item)));
+        }
+      }
+
+      renderLines(researchList, research, projectLine, "No research projects are currently stored in the website database.");
+      renderLines(projectList, engineering, projectLine, "No engineering projects or technical studies are currently stored in the website database.");
+      renderLines(conferenceList, conferences, conferenceLine, "No conferences or workshops are currently stored in the website database.");
     } catch (error) {
-      console.error("ABOUT LIVE RECORD ERROR", error);
-      empty(q("about-research-live"), "Current research data is temporarily unavailable. Open the Research page to try again.");
-      empty(q("about-projects-live"), "Current project data is temporarily unavailable. Open the Projects page to try again.");
-      empty(q("about-publications-live"), "Current publication data is temporarily unavailable. Open the Publications page to try again.");
-      empty(q("about-conferences-live"), "Current conference data is temporarily unavailable. Open the Conferences page to try again.");
-      const counts = q("about-live-counts");
-      if (counts) counts.textContent = "Live website data is temporarily unavailable.";
+      console.error("ABOUT CV SYNC ERROR", error);
+
+      if (publicationsList) {
+        publicationsList.innerHTML = "<li>Current publication data is temporarily unavailable. Please open the Publications page.</li>";
+      }
+      setMessage(researchList, "Current research data is temporarily unavailable.");
+      setMessage(projectList, "Current project data is temporarily unavailable.");
+      setMessage(conferenceList, "Current conference data is temporarily unavailable.");
     }
   }
 
-  loadAboutRecord();
+  load();
 })();

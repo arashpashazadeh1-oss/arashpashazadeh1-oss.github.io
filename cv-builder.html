@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CV & Portfolio Builder | Arash Pashazadeh</title>
+  <meta name="description" content="Private CV and portfolio generator." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://arashpashazadeh1-oss.github.io/cv-builder.html" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">AP</span>
+        <span class="brand-text"><strong>Arash Pashazadeh</strong><small>Civil Engineer · Ph.D. Researcher</small></span>
+      </a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span><span></span><span></span></button>
+      <nav id="site-nav" class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="research.html">Research</a>
+        <a href="projects.html">Projects</a>
+        <a href="publications.html">Publications</a>
+        <a href="conferences.html">Conferences</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="admin-main cv-main">
+    <section class="admin-hero cv-builder-hero">
+      <div class="container">
+        <p class="eyebrow">Private Document Generator</p>
+        <h1>CV & Portfolio Builder</h1>
+        <p>Generate Academic CV, Engineering CV, Europass-style CV, and a long PowerPoint-size portfolio using the projects, publications, conferences, and galleries stored in your website system.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div id="cv-login" class="admin-login-card">
+          <div>
+            <h2>Unlock builder</h2>
+            <p>Enter the same ADMIN_SECRET configured in Cloudflare. This only verifies access and is stored in this browser tab.</p>
+          </div>
+          <form id="cv-login-form" class="admin-login-form">
+            <input id="cv-secret" type="password" autocomplete="current-password" placeholder="ADMIN_SECRET" required />
+            <button class="btn btn-primary" type="submit">Unlock</button>
+          </form>
+          <p id="cv-login-message" class="form-message"></p>
+        </div>
+
+        <div id="cv-dashboard" class="cv-dashboard" hidden>
+          <div class="admin-toolbar cv-toolbar">
+            <div>
+              <p class="eyebrow">V9 Generator</p>
+              <h2>Choose the output you need</h2>
+              <p>CV files are text-focused. The portfolio is landscape 16:9 PowerPoint size and includes 3–4 photos for each selected project.</p>
+            </div>
+            <div class="admin-toolbar-actions">
+              <button id="cv-refresh-data" class="btn btn-quiet" type="button">Refresh data</button>
+              <a class="btn btn-quiet" href="admin.html">Back to Admin</a>
+            </div>
+          </div>
+
+          <div class="cv-grid-layout">
+            <section class="content-form cv-builder-card">
+              <h3>Personal information</h3>
+              <div class="form-grid">
+                <label>Full name<input id="cv-name" type="text" value="Arash Pashazadeh"></label>
+                <label>Professional title<input id="cv-title" type="text" value="Civil Engineer · Ph.D. Researcher in Systems Engineering"></label>
+              </div>
+              <div class="form-grid">
+                <label>Email<input id="cv-email" type="email" placeholder="your university email"></label>
+                <label>Location<input id="cv-location" type="text" value="Mobile, Alabama, USA"></label>
+              </div>
+              <div class="form-grid">
+                <label>Google Scholar<input id="cv-scholar" type="url" value="https://scholar.google.com/citations?user=2cJQkEkAAAAJ&hl=en"></label>
+                <label>LinkedIn<input id="cv-linkedin" type="url" value="https://www.linkedin.com/in/arash-pashazadeh-b34b1a111"></label>
+              </div>
+              <label>Professional summary<textarea id="cv-summary" rows="5">Civil Engineer and Ph.D. Researcher focused on coastal and hydraulic infrastructure, floating systems, experimental hydrodynamics, CFD modeling, IMU-based motion reconstruction, and resilient engineering systems.</textarea></label>
+              <label>Education<textarea id="cv-education" rows="5">Ph.D. in Systems Engineering, University of South Alabama, USA\nM.Sc. in Civil Engineering – Hydraulic Structures, Razi University\nB.Sc. in Civil Engineering</textarea></label>
+              <label>Experience / roles<textarea id="cv-experience" rows="5">Graduate Research Assistant, University of South Alabama\nCivil/Hydraulic Engineering professional experience in consulting and hydropower-related projects</textarea></label>
+              <label>Skills<textarea id="cv-skills" rows="4">OpenFOAM, MATLAB, IMU data processing, CFD modeling, wave flume testing, hydraulic structures, coastal infrastructure, technical writing, experimental design</textarea></label>
+              <label>Languages<textarea id="cv-languages" rows="2">English, Persian</textarea></label>
+            </section>
+
+            <section class="content-form cv-builder-card">
+              <h3>Document options</h3>
+              <div class="form-grid">
+                <label>Portfolio images per project<select id="portfolio-image-count"><option value="3">3 images</option><option value="4" selected>4 images</option></select></label>
+                <label>Portfolio text size<select id="portfolio-font-size"><option value="11">11 pt</option><option value="12" selected>12 pt</option><option value="13">13 pt</option></select></label>
+              </div>
+              <div class="form-grid">
+                <label>Include project types<select id="portfolio-kind-filter"><option value="all" selected>All projects</option><option value="research">Research only</option><option value="engineering">Engineering only</option><option value="study">Studies only</option></select></label>
+                <label>Portfolio format<select id="portfolio-format"><option value="both" selected>PPTX + PDF</option><option value="pptx">PPTX only</option><option value="pdf">PDF only</option></select></label>
+              </div>
+              <label class="checkbox-label"><input id="include-conferences" type="checkbox" checked> Include conferences in CV outputs</label>
+              <label class="checkbox-label"><input id="include-publications" type="checkbox" checked> Include publications in CV outputs</label>
+              <label class="checkbox-label"><input id="portfolio-include-conferences" type="checkbox"> Add conference slides to portfolio</label>
+              <div class="cv-actions-stack">
+                <button id="generate-academic-cv" class="btn btn-primary" type="button">Generate Academic CV — Word + PDF</button>
+                <button id="generate-engineering-cv" class="btn btn-primary" type="button">Generate Engineering CV — Word + PDF</button>
+                <button id="generate-europass-cv" class="btn btn-primary" type="button">Generate Europass-style CV — Word + PDF</button>
+                <button id="generate-portfolio" class="btn btn-primary" type="button">Generate Long Portfolio — PowerPoint size</button>
+              </div>
+              <p id="cv-status" class="form-message"></p>
+              <div class="cv-data-summary" id="cv-data-summary">Loading data...</div>
+            </section>
+          </div>
+
+          <section class="content-form cv-builder-card cv-selection-card">
+            <div class="form-title">
+              <h3>Select items for portfolio</h3>
+              <button id="select-featured-projects" class="text-button" type="button">Featured only</button>
+              <button id="select-all-projects" class="text-button" type="button">Select all</button>
+            </div>
+            <p>Checked projects will be used in the long portfolio. Each slide uses a PowerPoint 16:9 layout. The project title and description appear above the images in 12 pt text by default.</p>
+            <div id="cv-project-selector" class="cv-selector-grid"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-inner"><p>© <span id="year"></span> Arash Pashazadeh</p><p>Private CV and portfolio generator</p></div></footer>
+
+  <script src="script.js"></script>
+  <script src="cv-builder.js"></script>
+</body>
+</html>

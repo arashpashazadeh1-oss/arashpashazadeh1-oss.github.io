@@ -310,3 +310,40 @@ async function loadTelegramPosts({silent=false}={}){if(!telegramContainer)return
 if(telegramRefreshButton)telegramRefreshButton.addEventListener("click",()=>loadTelegramPosts());
 if(telegramFilterButton)telegramFilterButton.addEventListener("click",()=>{showAllTelegramPosts=!showAllTelegramPosts;telegramFilterButton.setAttribute("aria-pressed",String(showAllTelegramPosts));telegramFilterButton.textContent=showAllTelegramPosts?"Hide test posts":"Show all posts";renderTelegramPosts();});
 loadTelegramPosts();setInterval(()=>{if(document.visibilityState==="visible")loadTelegramPosts({silent:true});},60000);
+
+
+// =====================================================
+// PRIVACY-AWARE SITE ANALYTICS
+// =====================================================
+// Public pages send a lightweight page-view event to the existing Cloudflare Worker.
+// The Worker derives location from Cloudflare and masks the visitor IP by default.
+// Raw IP storage is only enabled when ANALYTICS_STORE_RAW_IP=true is configured in Worker settings.
+function trackSiteVisit(){
+  try{
+    const path=`${location.pathname}${location.search}`;
+    if(
+      location.protocol==="file:" ||
+      /(?:^|\/)(admin|cv-builder)\.html$/i.test(location.pathname) ||
+      navigator.doNotTrack==="1"
+    ) return;
+
+    const key=`arash_visit_${path}`;
+    const now=Date.now();
+    const previous=Number(sessionStorage.getItem(key)||0);
+    if(previous && now-previous<30000) return;
+    sessionStorage.setItem(key,String(now));
+
+    fetch(`${API_BASE}/track`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      keepalive:true,
+      body:JSON.stringify({
+        path,
+        title:document.title,
+        referrer:document.referrer||"",
+        language:navigator.language||""
+      })
+    }).catch(()=>{});
+  }catch{}
+}
+trackSiteVisit();

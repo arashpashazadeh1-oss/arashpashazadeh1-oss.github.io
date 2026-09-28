@@ -15,7 +15,7 @@
   <meta name="twitter:card" content="summary" />
   <link rel="canonical" href="https://arashpashazadeh1-oss.github.io/admin.html" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=11.9" />
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -59,7 +59,7 @@
   <div id="admin-login" class="admin-login-card"><div><h2>Unlock content manager</h2><p>Use the same ADMIN_SECRET value configured in Cloudflare Worker settings.</p></div><form id="admin-login-form" class="admin-login-form"><input id="admin-secret" type="password" autocomplete="current-password" placeholder="ADMIN_SECRET" required><button class="btn btn-primary" type="submit">Unlock</button></form><p id="admin-login-message" class="form-message"></p></div>
   <div id="admin-dashboard" class="admin-dashboard" hidden>
     <div class="admin-toolbar"><div><p class="eyebrow">Content Manager</p><h2>Projects, publications, conferences, CV & portfolio</h2></div><div class="admin-toolbar-actions"><a class="btn btn-quiet" href="index.html" target="_blank">Open website ↗</a><button id="admin-logout" class="btn btn-quiet" type="button">Lock</button></div></div>
-    <div class="admin-tabs" role="tablist"><button class="admin-tab active" data-tab="publication" type="button">Publications</button><button class="admin-tab" data-tab="project" type="button">Projects</button><button class="admin-tab" data-tab="conference" type="button">Conferences</button><button class="admin-tab" data-tab="cv" type="button">CV & Portfolio</button></div>
+    <div class="admin-tabs" role="tablist"><button class="admin-tab active" data-tab="publication" type="button">Publications</button><button class="admin-tab" data-tab="project" type="button">Projects</button><button class="admin-tab" data-tab="conference" type="button">Conferences</button><button class="admin-tab" data-tab="cv" type="button">CV & Portfolio</button><button class="admin-tab" data-tab="analytics" type="button">Analytics</button></div>
 
     <section class="admin-panel active" data-panel="publication"><div class="admin-two-col"><form id="publication-form" class="content-form"><div class="form-title"><h3 id="publication-form-title">Add publication</h3><button id="publication-reset" class="text-button" type="button">Clear</button></div><input id="publication-id" type="hidden"><div class="doi-row"><label>DOI<input id="pub-doi" type="text" placeholder="10.xxxx/xxxxx"></label><button id="doi-lookup" class="btn btn-quiet" type="button">Auto-fill DOI</button></div><label>Title<input id="pub-title" type="text" required></label><label>Authors<textarea id="pub-authors" rows="2"></textarea></label><div class="form-grid"><label>Journal / Venue<input id="pub-journal" type="text"></label><label>Year<input id="pub-year" type="number" min="1900" max="2100"></label></div><div class="form-grid"><label>Status<select id="pub-status"><option>Published</option><option>Accepted</option><option>In Press</option><option>Under Review</option><option>In Preparation</option></select></label><label class="checkbox-label"><input id="pub-featured" type="checkbox"> Feature on homepage</label></div><label>Publication URL<input id="pub-url" type="url" placeholder="https://..."></label><label>PDF URL<input id="pub-pdf" type="url" placeholder="https://..."></label><label>Abstract / Note<textarea id="pub-abstract" rows="4"></textarea></label><button class="btn btn-primary" type="submit">Save publication</button><p id="publication-message" class="form-message"></p></form><div><div class="admin-list-head"><h3>Existing publications</h3><button class="text-button" data-refresh="publications" type="button">Refresh</button></div><div id="admin-publications" class="admin-list"></div></div></div></section>
 
@@ -239,6 +239,57 @@ Iran Value Engineering Association</textarea></label>
     </section>
 
   </div>
+
+    <section class="admin-panel" data-panel="analytics" id="admin-analytics-panel">
+      <div class="admin-toolbar cv-toolbar">
+        <div>
+          <p class="eyebrow">Private Site Analytics</p>
+          <h2>Visitors & Traffic</h2>
+          <p>Page views, approximate visitor location, referrers, devices, and masked IPs. Raw IP storage is off by default.</p>
+        </div>
+        <div class="admin-toolbar-actions">
+          <label class="analytics-range-label">Range
+            <select id="analytics-days">
+              <option value="7">7 days</option>
+              <option value="30" selected>30 days</option>
+              <option value="90">90 days</option>
+              <option value="365">1 year</option>
+            </select>
+          </label>
+          <button id="analytics-refresh" class="btn btn-quiet" type="button">Refresh</button>
+        </div>
+      </div>
+
+      <div class="analytics-summary-grid">
+        <div class="analytics-stat"><span>Page views</span><strong id="analytics-pageviews">—</strong></div>
+        <div class="analytics-stat"><span>Unique visitors</span><strong id="analytics-visitors">—</strong></div>
+        <div class="analytics-stat"><span>Countries</span><strong id="analytics-countries-count">—</strong></div>
+        <div class="analytics-stat"><span>IP mode</span><strong id="analytics-ip-mode">Masked</strong></div>
+      </div>
+
+      <div class="analytics-two-col">
+        <section class="content-form">
+          <div class="admin-list-head"><h3>Top countries</h3></div>
+          <div id="analytics-countries" class="analytics-ranked-list"><div class="data-loading">Loading…</div></div>
+        </section>
+        <section class="content-form">
+          <div class="admin-list-head"><h3>Top pages</h3></div>
+          <div id="analytics-pages" class="analytics-ranked-list"><div class="data-loading">Loading…</div></div>
+        </section>
+      </div>
+
+      <section class="content-form analytics-recent-card">
+        <div class="admin-list-head"><h3>Recent visits</h3></div>
+        <div class="analytics-table-wrap">
+          <table class="analytics-table">
+            <thead><tr><th>Time</th><th>Page</th><th>Location</th><th>IP</th><th>Referrer</th><th>Device / Browser</th></tr></thead>
+            <tbody id="analytics-visits"><tr><td colspan="6">Loading…</td></tr></tbody>
+          </table>
+        </div>
+        <p id="analytics-message" class="form-message"></p>
+      </section>
+    </section>
+
 </div></section></main>
   <footer class="site-footer">
     <div class="container footer-stack">
@@ -256,8 +307,8 @@ Iran Value Engineering Association</textarea></label>
       <div class="footer-inner"><p>© <span id="year"></span> Arash Pashazadeh</p><p><a href="admin.html" class="admin-link">Manage content</a></p></div>
     </div>
   </footer>
-  <script src="script.js"></script>
-  <script src="admin.js"></script>
+  <script src="script.js?v=11.9"></script>
+  <script src="admin.js?v=11.9"></script>
   <script src="admin-cv-v95.js?v=11.0"></script>
 </body>
 </html>

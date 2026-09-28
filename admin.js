@@ -810,3 +810,107 @@ window.addEventListener("load", () => {
     if (cvTab) setTimeout(() => cvTab.click(), 120);
   }
 });
+
+
+// =====================================================
+// PRIVATE ANALYTICS DASHBOARD
+// =====================================================
+let analyticsLoaded = false;
+
+function analyticsText(value){
+  return String(value ?? "");
+}
+
+function renderAnalyticsRanked(id, rows, labelKey, valueKey="count"){
+  const container = $(id);
+  if(!container) return;
+  container.innerHTML = "";
+  if(!rows?.length){
+    container.innerHTML = '<div class="data-loading">No data yet.</div>';
+    return;
+  }
+  rows.forEach((row, index)=>{
+    const item=document.createElement("div");
+    item.className="analytics-ranked-item";
+    const label=document.createElement("span");
+    label.textContent=`${index+1}. ${analyticsText(row[labelKey] || "Unknown")}`;
+    const value=document.createElement("strong");
+    value.textContent=analyticsText(row[valueKey] || 0);
+    item.append(label,value);
+    container.appendChild(item);
+  });
+}
+
+function shortReferrer(value){
+  if(!value) return "Direct";
+  try{
+    const u=new URL(value);
+    return u.hostname.replace(/^www\./,"") || value;
+  }catch{
+    return value;
+  }
+}
+
+async function loadAnalytics(){
+  const tbody=$("analytics-visits");
+  if(!tbody) return;
+  setMessage("analytics-message","Loading analytics…");
+
+  try{
+    const days=Number($("analytics-days")?.value || 30);
+    const data=await adminFetch(`/admin/analytics?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});
+
+    $("analytics-pageviews").textContent=data.summary?.pageviews ?? 0;
+    $("analytics-visitors").textContent=data.summary?.unique_visitors ?? 0;
+    $("analytics-countries-count").textContent=data.summary?.country_count ?? 0;
+    $("analytics-ip-mode").textContent=data.raw_ip_storage ? "Raw IP" : "Masked";
+
+    renderAnalyticsRanked("analytics-countries",data.countries || [],"country");
+    renderAnalyticsRanked("analytics-pages",data.pages || [],"path");
+
+    tbody.innerHTML="";
+    const visits=data.visits || [];
+    if(!visits.length){
+      tbody.innerHTML='<tr><td colspan="6">No visits recorded in this period yet.</td></tr>';
+    }else{
+      visits.forEach((visit)=>{
+        const tr=document.createElement("tr");
+        const when=document.createElement("td");
+        const dt=new Date(visit.visited_at);
+        when.textContent=Number.isNaN(dt.getTime()) ? analyticsText(visit.visited_at) : dt.toLocaleString();
+
+        const page=document.createElement("td");
+        page.textContent=visit.path || "/";
+
+        const location=document.createElement("td");
+        location.textContent=[visit.city,visit.region,visit.country].filter(Boolean).join(", ") || "Unknown";
+
+        const ip=document.createElement("td");
+        ip.textContent=visit.ip_address || "—";
+
+        const ref=document.createElement("td");
+        ref.textContent=shortReferrer(visit.referrer);
+
+        const ua=document.createElement("td");
+        ua.textContent=visit.user_agent || "—";
+
+        tr.append(when,page,location,ip,ref,ua);
+        tbody.appendChild(tr);
+      });
+    }
+
+    analyticsLoaded=true;
+    setMessage("analytics-message",`Showing the last ${days} days.`,"success");
+  }catch(error){
+    console.error("ANALYTICS LOAD ERROR",error);
+    tbody.innerHTML='<tr><td colspan="6">Analytics backend is not ready yet.</td></tr>';
+    setMessage("analytics-message",error.message || "Analytics could not be loaded.","error");
+  }
+}
+
+$("analytics-refresh")?.addEventListener("click",loadAnalytics);
+$("analytics-days")?.addEventListener("change",loadAnalytics);
+
+document.querySelector('.admin-tab[data-tab="analytics"]')?.addEventListener("click",()=>{
+  if(!analyticsLoaded) loadAnalytics();
+});

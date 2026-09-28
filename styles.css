@@ -1300,3 +1300,56 @@ body[data-page="about"]{
     padding:58px 0 42px;
   }
 }
+
+
+/* V12.8 — Home intro polish */
+.home-site-note{
+  position:relative;
+  margin-top:26px;
+  padding-left:24px;
+  max-width:940px;
+}
+.home-site-note::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:3px;
+  bottom:3px;
+  width:3px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#2fc1cf,#86dbe3);
+}
+.home-site-note p{
+  margin:0;
+}
+.home-keywords{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:26px;
+  max-width:980px;
+}
+.home-keywords span{
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:7px 12px;
+  border:1px solid rgba(105,212,223,.34);
+  border-radius:999px;
+  background:rgba(105,212,223,.08);
+  color:#d8f3f5;
+  font-size:.8rem;
+  font-weight:800;
+  letter-spacing:.015em;
+}
+@media(max-width:620px){
+  .home-site-note{
+    padding-left:18px;
+  }
+  .home-keywords{
+    gap:8px;
+  }
+  .home-keywords span{
+    font-size:.76rem;
+  }
+}

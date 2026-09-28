@@ -1224,3 +1224,17 @@ body[data-page="about"]{
   .analytics-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .analytics-two-col{grid-template-columns:1fr}
 }
+
+
+/* V12.2 — longer Conferences nav label */
+.site-nav a{
+  white-space:nowrap;
+}
+@media (min-width:1100px) and (max-width:1500px){
+  .site-nav{
+    gap:18px;
+  }
+  .site-nav a{
+    font-size:.91rem;
+  }
+}

@@ -3,8 +3,8 @@ const SECRET_KEY = "arash_admin_session_secret";
 
 let adminSecret = sessionStorage.getItem(SECRET_KEY) || "";
 let mediaStorageReady = false;
-let caches = { publications: [], projects: [], conferences: [] };
-let galleryCaches = { project: [], conference: [] };
+let caches = { publications: [], projects: [], conferences: [], library: [] };
+let galleryCaches = { project: [], conference: [], library: [] };
 
 const $ = (id) => document.getElementById(id);
 
@@ -65,7 +65,7 @@ async function publicFetch(path) {
 }
 
 function updateMediaStorageBadges() {
-  ["project", "conference"].forEach((type) => {
+  ["project", "conference", "library"].forEach((type) => {
     const badge = $(`${type}-gallery-status`);
     if (!badge) return;
     badge.textContent = mediaStorageReady ? "Telegram media connected" : "Telegram media not connected";
@@ -171,15 +171,19 @@ async function refreshResource(resource) {
   const map = {
     publications: ["/publications", "admin-publications"],
     projects: ["/projects", "admin-projects"],
-    conferences: ["/conferences", "admin-conferences"]
+    conferences: ["/conferences", "admin-conferences"],
+    library: ["/admin/library", "admin-library"]
   };
 
   const [path, id] = map[resource];
   const el = $(id);
+  if (!el) return;
   el.innerHTML = '<div class="data-loading">Loading…</div>';
 
   try {
-    const rows = await publicFetch(path);
+    const rows = resource === "library"
+      ? await adminFetch(path, { method: "GET" })
+      : await publicFetch(path);
     caches[resource] = rows;
     el.innerHTML = "";
 
@@ -194,10 +198,15 @@ async function refreshResource(resource) {
       if (resource === "conferences") {
         subtitle = [item.year, item.event, item.type, item.featured ? "Featured" : ""].filter(Boolean).join(" · ");
       }
+      if (resource === "library") {
+        const price = `${(Number(item.price_cents || 0) / 100).toFixed(2)} ${item.currency || "USD"}`;
+        subtitle = [item.item_type === "design_notebook" ? "Design notebook" : "Book", item.year, price, item.published ? "Published" : "Draft", item.featured ? "Featured" : ""].filter(Boolean).join(" · ");
+      }
       el.appendChild(adminItem(item, resource, subtitle));
     });
 
     if (!rows.length) el.innerHTML = '<div class="data-loading">No entries yet.</div>';
+    refreshTranslationItemOptions();
   } catch (error) {
     el.innerHTML = `<div class="posts-error">${error.message}</div>`;
   }
@@ -207,12 +216,13 @@ async function refreshAll() {
   await Promise.all([
     refreshResource("publications"),
     refreshResource("projects"),
-    refreshResource("conferences")
+    refreshResource("conferences"),
+    refreshResource("library")
   ]);
 }
 
 async function deleteItem(resource, item) {
-  const hasGallery = resource === "projects" || resource === "conferences";
+  const hasGallery = resource === "projects" || resource === "conferences" || resource === "library";
   const extra = hasGallery ? " All gallery images for this item will also be deleted." : "";
   if (!confirm(`Delete “${item.title}”?${extra}`)) return;
 
@@ -225,10 +235,11 @@ async function deleteItem(resource, item) {
 }
 
 function editItem(resource, item) {
-  document.querySelector(`.admin-tab[data-tab="${resource.slice(0, -1)}"]`)?.click();
+  document.querySelector(`.admin-tab[data-tab="${resource === "library" ? "library" : resource.slice(0, -1)}"]`)?.click();
   if (resource === "publications") fillPublication(item);
   if (resource === "projects") fillProject(item);
   if (resource === "conferences") fillConference(item);
+  if (resource === "library") fillLibrary(item);
 
   window.scrollTo({
     top: document.querySelector(".admin-panel.active").offsetTop - 90,
@@ -322,7 +333,8 @@ $("publication-form")?.addEventListener("submit", async (event) => {
 // Shared gallery manager
 // -----------------------------------------------------
 function galleryEntityId(entityType) {
-  return Number($(entityType === "project" ? "project-id" : "conference-id")?.value || 0);
+  const idMap = { project: "project-id", conference: "conference-id", library: "library-id" };
+  return Number($(idMap[entityType])?.value || 0);
 }
 
 function setGalleryEnabled(entityType, enabled) {
@@ -449,7 +461,7 @@ function renderAdminGallery(entityType, entityId, rows) {
         });
         setMessage(`${entityType}-gallery-message`, "Cover image updated.", "success");
         await loadAdminGallery(entityType, entityId);
-        await refreshResource(entityType === "project" ? "projects" : "conferences");
+        await refreshResource(entityType === "project" ? "projects" : entityType === "conference" ? "conferences" : "library");
       } catch (error) {
         setMessage(`${entityType}-gallery-message`, error.message, "error");
       }
@@ -479,7 +491,7 @@ function renderAdminGallery(entityType, entityId, rows) {
         await adminFetch(`/admin/media/${item.id}`, { method: "DELETE" });
         setMessage(`${entityType}-gallery-message`, "Image deleted.", "success");
         await loadAdminGallery(entityType, entityId);
-        await refreshResource(entityType === "project" ? "projects" : "conferences");
+        await refreshResource(entityType === "project" ? "projects" : entityType === "conference" ? "conferences" : "library");
       } catch (error) {
         setMessage(`${entityType}-gallery-message`, error.message, "error");
       }
@@ -605,7 +617,7 @@ async function uploadSelectedImages(entityType) {
     input.value = "";
     setMessage(`${entityType}-gallery-message`, `${uploaded} image${uploaded === 1 ? "" : "s"} uploaded.`, "success");
     await loadAdminGallery(entityType, entityId);
-    await refreshResource(entityType === "project" ? "projects" : "conferences");
+    await refreshResource(entityType === "project" ? "projects" : entityType === "conference" ? "conferences" : "library");
   } catch (error) {
     setMessage(`${entityType}-gallery-message`, error.message, "error");
   } finally {
@@ -650,8 +662,10 @@ function setupDropzone(entityType) {
 
 setupDropzone("project");
 setupDropzone("conference");
+setupDropzone("library");
 $("project-upload-images")?.addEventListener("click", () => uploadSelectedImages("project"));
 $("conference-upload-images")?.addEventListener("click", () => uploadSelectedImages("conference"));
+$("library-upload-images")?.addEventListener("click", () => uploadSelectedImages("library"));
 
 // -----------------------------------------------------
 // Projects
@@ -801,6 +815,7 @@ $("conference-form")?.addEventListener("submit", async (event) => {
 // Initial gallery state.
 setGalleryEnabled("project", false);
 setGalleryEnabled("conference", false);
+setGalleryEnabled("library", false);
 
 
 // V11: allow old cv-builder.html bookmarks to open the integrated CV tab.
@@ -811,6 +826,183 @@ window.addEventListener("load", () => {
   }
 });
 
+
+
+
+// -----------------------------------------------------
+// Library
+// -----------------------------------------------------
+function resetLibrary() {
+  $("library-form")?.reset();
+  if ($("library-id")) $("library-id").value = "";
+  if ($("lib-currency")) $("lib-currency").value = "USD";
+  if ($("lib-published")) $("lib-published").checked = true;
+  if ($("library-form-title")) $("library-form-title").textContent = "Add library item";
+  setMessage("library-message", "");
+  setMessage("library-gallery-message", "");
+  setGalleryEnabled("library", false);
+  if ($("library-admin-gallery")) $("library-admin-gallery").innerHTML = '<div class="gallery-empty">Save this item first to enable photo uploads.</div>';
+}
+
+function fillLibrary(item) {
+  $("library-id").value = item.id;
+  $("lib-title").value = item.title || "";
+  $("lib-author").value = item.author || "";
+  $("lib-type").value = item.item_type || "book";
+  $("lib-year").value = item.year || "";
+  $("lib-currency").value = item.currency || "USD";
+  $("lib-price").value = (Number(item.price_cents || 0) / 100).toFixed(2);
+  $("lib-featured").checked = Boolean(item.featured);
+  $("lib-published").checked = Boolean(item.published);
+  $("lib-summary").value = item.summary || "";
+  $("lib-description").value = item.description || "";
+  $("lib-cover").value = item.cover_url || "";
+  $("lib-preview").value = item.preview_url || "";
+  $("lib-purchase").value = item.purchase_url || "";
+  $("library-form-title").textContent = "Edit library item";
+  loadAdminGallery("library", item.id);
+}
+
+$("library-reset")?.addEventListener("click", resetLibrary);
+$("library-form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const id = $("library-id").value;
+  const price = Math.max(0, Number($("lib-price").value) || 0);
+  const body = {
+    title: $("lib-title").value.trim(),
+    author: $("lib-author").value.trim(),
+    item_type: $("lib-type").value,
+    year: Number($("lib-year").value) || null,
+    currency: ($("lib-currency").value.trim() || "USD").toUpperCase(),
+    price_cents: Math.round(price * 100),
+    featured: $("lib-featured").checked,
+    published: $("lib-published").checked,
+    summary: $("lib-summary").value.trim(),
+    description: $("lib-description").value.trim(),
+    cover_url: $("lib-cover").value.trim(),
+    preview_url: $("lib-preview").value.trim(),
+    purchase_url: $("lib-purchase").value.trim()
+  };
+  setMessage("library-message", "Saving…");
+  try {
+    const result = await adminFetch(id ? `/admin/library/${id}` : "/admin/library", {
+      method: id ? "PUT" : "POST",
+      body: JSON.stringify(body)
+    });
+    const savedId = Number(id || result.id);
+    $("library-id").value = savedId;
+    $("library-form-title").textContent = "Edit library item";
+    setMessage("library-message", "Saved. Add translations or cover images if needed.", "success");
+    await refreshResource("library");
+    await loadAdminGallery("library", savedId);
+  } catch (error) {
+    setMessage("library-message", error.message, "error");
+  }
+});
+
+// -----------------------------------------------------
+// Multilingual database translations
+// -----------------------------------------------------
+const translationFieldMap = {
+  project: { secondary:["category","Category"], summary:["summary","Short summary"], description:["description","Full description"], extra:["methods","Methods / keywords"], status:["status","Status"] },
+  conference: { secondary:["event","Event / Organization"], summary:null, description:["description","Description"], extra:["location","Location"], status:["type","Type"] },
+  publication: { secondary:["journal","Journal / Venue"], summary:["abstract","Abstract / Note"], description:null, extra:null, status:["status","Status"] },
+  library: { secondary:["author","Author / Creator"], summary:["summary","Short summary"], description:["description","Full description"], extra:null, status:null }
+};
+
+function translationCacheFor(type) {
+  return type === "project" ? caches.projects : type === "conference" ? caches.conferences : type === "publication" ? caches.publications : caches.library;
+}
+function refreshTranslationItemOptions() {
+  const type = $("tr-entity-type")?.value || "project";
+  const select = $("tr-entity-id");
+  if (!select) return;
+  const previous = select.value;
+  select.innerHTML = '<option value="">Choose an item</option>';
+  translationCacheFor(type).forEach((item) => {
+    const option = document.createElement("option");
+    option.value = item.id;
+    option.textContent = item.title || `#${item.id}`;
+    select.appendChild(option);
+  });
+  if ([...select.options].some((o) => o.value === previous)) select.value = previous;
+  updateTranslationFieldLabels();
+}
+function toggleTranslationField(name, config) {
+  const wrap = $(`tr-${name}-wrap`);
+  if (!wrap) return;
+  wrap.hidden = !config;
+  if (config) {
+    const label = $(`tr-${name}-label`);
+    if (label) label.textContent = config[1];
+  }
+}
+function updateTranslationFieldLabels() {
+  const type = $("tr-entity-type")?.value || "project";
+  const map = translationFieldMap[type];
+  toggleTranslationField("secondary", map.secondary);
+  toggleTranslationField("summary", map.summary);
+  toggleTranslationField("description", map.description);
+  toggleTranslationField("extra", map.extra);
+  toggleTranslationField("status", map.status);
+}
+function clearTranslationInputs() {
+  ["tr-title","tr-secondary","tr-summary","tr-description","tr-extra","tr-status"].forEach((id) => { if ($(id)) $(id).value = ""; });
+  setMessage("translation-message", "");
+}
+async function loadTranslation() {
+  clearTranslationInputs();
+  updateTranslationFieldLabels();
+  const type = $("tr-entity-type")?.value;
+  const entityId = Number($("tr-entity-id")?.value || 0);
+  const lang = $("tr-lang")?.value || "fa";
+  if (!entityId) return;
+  setMessage("translation-message", "Loading translation…");
+  try {
+    const result = await adminFetch(`/admin/translations?entity_type=${encodeURIComponent(type)}&entity_id=${entityId}&lang=${encodeURIComponent(lang)}`, { method:"GET" });
+    const data = result.data || {};
+    const map = translationFieldMap[type];
+    $("tr-title").value = data.title || "";
+    if (map.secondary) $("tr-secondary").value = data[map.secondary[0]] || "";
+    if (map.summary) $("tr-summary").value = data[map.summary[0]] || "";
+    if (map.description) $("tr-description").value = data[map.description[0]] || "";
+    if (map.extra) $("tr-extra").value = data[map.extra[0]] || "";
+    if (map.status) $("tr-status").value = data[map.status[0]] || "";
+    setMessage("translation-message", result.updated_at ? `Loaded. Last update: ${result.updated_at}` : "No translation saved yet.");
+  } catch (error) {
+    setMessage("translation-message", error.message, "error");
+  }
+}
+$("tr-entity-type")?.addEventListener("change", () => { refreshTranslationItemOptions(); clearTranslationInputs(); });
+$("tr-entity-id")?.addEventListener("change", loadTranslation);
+document.querySelectorAll("[data-tr-lang]").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-tr-lang]").forEach((b) => b.classList.toggle("active", b === button));
+    $("tr-lang").value = button.dataset.trLang;
+    loadTranslation();
+  });
+});
+$("translation-form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const type = $("tr-entity-type").value;
+  const entityId = Number($("tr-entity-id").value || 0);
+  const lang = $("tr-lang").value;
+  if (!entityId) { setMessage("translation-message", "Choose an item first.", "error"); return; }
+  const map = translationFieldMap[type];
+  const data = { title: $("tr-title").value.trim() };
+  if (map.secondary) data[map.secondary[0]] = $("tr-secondary").value.trim();
+  if (map.summary) data[map.summary[0]] = $("tr-summary").value.trim();
+  if (map.description) data[map.description[0]] = $("tr-description").value.trim();
+  if (map.extra) data[map.extra[0]] = $("tr-extra").value.trim();
+  if (map.status) data[map.status[0]] = $("tr-status").value.trim();
+  setMessage("translation-message", "Saving…");
+  try {
+    await adminFetch("/admin/translations", { method:"PUT", body:JSON.stringify({ entity_type:type, entity_id:entityId, lang, data }) });
+    setMessage("translation-message", "Translation saved. The localized public page updates automatically.", "success");
+  } catch (error) {
+    setMessage("translation-message", error.message, "error");
+  }
+});
 
 // =====================================================
 // PRIVATE ANALYTICS DASHBOARD

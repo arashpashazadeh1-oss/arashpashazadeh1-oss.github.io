@@ -1,16 +1,14 @@
 (() => {
   "use strict";
 
-  function renderThree(container, items, builder, emptyMessage) {
+  function renderThree(container, items, builder, emptyKey) {
     if (!container) return;
     clear(container);
-
     const rows = items.slice(0, 3);
     if (!rows.length) {
-      showError(container, emptyMessage);
+      showError(container, t(emptyKey));
       return;
     }
-
     rows.forEach((item) => container.appendChild(builder(item)));
     observeReveals(container);
   }
@@ -30,50 +28,21 @@
 
       const projects = (Array.isArray(projectRows) ? projectRows : [])
         .filter((item) => String(item.kind || "").toLowerCase() !== "research");
-
       const research = (Array.isArray(projectRows) ? projectRows : [])
         .filter((item) => String(item.kind || "").toLowerCase() === "research");
-
       const conferences = Array.isArray(conferenceRows) ? conferenceRows : [];
       const publications = Array.isArray(publicationRows) ? publicationRows : [];
 
-      // EXACT same structure as projects.html
-      renderThree(
-        projectsEl,
-        projects,
-        createProjectCard,
-        "No projects are currently available."
-      );
-
-      // EXACT same structure as conferences.html
-      renderThree(
-        conferencesEl,
-        conferences,
-        createConferenceCompactRow,
-        "No conference entries are currently available."
-      );
-
-      // EXACT same structure as research.html
-      renderThree(
-        researchEl,
-        research,
-        createProjectRow,
-        "No research entries are currently available."
-      );
-
-      // EXACT same structure as publications.html
-      renderThree(
-        publicationsEl,
-        publications,
-        createPublicationCard,
-        "No publications are currently available."
-      );
+      renderThree(projectsEl, projects, createProjectCard, "noProjects");
+      renderThree(conferencesEl, conferences, createConferenceCompactRow, "noConferences");
+      renderThree(researchEl, research, createProjectRow, "noResearch");
+      renderThree(publicationsEl, publications, createPublicationCard, "noPublications");
     } catch (error) {
       console.error("HOME EXACT COMPONENT LOAD ERROR", error);
-      if (projectsEl) showError(projectsEl, "Projects are temporarily unavailable.");
-      if (conferencesEl) showError(conferencesEl, "Conferences are temporarily unavailable.");
-      if (researchEl) showError(researchEl, "Research is temporarily unavailable.");
-      if (publicationsEl) showError(publicationsEl, "Publications are temporarily unavailable.");
+      if (projectsEl) showError(projectsEl, t("contentUnavailable"));
+      if (conferencesEl) showError(conferencesEl, t("contentUnavailable"));
+      if (researchEl) showError(researchEl, t("contentUnavailable"));
+      if (publicationsEl) showError(publicationsEl, t("contentUnavailable"));
     }
   }
 

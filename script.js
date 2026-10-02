@@ -2,6 +2,33 @@ const API_BASE = "https://arash-api.arash-pashazadeh1.workers.dev";
 const TELEGRAM_API_URL = `${API_BASE}/posts`;
 const TELEGRAM_MEDIA_URL = `${API_BASE}/media`;
 
+const SITE_LANG = (["en","fa","es","de"].includes(document.documentElement.lang) ? document.documentElement.lang : "en");
+const SITE_LOCALE = {en:"en-US",fa:"fa-IR",es:"es-ES",de:"de-DE"}[SITE_LANG] || "en-US";
+const UI_TEXT = {
+  en:{
+    contentUnavailable:"Content is temporarily unavailable.",present:"Present",project:"Project",research:"Research",engineering:"Engineering",study:"Study",viewProject:"View project →",academicEvent:"Academic Event",viewDetails:"View details →",eventMaterial:"Event / material ↗",loading:"Loading",noPhoto:"No photo",event:"Event",year:"Year",location:"Location",type:"Type",status:"Status",category:"Category",period:"Period",externalProject:"External project link ↗",projectGallery:"Project Gallery",conferenceGallery:"Conference Gallery",photoGallery:"Photo Gallery",conference:"Conference",missingProjectId:"Project ID is missing.",projectNotFound:"Project not found.",missingConferenceId:"Conference ID is missing.",conferenceNotFound:"Conference entry not found.",noResearch:"No matching research projects.",noProjects:"No matching projects.",noPublications:"No matching publications.",noConferences:"No matching conference entries.",cite:"Cite",copied:"Copied",copyFailed:"Copy failed",civilInsights:"Civil Engineering Insights",openOriginal:"Open original post ↗",mediaUpdate:"Media update published on Telegram.",refreshing:"Refreshing...",refreshFeed:"Refresh feed",showAll:"Show all posts",hideTest:"Hide test posts",noTelegram:"No Telegram posts have been published yet.",noEngineeringPosts:"No engineering posts are available yet.",insightsUnavailable:"Engineering insights are temporarily unavailable.",book:"Book",designNotebook:"Design notebook",libraryItem:"Library item",viewItem:"View details →",preview:"Preview ↗",purchase:"Purchase securely ↗",price:"Price",author:"Author",resourceType:"Resource type",libraryUnavailable:"Library is temporarily unavailable.",noLibrary:"No matching library items.",missingLibraryId:"Library item ID is missing.",libraryNotFound:"Library item not found.",comingSoon:"Checkout coming soon",free:"Free"
+  },
+  fa:{
+    contentUnavailable:"محتوا موقتاً در دسترس نیست.",present:"اکنون",project:"پروژه",research:"پژوهش",engineering:"مهندسی",study:"مطالعه",viewProject:"مشاهده پروژه ←",academicEvent:"رویداد دانشگاهی",viewDetails:"مشاهده جزئیات ←",eventMaterial:"رویداد / محتوا ↗",loading:"در حال بارگذاری",noPhoto:"بدون عکس",event:"رویداد",year:"سال",location:"مکان",type:"نوع",status:"وضعیت",category:"دسته",period:"دوره",externalProject:"لینک خارجی پروژه ↗",projectGallery:"گالری پروژه",conferenceGallery:"گالری کنفرانس",photoGallery:"گالری تصاویر",conference:"کنفرانس",missingProjectId:"شناسه پروژه وجود ندارد.",projectNotFound:"پروژه پیدا نشد.",missingConferenceId:"شناسه رویداد وجود ندارد.",conferenceNotFound:"رویداد پیدا نشد.",noResearch:"پژوهش منطبق پیدا نشد.",noProjects:"پروژه منطبق پیدا نشد.",noPublications:"انتشار منطبق پیدا نشد.",noConferences:"رویداد منطبق پیدا نشد.",cite:"استناد",copied:"کپی شد",copyFailed:"کپی ناموفق بود",civilInsights:"دیدگاه‌های مهندسی عمران",openOriginal:"باز کردن پست اصلی ↗",mediaUpdate:"به‌روزرسانی رسانه‌ای در Telegram منتشر شده است.",refreshing:"در حال به‌روزرسانی...",refreshFeed:"به‌روزرسانی",showAll:"نمایش همه پست‌ها",hideTest:"پنهان کردن پست‌های آزمایشی",noTelegram:"هنوز پستی در Telegram منتشر نشده است.",noEngineeringPosts:"در حال حاضر پست مهندسی در دسترس نیست.",insightsUnavailable:"دیدگاه‌های مهندسی موقتاً در دسترس نیستند.",book:"کتاب",designNotebook:"دفترچه طراحی",libraryItem:"مورد کتابخانه",viewItem:"مشاهده جزئیات ←",preview:"پیش‌نمایش ↗",purchase:"خرید امن ↗",price:"قیمت",author:"نویسنده",resourceType:"نوع منبع",libraryUnavailable:"کتابخانه موقتاً در دسترس نیست.",noLibrary:"مورد منطبق در کتابخانه پیدا نشد.",missingLibraryId:"شناسه مورد کتابخانه وجود ندارد.",libraryNotFound:"مورد کتابخانه پیدا نشد.",comingSoon:"پرداخت به‌زودی فعال می‌شود",free:"رایگان"
+  },
+  es:{
+    contentUnavailable:"El contenido no está disponible temporalmente.",present:"Presente",project:"Proyecto",research:"Investigación",engineering:"Ingeniería",study:"Estudio",viewProject:"Ver proyecto →",academicEvent:"Evento académico",viewDetails:"Ver detalles →",eventMaterial:"Evento / material ↗",loading:"Cargando",noPhoto:"Sin foto",event:"Evento",year:"Año",location:"Ubicación",type:"Tipo",status:"Estado",category:"Categoría",period:"Periodo",externalProject:"Enlace externo del proyecto ↗",projectGallery:"Galería del proyecto",conferenceGallery:"Galería de la conferencia",photoGallery:"Galería de fotos",conference:"Conferencia",missingProjectId:"Falta el ID del proyecto.",projectNotFound:"Proyecto no encontrado.",missingConferenceId:"Falta el ID de la conferencia.",conferenceNotFound:"Conferencia no encontrada.",noResearch:"No hay proyectos de investigación coincidentes.",noProjects:"No hay proyectos coincidentes.",noPublications:"No hay publicaciones coincidentes.",noConferences:"No hay conferencias coincidentes.",cite:"Citar",copied:"Copiado",copyFailed:"Error al copiar",civilInsights:"Perspectivas de Ingeniería Civil",openOriginal:"Abrir publicación original ↗",mediaUpdate:"Actualización multimedia publicada en Telegram.",refreshing:"Actualizando...",refreshFeed:"Actualizar feed",showAll:"Mostrar todas las publicaciones",hideTest:"Ocultar publicaciones de prueba",noTelegram:"Aún no hay publicaciones en Telegram.",noEngineeringPosts:"No hay publicaciones de ingeniería disponibles.",insightsUnavailable:"Las perspectivas de ingeniería no están disponibles temporalmente.",book:"Libro",designNotebook:"Cuaderno de diseño",libraryItem:"Recurso",viewItem:"Ver detalles →",preview:"Vista previa ↗",purchase:"Comprar de forma segura ↗",price:"Precio",author:"Autor",resourceType:"Tipo de recurso",libraryUnavailable:"La biblioteca no está disponible temporalmente.",noLibrary:"No hay recursos coincidentes.",missingLibraryId:"Falta el ID del recurso.",libraryNotFound:"Recurso no encontrado.",comingSoon:"Pago próximamente",free:"Gratis"
+  },
+  de:{
+    contentUnavailable:"Der Inhalt ist vorübergehend nicht verfügbar.",present:"Heute",project:"Projekt",research:"Forschung",engineering:"Ingenieurwesen",study:"Studie",viewProject:"Projekt ansehen →",academicEvent:"Akademische Veranstaltung",viewDetails:"Details ansehen →",eventMaterial:"Veranstaltung / Material ↗",loading:"Wird geladen",noPhoto:"Kein Foto",event:"Veranstaltung",year:"Jahr",location:"Ort",type:"Typ",status:"Status",category:"Kategorie",period:"Zeitraum",externalProject:"Externer Projektlink ↗",projectGallery:"Projektgalerie",conferenceGallery:"Konferenzgalerie",photoGallery:"Fotogalerie",conference:"Konferenz",missingProjectId:"Projekt-ID fehlt.",projectNotFound:"Projekt nicht gefunden.",missingConferenceId:"Konferenz-ID fehlt.",conferenceNotFound:"Konferenzeintrag nicht gefunden.",noResearch:"Keine passenden Forschungsprojekte.",noProjects:"Keine passenden Projekte.",noPublications:"Keine passenden Publikationen.",noConferences:"Keine passenden Konferenzeinträge.",cite:"Zitieren",copied:"Kopiert",copyFailed:"Kopieren fehlgeschlagen",civilInsights:"Einblicke ins Bauingenieurwesen",openOriginal:"Originalbeitrag öffnen ↗",mediaUpdate:"Medienupdate auf Telegram veröffentlicht.",refreshing:"Aktualisieren...",refreshFeed:"Feed aktualisieren",showAll:"Alle Beiträge anzeigen",hideTest:"Testbeiträge ausblenden",noTelegram:"Noch keine Telegram-Beiträge veröffentlicht.",noEngineeringPosts:"Keine Engineering-Beiträge verfügbar.",insightsUnavailable:"Engineering-Einblicke sind vorübergehend nicht verfügbar.",book:"Buch",designNotebook:"Planungsheft",libraryItem:"Bibliothekseintrag",viewItem:"Details ansehen →",preview:"Vorschau ↗",purchase:"Sicher kaufen ↗",price:"Preis",author:"Autor",resourceType:"Ressourcentyp",libraryUnavailable:"Die Bibliothek ist vorübergehend nicht verfügbar.",noLibrary:"Keine passenden Bibliothekseinträge.",missingLibraryId:"Bibliothekseintrag-ID fehlt.",libraryNotFound:"Bibliothekseintrag nicht gefunden.",comingSoon:"Checkout folgt in Kürze",free:"Kostenlos"
+  }
+};
+function t(key){ return UI_TEXT[SITE_LANG]?.[key] ?? UI_TEXT.en[key] ?? key; }
+function kindLabel(kind){ const k=String(kind||"").toLowerCase(); return ["research","engineering","study"].includes(k)?t(k):(kind||t("project")); }
+
+// Keep the same query string (e.g. ?id=) when switching language on detail pages.
+document.querySelectorAll("[data-lang-link]").forEach((link)=>{
+  if(location.search){
+    const base=link.getAttribute("href").split("?")[0];
+    link.setAttribute("href",base+location.search);
+  }
+});
+
 const menuToggle = document.querySelector(".menu-toggle");
 const nav = document.querySelector(".site-nav");
 const year = document.getElementById("year");
@@ -30,17 +57,19 @@ function observeReveals(scope=document){ scope.querySelectorAll(".reveal:not(.vi
 observeReveals();
 
 async function apiGet(path) {
-  const res = await fetch(`${API_BASE}${path}${path.includes("?") ? "&" : "?"}t=${Date.now()}`, {cache:"no-store", headers:{Accept:"application/json"}});
+  let requestPath=path;
+  if(SITE_LANG!=="en" && !/[?&]lang=/.test(requestPath)) requestPath += `${requestPath.includes("?") ? "&" : "?"}lang=${encodeURIComponent(SITE_LANG)}`;
+  const res = await fetch(`${API_BASE}${requestPath}${requestPath.includes("?") ? "&" : "?"}t=${Date.now()}`, {cache:"no-store", headers:{Accept:"application/json"}});
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
 function escapeText(value){ return String(value ?? ""); }
 function clear(el){ if(el) el.innerHTML=""; }
-function showError(el, message="Content is temporarily unavailable."){
+function showError(el, message=t("contentUnavailable")){
   if(!el) return; clear(el); const d=document.createElement("div"); d.className="posts-error"; d.textContent=message; el.appendChild(d);
 }
 function splitMethods(value=""){ return String(value).split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean); }
-function yearLabel(item){ if(item.start_year && item.end_year) return `${item.start_year}–${item.end_year}`; if(item.start_year) return `${item.start_year}–Present`; return item.status || ""; }
+function yearLabel(item){ if(item.start_year && item.end_year) return `${item.start_year}–${item.end_year}`; if(item.start_year) return `${item.start_year}–${t("present")}`; return item.status || ""; }
 
 function galleryImageUrl(mediaId){ return mediaId ? `${API_BASE}/gallery-media/${encodeURIComponent(mediaId)}` : ""; }
 async function loadGallery(entityType, entityId){
@@ -80,7 +109,7 @@ function openLightbox(items,index=0){
   box.hidden=false;document.body.classList.add("lightbox-open");render();
 }
 function closeLightbox(){const box=document.getElementById("site-lightbox");if(box){box.hidden=true;document.body.classList.remove("lightbox-open");}}
-function createGallerySection(items,title="Photo Gallery"){
+function createGallerySection(items,title=t("photoGallery")){
   const section=document.createElement("section");section.className="detail-gallery-section";
   const head=document.createElement("div");head.className="detail-gallery-head";const h=document.createElement("h2");h.textContent=title;const count=document.createElement("span");count.textContent=`${items.length} photo${items.length===1?"":"s"}`;head.append(h,count);
   const grid=document.createElement("div");grid.className="detail-gallery-grid";
@@ -90,7 +119,7 @@ function createGallerySection(items,title="Photo Gallery"){
 
 function createProjectRow(item){
   const article=document.createElement("article"); article.className="project-row reveal";
-  const kicker=document.createElement("div"); kicker.className="project-kicker"; kicker.textContent=item.category || (item.kind ? item.kind[0].toUpperCase()+item.kind.slice(1) : "Project");
+  const kicker=document.createElement("div"); kicker.className="project-kicker"; kicker.textContent=item.category || kindLabel(item.kind);
   const body=document.createElement("div");
   const title=document.createElement("h3"); const a=document.createElement("a"); a.href=`project.html?id=${encodeURIComponent(item.id)}`; a.textContent=item.title; title.appendChild(a);
   const p=document.createElement("p"); p.textContent=item.summary || ""; body.append(title,p);
@@ -103,10 +132,10 @@ function createProjectCard(item){
   const media=document.createElement("div"); media.className="data-card-media";
   const projectCover=getCoverUrl(item);if(projectCover){const img=document.createElement("img");img.loading="lazy";img.alt=item.title;img.src=projectCover;img.addEventListener("error",()=>{media.classList.add("placeholder");img.remove();});media.appendChild(img);} else {media.classList.add("placeholder");}
   const body=document.createElement("div"); body.className="data-card-body";
-  const meta=document.createElement("div");meta.className="data-card-meta";meta.innerHTML=`<span></span><span></span>`;meta.children[0].textContent=item.category||item.kind||"Project";meta.children[1].textContent=yearLabel(item);
+  const meta=document.createElement("div");meta.className="data-card-meta";meta.innerHTML=`<span></span><span></span>`;meta.children[0].textContent=item.category||kindLabel(item.kind);meta.children[1].textContent=yearLabel(item);
   const h=document.createElement("h3");h.textContent=item.title;const p=document.createElement("p");p.textContent=item.summary||"";
   const chips=document.createElement("div");chips.className="chip-row";splitMethods(item.methods).slice(0,4).forEach(m=>{const s=document.createElement("span");s.textContent=m;chips.appendChild(s);});
-  const foot=document.createElement("div");foot.className="data-card-footer";const link=document.createElement("a");link.href=`project.html?id=${encodeURIComponent(item.id)}`;link.textContent="View project →";const status=document.createElement("span");status.className="status-pill";status.textContent=item.status||"Project";foot.append(link,status);
+  const foot=document.createElement("div");foot.className="data-card-footer";const link=document.createElement("a");link.href=`project.html?id=${encodeURIComponent(item.id)}`;link.textContent=t("viewProject");const status=document.createElement("span");status.className="status-pill";status.textContent=item.status||t("project");foot.append(link,status);
   body.append(meta,h,p,chips,foot);card.append(media,body);return card;
 }
 function publicationCitation(item){ const parts=[]; if(item.authors) parts.push(item.authors); if(item.year) parts.push(`(${item.year}).`); if(item.title) parts.push(`${item.title}.`); if(item.journal) parts.push(item.journal+"."); if(item.doi) parts.push(`https://doi.org/${item.doi}`); return parts.join(" "); }
@@ -119,20 +148,20 @@ function createPublicationCard(item){
   const actions=document.createElement("div");actions.className="publication-actions";
   if(item.doi){const doi=document.createElement("a");doi.className="mini-button";doi.href=`https://doi.org/${item.doi}`;doi.target="_blank";doi.rel="noopener noreferrer";doi.textContent="DOI";actions.appendChild(doi);}
   if(item.pdf_url){const pdf=document.createElement("a");pdf.className="mini-button";pdf.href=item.pdf_url;pdf.target="_blank";pdf.rel="noopener noreferrer";pdf.textContent="PDF";actions.appendChild(pdf);}
-  const cite=document.createElement("button");cite.className="mini-button";cite.type="button";cite.textContent="Cite";cite.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(publicationCitation(item));cite.textContent="Copied";setTimeout(()=>cite.textContent="Cite",1200);}catch{cite.textContent="Copy failed";}});actions.appendChild(cite);
+  const cite=document.createElement("button");cite.className="mini-button";cite.type="button";cite.textContent=t("cite");cite.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(publicationCitation(item));cite.textContent=t("copied");setTimeout(()=>cite.textContent=t("cite"),1200);}catch{cite.textContent=t("copyFailed");}});actions.appendChild(cite);
   card.append(y,body,actions);return card;
 }
 function createConferenceCard(item){
   const card=document.createElement("article");card.className="conference-card reveal";
   if(item.cover_media_id){const media=document.createElement("a");media.className="conference-card-media";media.href=`conference.html?id=${encodeURIComponent(item.id)}`;const img=document.createElement("img");img.loading="lazy";img.src=galleryImageUrl(item.cover_media_id);img.alt=item.title;media.appendChild(img);card.appendChild(media);}
   const content=document.createElement("div");content.className="conference-card-content";
-  const type=document.createElement("span");type.className="conference-type";type.textContent=item.type||"Academic Event";
+  const type=document.createElement("span");type.className="conference-type";type.textContent=item.type||t("academicEvent");
   const h=document.createElement("h3");const detail=document.createElement("a");detail.href=`conference.html?id=${encodeURIComponent(item.id)}`;detail.textContent=item.title;h.appendChild(detail);
   const p=document.createElement("p");p.textContent=item.description||"";
   const meta=document.createElement("div");meta.className="conference-meta";[item.event,item.location,item.year].filter(Boolean).forEach(v=>{const s=document.createElement("span");s.textContent=v;meta.appendChild(s);});
   content.append(type,h,p,meta);
-  const links=document.createElement("div");links.className="conference-links";const view=document.createElement("a");view.className="conference-link";view.href=`conference.html?id=${encodeURIComponent(item.id)}`;view.textContent="View details →";links.appendChild(view);
-  if(item.url){const external=document.createElement("a");external.className="conference-link";external.href=item.url;external.target="_blank";external.rel="noopener noreferrer";external.textContent="Event / material ↗";links.appendChild(external);}
+  const links=document.createElement("div");links.className="conference-links";const view=document.createElement("a");view.className="conference-link";view.href=`conference.html?id=${encodeURIComponent(item.id)}`;view.textContent=t("viewDetails");links.appendChild(view);
+  if(item.url){const external=document.createElement("a");external.className="conference-link";external.href=item.url;external.target="_blank";external.rel="noopener noreferrer";external.textContent=t("eventMaterial");links.appendChild(external);}
   content.appendChild(links);card.appendChild(content);return card;
 }
 function conferenceIndexTitle(item){
@@ -166,7 +195,7 @@ function createConferenceCompactRow(item){
 
   const placeholder=document.createElement("span");
   placeholder.className="conference-compact-placeholder";
-  placeholder.textContent="Loading";
+  placeholder.textContent=t("loading");
   mediaLink.appendChild(placeholder);
 
   const directCover=getCoverUrl(item);
@@ -185,27 +214,27 @@ function createConferenceCompactRow(item){
         img.hidden=false;
         if(placeholder.isConnected) placeholder.remove();
       }else if(placeholder.isConnected){
-        placeholder.textContent="No photo";
+        placeholder.textContent=t("noPhoto");
       }
     }).catch(()=>{
-      if(placeholder.isConnected) placeholder.textContent="No photo";
+      if(placeholder.isConnected) placeholder.textContent=t("noPhoto");
     });
   }
   mediaCell.appendChild(mediaLink);
 
   const eventCell=document.createElement("div");eventCell.className="conference-compact-cell conference-compact-event";
-  const eventLabel=document.createElement("span");eventLabel.className="conference-compact-label";eventLabel.textContent="Event";
+  const eventLabel=document.createElement("span");eventLabel.className="conference-compact-label";eventLabel.textContent=t("event");
   const eventLink=document.createElement("a");eventLink.href=`conference.html?id=${encodeURIComponent(item.id)}`;eventLink.textContent=conferenceIndexTitle(item);
   if(item.title&&item.event&&item.title!==item.event) eventLink.title=item.title;
   eventCell.append(eventLabel,eventLink);
 
   const yearCell=document.createElement("div");yearCell.className="conference-compact-cell conference-compact-year";
-  const yearLabel=document.createElement("span");yearLabel.className="conference-compact-label";yearLabel.textContent="Year";
+  const yearLabel=document.createElement("span");yearLabel.className="conference-compact-label";yearLabel.textContent=t("year");
   const yearValue=document.createElement("strong");yearValue.textContent=item.year||"—";
   yearCell.append(yearLabel,yearValue);
 
   const locationCell=document.createElement("div");locationCell.className="conference-compact-cell conference-compact-location";
-  const locationLabel=document.createElement("span");locationLabel.className="conference-compact-label";locationLabel.textContent="Location";
+  const locationLabel=document.createElement("span");locationLabel.className="conference-compact-label";locationLabel.textContent=t("location");
   const locationValue=document.createElement("strong");locationValue.textContent=item.location||"—";
   locationCell.append(locationLabel,locationValue);
 
@@ -229,18 +258,18 @@ async function loadProjectPages(){
   const allEl=document.getElementById("all-projects");
   if(!researchEl && !allEl) return;
   try{allProjectsCache=await apiGet("/projects");
-    if(researchEl){const search=document.getElementById("project-search"), status=document.getElementById("project-status-filter");[...new Set(allProjectsCache.filter(x=>x.kind==="research").map(x=>x.status).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;status.appendChild(o);});const render=()=>{clear(researchEl);const q=(search.value||"").toLowerCase();const s=status.value;const rows=allProjectsCache.filter(x=>x.kind==="research").filter(x=>(!q||`${x.title} ${x.summary} ${x.category} ${x.methods}`.toLowerCase().includes(q))&&(!s||x.status===s));rows.forEach(r=>researchEl.appendChild(createProjectRow(r)));if(!rows.length)showError(researchEl,"No matching research projects.");observeReveals(researchEl);};search.addEventListener("input",render);status.addEventListener("change",render);render();}
-    if(allEl){const search=document.getElementById("all-project-search"),kind=document.getElementById("project-kind-filter"),category=document.getElementById("project-category-filter");[...new Set(allProjectsCache.map(x=>x.category).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;category.appendChild(o);});const render=()=>{clear(allEl);const q=(search.value||"").toLowerCase();const k=kind.value,c=category.value;const rows=allProjectsCache.filter(x=>(!q||`${x.title} ${x.summary} ${x.category} ${x.methods}`.toLowerCase().includes(q))&&(!k||x.kind===k)&&(!c||x.category===c));rows.forEach(r=>allEl.appendChild(createProjectCard(r)));if(!rows.length)showError(allEl,"No matching projects.");observeReveals(allEl);};[search,kind,category].forEach(el=>el.addEventListener(el.tagName==="INPUT"?"input":"change",render));render();}
+    if(researchEl){const search=document.getElementById("project-search"), status=document.getElementById("project-status-filter");[...new Set(allProjectsCache.filter(x=>x.kind==="research").map(x=>x.status).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;status.appendChild(o);});const render=()=>{clear(researchEl);const q=(search.value||"").toLowerCase();const s=status.value;const rows=allProjectsCache.filter(x=>x.kind==="research").filter(x=>(!q||`${x.title} ${x.summary} ${x.category} ${x.methods}`.toLowerCase().includes(q))&&(!s||x.status===s));rows.forEach(r=>researchEl.appendChild(createProjectRow(r)));if(!rows.length)showError(researchEl,t("noResearch"));observeReveals(researchEl);};search.addEventListener("input",render);status.addEventListener("change",render);render();}
+    if(allEl){const search=document.getElementById("all-project-search"),kind=document.getElementById("project-kind-filter"),category=document.getElementById("project-category-filter");[...new Set(allProjectsCache.map(x=>x.category).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;category.appendChild(o);});const render=()=>{clear(allEl);const q=(search.value||"").toLowerCase();const k=kind.value,c=category.value;const rows=allProjectsCache.filter(x=>(!q||`${x.title} ${x.summary} ${x.category} ${x.methods}`.toLowerCase().includes(q))&&(!k||x.kind===k)&&(!c||x.category===c));rows.forEach(r=>allEl.appendChild(createProjectCard(r)));if(!rows.length)showError(allEl,t("noProjects"));observeReveals(allEl);};[search,kind,category].forEach(el=>el.addEventListener(el.tagName==="INPUT"?"input":"change",render));render();}
   }catch{showError(researchEl||allEl);}
 }
 loadProjectPages();
 
 async function loadProjectDetail(){
   const el=document.getElementById("project-detail");if(!el)return;
-  const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,"Project ID is missing.");return;}
+  const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,t("missingProjectId"));return;}
   try{
     const [rows,gallery]=await Promise.all([apiGet(`/projects?id=${encodeURIComponent(id)}`),loadGallery("project",id)]);
-    const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,"Project not found.");return;}clear(el);
+    const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,t("projectNotFound"));return;}clear(el);
     const main=document.createElement("article");main.className="project-detail-main";
     const cover=gallery.find(x=>x.is_cover)||gallery[0];
     const heroUrl=cover?.url||item.image_url;
@@ -248,43 +277,98 @@ async function loadProjectDetail(){
     const copy=document.createElement("div");copy.className="project-detail-copy";const e=document.createElement("p");e.className="eyebrow";e.textContent=item.category||item.kind||"Project";const h=document.createElement("h1");h.textContent=item.title;const s=document.createElement("p");s.className="summary";s.textContent=item.summary||"";copy.append(e,h,s);
     const chips=document.createElement("div");chips.className="chip-row";splitMethods(item.methods).forEach(m=>{const sp=document.createElement("span");sp.textContent=m;chips.appendChild(sp);});copy.appendChild(chips);
     if(item.description){const d=document.createElement("p");d.className="project-detail-description";d.textContent=item.description;copy.appendChild(d);}
-    if(item.project_url){const a=document.createElement("a");a.className="btn btn-primary";a.href=item.project_url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="External project link ↗";a.style.marginTop="24px";copy.appendChild(a);}
+    if(item.project_url){const a=document.createElement("a");a.className="btn btn-primary";a.href=item.project_url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=t("externalProject");a.style.marginTop="24px";copy.appendChild(a);}
     main.appendChild(copy);
-    const side=document.createElement("aside");side.className="project-detail-side";[["Type",item.kind],["Status",item.status],["Category",item.category],["Period",yearLabel(item)]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});
+    const side=document.createElement("aside");side.className="project-detail-side";[[t("type"),kindLabel(item.kind)],[t("status"),item.status],[t("category"),item.category],[t("period"),yearLabel(item)]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});
     el.append(main,side);
-    if(gallery.length){const gallerySection=createGallerySection(gallery,"Project Gallery");gallerySection.classList.add("project-gallery-wide");el.parentElement.appendChild(gallerySection);}
+    if(gallery.length){const gallerySection=createGallerySection(gallery,t("projectGallery"));gallerySection.classList.add("project-gallery-wide");el.parentElement.appendChild(gallerySection);}
     document.title=`${item.title} | Arash Pashazadeh`;
   }catch{showError(el);}
 }
 loadProjectDetail();
 
 async function loadPublications(){
-  const el=document.getElementById("publications-list");if(!el)return;try{const rows=await apiGet("/publications");const search=document.getElementById("publication-search"),yearF=document.getElementById("publication-year-filter"),statusF=document.getElementById("publication-status-filter");[...new Set(rows.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;yearF.appendChild(o);});[...new Set(rows.map(x=>x.status).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;statusF.appendChild(o);});const render=()=>{clear(el);const q=(search.value||"").toLowerCase(),y=yearF.value,s=statusF.value;const filtered=rows.filter(x=>(!q||`${x.title} ${x.authors} ${x.journal} ${x.doi}`.toLowerCase().includes(q))&&(!y||String(x.year)===y)&&(!s||x.status===s));filtered.forEach(r=>el.appendChild(createPublicationCard(r)));if(!filtered.length)showError(el,"No matching publications.");observeReveals(el);};search.addEventListener("input",render);yearF.addEventListener("change",render);statusF.addEventListener("change",render);render();}catch{showError(el);}
+  const el=document.getElementById("publications-list");if(!el)return;try{const rows=await apiGet("/publications");const search=document.getElementById("publication-search"),yearF=document.getElementById("publication-year-filter"),statusF=document.getElementById("publication-status-filter");[...new Set(rows.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;yearF.appendChild(o);});[...new Set(rows.map(x=>x.status).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;statusF.appendChild(o);});const render=()=>{clear(el);const q=(search.value||"").toLowerCase(),y=yearF.value,s=statusF.value;const filtered=rows.filter(x=>(!q||`${x.title} ${x.authors} ${x.journal} ${x.doi}`.toLowerCase().includes(q))&&(!y||String(x.year)===y)&&(!s||x.status===s));filtered.forEach(r=>el.appendChild(createPublicationCard(r)));if(!filtered.length)showError(el,t("noPublications"));observeReveals(el);};search.addEventListener("input",render);yearF.addEventListener("change",render);statusF.addEventListener("change",render);render();}catch{showError(el);}
 }
 loadPublications();
 
 async function loadConferenceDetail(){
   const el=document.getElementById("conference-detail");if(!el)return;
-  const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,"Conference ID is missing.");return;}
+  const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,t("missingConferenceId"));return;}
   try{
     const [rows,gallery]=await Promise.all([apiGet(`/conferences?id=${encodeURIComponent(id)}`),loadGallery("conference",id)]);
-    const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,"Conference entry not found.");return;}clear(el);
+    const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,t("conferenceNotFound"));return;}clear(el);
     const main=document.createElement("article");main.className="project-detail-main";
     const cover=gallery.find(x=>x.is_cover)||gallery[0];if(cover){const img=document.createElement("img");img.className="project-detail-image";img.src=cover.url;img.alt=cover.alt_text||item.title;main.appendChild(img);}
-    const copy=document.createElement("div");copy.className="project-detail-copy";const e=document.createElement("p");e.className="eyebrow";e.textContent=item.type||"Conference";const h=document.createElement("h1");h.textContent=item.title;const s=document.createElement("p");s.className="summary";s.textContent=item.description||"";copy.append(e,h,s);
-    if(item.url){const a=document.createElement("a");a.className="btn btn-primary";a.href=item.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Event / material ↗";a.style.marginTop="24px";copy.appendChild(a);}main.appendChild(copy);
-    const side=document.createElement("aside");side.className="project-detail-side";[["Event",item.event],["Type",item.type],["Year",item.year],["Location",item.location]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});
+    const copy=document.createElement("div");copy.className="project-detail-copy";const e=document.createElement("p");e.className="eyebrow";e.textContent=item.type||t("conference");const h=document.createElement("h1");h.textContent=item.title;const s=document.createElement("p");s.className="summary";s.textContent=item.description||"";copy.append(e,h,s);
+    if(item.url){const a=document.createElement("a");a.className="btn btn-primary";a.href=item.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=t("eventMaterial");a.style.marginTop="24px";copy.appendChild(a);}main.appendChild(copy);
+    const side=document.createElement("aside");side.className="project-detail-side";[[t("event"),item.event],[t("type"),item.type],[t("year"),item.year],[t("location"),item.location]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});
     el.append(main,side);
-    if(gallery.length){const gallerySection=createGallerySection(gallery,"Conference Gallery");gallerySection.classList.add("project-gallery-wide");el.parentElement.appendChild(gallerySection);}
+    if(gallery.length){const gallerySection=createGallerySection(gallery,t("conferenceGallery"));gallerySection.classList.add("project-gallery-wide");el.parentElement.appendChild(gallerySection);}
     document.title=`${item.title} | Arash Pashazadeh`;
   }catch{showError(el);}
 }
 loadConferenceDetail();
 
 async function loadConferences(){
-  const el=document.getElementById("conferences-list");if(!el)return;try{const rows=await apiGet("/conferences");const search=document.getElementById("conference-search"),yearF=document.getElementById("conference-year-filter");[...new Set(rows.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;yearF.appendChild(o);});const render=()=>{clear(el);const q=(search.value||"").toLowerCase(),y=yearF.value;const filtered=rows.filter(x=>(!q||`${x.title} ${x.event} ${x.location} ${x.description}`.toLowerCase().includes(q))&&(!y||String(x.year)===y));filtered.forEach(r=>el.appendChild(createConferenceCompactRow(r)));if(!filtered.length)showError(el,"No matching conference entries.");observeReveals(el);};search.addEventListener("input",render);yearF.addEventListener("change",render);render();}catch{showError(el);}
+  const el=document.getElementById("conferences-list");if(!el)return;try{const rows=await apiGet("/conferences");const search=document.getElementById("conference-search"),yearF=document.getElementById("conference-year-filter");[...new Set(rows.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;yearF.appendChild(o);});const render=()=>{clear(el);const q=(search.value||"").toLowerCase(),y=yearF.value;const filtered=rows.filter(x=>(!q||`${x.title} ${x.event} ${x.location} ${x.description}`.toLowerCase().includes(q))&&(!y||String(x.year)===y));filtered.forEach(r=>el.appendChild(createConferenceCompactRow(r)));if(!filtered.length)showError(el,t("noConferences"));observeReveals(el);};search.addEventListener("input",render);yearF.addEventListener("change",render);render();}catch{showError(el);}
 }
 loadConferences();
+
+
+// =====================================================
+// LIBRARY / PAID TECHNICAL RESOURCES
+// =====================================================
+function libraryTypeLabel(type){ return type==="design_notebook" ? t("designNotebook") : t("book"); }
+function formatLibraryPrice(item){
+  const cents=Number(item.price_cents||0);
+  if(cents<=0) return t("free");
+  try{return new Intl.NumberFormat(SITE_LOCALE,{style:"currency",currency:item.currency||"USD"}).format(cents/100);}catch{return `${(cents/100).toFixed(2)} ${item.currency||"USD"}`;}
+}
+function createLibraryCard(item){
+  const card=document.createElement("article");card.className="library-card reveal";
+  const detailHref=`library-item.html?id=${encodeURIComponent(item.id)}`;
+  const cover=document.createElement("a");cover.className="library-card-cover";cover.href=detailHref;
+  const coverUrl=getCoverUrl(item);
+  if(coverUrl){const img=document.createElement("img");img.loading="lazy";img.src=coverUrl;img.alt=item.title||t("libraryItem");img.addEventListener("error",()=>{img.remove();cover.classList.add("placeholder");});cover.appendChild(img);}else{cover.classList.add("placeholder");}
+  const body=document.createElement("div");body.className="library-card-body";
+  const meta=document.createElement("div");meta.className="library-card-meta";const type=document.createElement("span");type.textContent=libraryTypeLabel(item.item_type);const price=document.createElement("strong");price.textContent=formatLibraryPrice(item);meta.append(type,price);
+  const h=document.createElement("h3");const a=document.createElement("a");a.href=detailHref;a.textContent=item.title||t("libraryItem");h.appendChild(a);
+  if(item.author){const author=document.createElement("p");author.className="library-author";author.textContent=item.author;body.append(meta,h,author);}else body.append(meta,h);
+  if(item.summary){const p=document.createElement("p");p.textContent=item.summary;body.appendChild(p);}
+  const actions=document.createElement("div");actions.className="library-actions";
+  const details=document.createElement("a");details.className="mini-button";details.href=detailHref;details.textContent=t("viewItem");actions.appendChild(details);
+  if(item.preview_url){const preview=document.createElement("a");preview.className="mini-button";preview.href=item.preview_url;preview.target="_blank";preview.rel="noopener noreferrer";preview.textContent=t("preview");actions.appendChild(preview);}
+  if(item.purchase_url){const buy=document.createElement("a");buy.className="btn btn-primary library-buy";buy.href=item.purchase_url;buy.target="_blank";buy.rel="noopener noreferrer";buy.textContent=t("purchase");actions.appendChild(buy);}else if(Number(item.price_cents||0)>0){const soon=document.createElement("span");soon.className="status-pill";soon.textContent=t("comingSoon");actions.appendChild(soon);}
+  body.appendChild(actions);card.append(cover,body);return card;
+}
+async function loadLibrary(){
+  const el=document.getElementById("library-list");if(!el)return;
+  try{
+    const rows=await apiGet("/library");
+    const search=document.getElementById("library-search"),typeF=document.getElementById("library-type-filter");
+    const render=()=>{clear(el);const q=(search?.value||"").toLowerCase(),ty=typeF?.value||"";const filtered=rows.filter(x=>(!q||`${x.title} ${x.author||""} ${x.summary||""} ${x.description||""}`.toLowerCase().includes(q))&&(!ty||x.item_type===ty));filtered.forEach(r=>el.appendChild(createLibraryCard(r)));if(!filtered.length)showError(el,t("noLibrary"));observeReveals(el);};
+    search?.addEventListener("input",render);typeF?.addEventListener("change",render);render();
+  }catch{showError(el,t("libraryUnavailable"));}
+}
+loadLibrary();
+async function loadLibraryDetail(){
+  const el=document.getElementById("library-detail");if(!el)return;
+  const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,t("missingLibraryId"));return;}
+  try{
+    const [rows,gallery]=await Promise.all([apiGet(`/library?id=${encodeURIComponent(id)}`),loadGallery("library",id)]);
+    const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,t("libraryNotFound"));return;}clear(el);
+    const main=document.createElement("article");main.className="project-detail-main library-detail-main";
+    const cover=gallery.find(x=>x.is_cover)||gallery[0];const heroUrl=cover?.url||item.cover_url;
+    if(heroUrl){const img=document.createElement("img");img.className="project-detail-image library-detail-cover";img.src=heroUrl;img.alt=cover?.alt_text||item.title;main.appendChild(img);}
+    const copy=document.createElement("div");copy.className="project-detail-copy";const e=document.createElement("p");e.className="eyebrow";e.textContent=libraryTypeLabel(item.item_type);const h=document.createElement("h1");h.textContent=item.title;const price=document.createElement("p");price.className="library-detail-price";price.textContent=formatLibraryPrice(item);copy.append(e,h,price);
+    if(item.author){const author=document.createElement("p");author.className="summary";author.textContent=item.author;copy.appendChild(author);}if(item.summary){const s=document.createElement("p");s.className="summary";s.textContent=item.summary;copy.appendChild(s);}if(item.description){const d=document.createElement("p");d.className="project-detail-description";d.textContent=item.description;copy.appendChild(d);}
+    const actions=document.createElement("div");actions.className="library-detail-actions";if(item.preview_url){const preview=document.createElement("a");preview.className="btn btn-quiet";preview.href=item.preview_url;preview.target="_blank";preview.rel="noopener noreferrer";preview.textContent=t("preview");actions.appendChild(preview);}if(item.purchase_url){const buy=document.createElement("a");buy.className="btn btn-primary";buy.href=item.purchase_url;buy.target="_blank";buy.rel="noopener noreferrer";buy.textContent=t("purchase");actions.appendChild(buy);}else if(Number(item.price_cents||0)>0){const soon=document.createElement("span");soon.className="status-pill";soon.textContent=t("comingSoon");actions.appendChild(soon);}copy.appendChild(actions);main.appendChild(copy);
+    const side=document.createElement("aside");side.className="project-detail-side";[[t("resourceType"),libraryTypeLabel(item.item_type)],[t("author"),item.author],[t("year"),item.year],[t("price"),formatLibraryPrice(item)]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});el.append(main,side);
+    if(gallery.length>1){const gallerySection=createGallerySection(gallery,t("photoGallery"));gallerySection.classList.add("project-gallery-wide");el.parentElement.appendChild(gallerySection);}document.title=`${item.title} | Arash Pashazadeh`;
+  }catch{showError(el,t("libraryUnavailable"));}
+}
+loadLibraryDetail();
 
 // =====================================================
 // LIVE TELEGRAM FEED
@@ -293,7 +377,7 @@ const telegramContainer=document.getElementById("telegram-posts");
 const telegramRefreshButton=document.getElementById("feed-refresh");
 const telegramFilterButton=document.getElementById("feed-filter-toggle");
 let cachedTelegramPosts=[];let showAllTelegramPosts=false;
-function formatTelegramDate(dateString){const date=new Date(dateString);if(Number.isNaN(date.getTime()))return"";return new Intl.DateTimeFormat("en-US",{year:"numeric",month:"short",day:"numeric"}).format(date);}
+function formatTelegramDate(dateString){const date=new Date(dateString);if(Number.isNaN(date.getTime()))return"";return new Intl.DateTimeFormat(SITE_LOCALE,{year:"numeric",month:"short",day:"numeric"}).format(date);}
 function extractHashtags(text=""){const matches=String(text).match(/#[\p{L}\p{N}_-]+/gu);return matches?[...new Set(matches)]:[];}
 function inferCategory(text="",hashtags=[]){if(hashtags.length)return hashtags[0].replace(/^#/,"").replace(/_/g," ");const t=String(text).toLowerCase();if(t.includes("digital twin"))return"Digital Twin";if(/\b(ai|artificial intelligence|machine learning|deep learning)\b/.test(t))return"AI";if(/\b(concrete|cement|admixture)\b/.test(t))return"Concrete";if(/\b(hydraulic|hydraulics|water resources|flow|river)\b/.test(t))return"Hydraulics";if(/\b(coastal|marine|oyster|wave|mooring|offshore)\b/.test(t))return"Coastal";if(/\b(bridge|structure|structural|beam|column)\b/.test(t))return"Structures";if(/\b(3d print|3d printing|construction|robotic construction)\b/.test(t))return"Construction";if(/\b(sensor|imu|monitoring|instrumentation)\b/.test(t))return"Monitoring";return"Civil Engineering";}
 function cleanTextForBody(text=""){return String(text).replace(/#[\p{L}\p{N}_-]+/gu,"").replace(/\s{2,}/g," ").trim();}
@@ -303,12 +387,12 @@ function isSubstantivePost(post){const text=String(post.text||"").trim();return 
 function createChip(label,className=""){const chip=document.createElement("span");chip.className=`telegram-chip ${className}`.trim();chip.textContent=label;return chip;}
 function createTelegramPostCard(post){const article=document.createElement("article");article.className="telegram-post-card";const rawText=String(post.text||"");const hashtags=extractHashtags(rawText);const category=inferCategory(rawText,hashtags);const titleText=deriveTitle(rawText,category);const bodyText=deriveBody(rawText,titleText);const channelName=post.channel_username||"ArashCivilEngineering";
   if(post.media_file_id){const mediaWrap=document.createElement("a");mediaWrap.className="telegram-media";mediaWrap.target="_blank";mediaWrap.rel="noopener noreferrer";mediaWrap.href=`https://t.me/${encodeURIComponent(channelName)}/${encodeURIComponent(post.telegram_message_id)}`;const img=document.createElement("img");img.loading="lazy";img.alt=titleText;img.src=`${TELEGRAM_MEDIA_URL}?file_id=${encodeURIComponent(post.media_file_id)}`;img.addEventListener("error",()=>mediaWrap.remove());mediaWrap.appendChild(img);article.appendChild(mediaWrap);}
-  const content=document.createElement("div");content.className="telegram-post-content";const header=document.createElement("div");header.className="telegram-post-header";const source=document.createElement("div");source.className="telegram-source";const icon=document.createElement("div");icon.className="telegram-icon";icon.textContent="TG";const sourceText=document.createElement("div");sourceText.className="telegram-source-text";const sourceName=document.createElement("strong");sourceName.textContent="Civil Engineering Insights";const channel=document.createElement("span");channel.textContent=`@${channelName}`;sourceText.append(sourceName,channel);source.append(icon,sourceText);const date=document.createElement("span");date.className="telegram-post-date";date.textContent=formatTelegramDate(post.posted_at);header.append(source,date);
-  const chips=document.createElement("div");chips.className="telegram-chip-row";chips.appendChild(createChip(category,"category-chip"));hashtags.slice(0,4).forEach(tag=>chips.appendChild(createChip(tag,"hashtag-chip")));const title=document.createElement("h3");title.className="telegram-post-title";title.dir="auto";title.textContent=titleText;const body=document.createElement("p");body.className="telegram-post-text";body.dir="auto";if(bodyText)body.textContent=bodyText;else if(!rawText.trim()){body.textContent="Media update published on Telegram.";body.classList.add("is-empty");}else body.classList.add("compact");const foot=document.createElement("div");foot.className="telegram-post-footer";const link=document.createElement("a");link.className="telegram-post-link";link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open original post ↗";link.href=`https://t.me/${encodeURIComponent(channelName)}/${encodeURIComponent(post.telegram_message_id)}`;const id=document.createElement("span");id.className="telegram-post-id";id.textContent=`#${post.telegram_message_id??""}`;foot.append(link,id);content.append(header,chips,title);if(bodyText||!rawText.trim())content.appendChild(body);content.appendChild(foot);article.appendChild(content);return article;}
-function renderTelegramPosts(){if(!telegramContainer)return;clear(telegramContainer);let posts=showAllTelegramPosts?cachedTelegramPosts:cachedTelegramPosts.filter(isSubstantivePost);const limit=Number(telegramContainer.dataset.limit||0);if(limit>0)posts=posts.slice(0,limit);if(!posts.length){showError(telegramContainer,showAllTelegramPosts?"No Telegram posts have been published yet.":"No engineering posts are available yet.");return;}posts.forEach(p=>telegramContainer.appendChild(createTelegramPostCard(p)));}
-async function loadTelegramPosts({silent=false}={}){if(!telegramContainer)return;if(telegramRefreshButton){telegramRefreshButton.disabled=true;telegramRefreshButton.textContent="Refreshing...";}if(!silent)telegramContainer.setAttribute("aria-busy","true");try{const posts=await apiGet("/posts");cachedTelegramPosts=Array.isArray(posts)?posts:[];renderTelegramPosts();}catch(e){if(!silent||!telegramContainer.children.length)showError(telegramContainer,"Engineering insights are temporarily unavailable.");}finally{telegramContainer.setAttribute("aria-busy","false");if(telegramRefreshButton){telegramRefreshButton.disabled=false;telegramRefreshButton.textContent="Refresh feed";}}}
+  const content=document.createElement("div");content.className="telegram-post-content";const header=document.createElement("div");header.className="telegram-post-header";const source=document.createElement("div");source.className="telegram-source";const icon=document.createElement("div");icon.className="telegram-icon";icon.textContent="TG";const sourceText=document.createElement("div");sourceText.className="telegram-source-text";const sourceName=document.createElement("strong");sourceName.textContent=t("civilInsights");const channel=document.createElement("span");channel.textContent=`@${channelName}`;sourceText.append(sourceName,channel);source.append(icon,sourceText);const date=document.createElement("span");date.className="telegram-post-date";date.textContent=formatTelegramDate(post.posted_at);header.append(source,date);
+  const chips=document.createElement("div");chips.className="telegram-chip-row";chips.appendChild(createChip(category,"category-chip"));hashtags.slice(0,4).forEach(tag=>chips.appendChild(createChip(tag,"hashtag-chip")));const title=document.createElement("h3");title.className="telegram-post-title";title.dir="auto";title.textContent=titleText;const body=document.createElement("p");body.className="telegram-post-text";body.dir="auto";if(bodyText)body.textContent=bodyText;else if(!rawText.trim()){body.textContent=t("mediaUpdate");body.classList.add("is-empty");}else body.classList.add("compact");const foot=document.createElement("div");foot.className="telegram-post-footer";const link=document.createElement("a");link.className="telegram-post-link";link.target="_blank";link.rel="noopener noreferrer";link.textContent=t("openOriginal");link.href=`https://t.me/${encodeURIComponent(channelName)}/${encodeURIComponent(post.telegram_message_id)}`;const id=document.createElement("span");id.className="telegram-post-id";id.textContent=`#${post.telegram_message_id??""}`;foot.append(link,id);content.append(header,chips,title);if(bodyText||!rawText.trim())content.appendChild(body);content.appendChild(foot);article.appendChild(content);return article;}
+function renderTelegramPosts(){if(!telegramContainer)return;clear(telegramContainer);let posts=showAllTelegramPosts?cachedTelegramPosts:cachedTelegramPosts.filter(isSubstantivePost);const limit=Number(telegramContainer.dataset.limit||0);if(limit>0)posts=posts.slice(0,limit);if(!posts.length){showError(telegramContainer,showAllTelegramPosts?t("noTelegram"):t("noEngineeringPosts"));return;}posts.forEach(p=>telegramContainer.appendChild(createTelegramPostCard(p)));}
+async function loadTelegramPosts({silent=false}={}){if(!telegramContainer)return;if(telegramRefreshButton){telegramRefreshButton.disabled=true;telegramRefreshButton.textContent=t("refreshing");}if(!silent)telegramContainer.setAttribute("aria-busy","true");try{const posts=await apiGet("/posts");cachedTelegramPosts=Array.isArray(posts)?posts:[];renderTelegramPosts();}catch(e){if(!silent||!telegramContainer.children.length)showError(telegramContainer,t("insightsUnavailable"));}finally{telegramContainer.setAttribute("aria-busy","false");if(telegramRefreshButton){telegramRefreshButton.disabled=false;telegramRefreshButton.textContent=t("refreshFeed");}}}
 if(telegramRefreshButton)telegramRefreshButton.addEventListener("click",()=>loadTelegramPosts());
-if(telegramFilterButton)telegramFilterButton.addEventListener("click",()=>{showAllTelegramPosts=!showAllTelegramPosts;telegramFilterButton.setAttribute("aria-pressed",String(showAllTelegramPosts));telegramFilterButton.textContent=showAllTelegramPosts?"Hide test posts":"Show all posts";renderTelegramPosts();});
+if(telegramFilterButton)telegramFilterButton.addEventListener("click",()=>{showAllTelegramPosts=!showAllTelegramPosts;telegramFilterButton.setAttribute("aria-pressed",String(showAllTelegramPosts));telegramFilterButton.textContent=showAllTelegramPosts?t("hideTest"):t("showAll");renderTelegramPosts();});
 loadTelegramPosts();setInterval(()=>{if(document.visibilityState==="visible")loadTelegramPosts({silent:true});},60000);
 
 

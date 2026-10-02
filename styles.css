@@ -1362,3 +1362,185 @@ body[data-page="about"]{
 .contact-simple-footer .footer-inner{
   border-top:1px solid rgba(255,255,255,.09);
 }
+
+/* =====================================================
+   V13 — MULTILINGUAL NAVIGATION + LIBRARY
+   ===================================================== */
+.language-switcher{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-left:auto;
+  padding-left:12px;
+  font-size:.72rem;
+  font-weight:850;
+  letter-spacing:.06em;
+  white-space:nowrap;
+}
+.language-link{
+  color:var(--muted);
+  text-decoration:none;
+  opacity:.78;
+}
+.language-link:hover,.language-link.active{
+  color:var(--accent);
+  opacity:1;
+}
+.language-sep{color:rgba(117,143,151,.5)}
+@media(max-width:1050px){
+  .language-switcher{
+    width:100%;
+    justify-content:center;
+    margin:8px 0 0;
+    padding:8px 0 0;
+    border-top:1px solid var(--line);
+  }
+}
+
+/* Persian / RTL */
+html[dir="rtl"] body{direction:rtl;text-align:right}
+html[dir="rtl"] .nav-wrap,
+html[dir="rtl"] .site-nav,
+html[dir="rtl"] .footer-top,
+html[dir="rtl"] .footer-inner,
+html[dir="rtl"] .page-hero-grid,
+html[dir="rtl"] .filter-bar,
+html[dir="rtl"] .project-row,
+html[dir="rtl"] .publication-card,
+html[dir="rtl"] .conference-compact-row,
+html[dir="rtl"] .conference-compact-header,
+html[dir="rtl"] .project-detail,
+html[dir="rtl"] .contact-grid{direction:rtl}
+html[dir="rtl"] .language-switcher{margin-left:0;margin-right:auto;padding-left:0;padding-right:12px}
+html[dir="rtl"] .cv-paper,
+html[dir="rtl"] .cv-paper-header-copy{text-align:right}
+html[dir="rtl"] .cv-paper-entry{grid-template-columns:minmax(0,1fr) 108px}
+html[dir="rtl"] .cv-paper-date{grid-column:2;grid-row:1}
+html[dir="rtl"] .cv-paper-entry>div:last-child{grid-column:1;grid-row:1}
+html[dir="rtl"] .cv-paper-section ul,
+html[dir="rtl"] .cv-paper-section ol{margin-right:20px;margin-left:0}
+html[dir="rtl"] .back-link{display:inline-flex;direction:rtl}
+@media(max-width:760px){
+  html[dir="rtl"] .cv-paper-entry{grid-template-columns:1fr}
+  html[dir="rtl"] .cv-paper-date,
+  html[dir="rtl"] .cv-paper-entry>div:last-child{grid-column:1;grid-row:auto}
+}
+
+/* Public Library */
+.library-hero-mark{
+  display:grid;
+  place-items:center;
+  min-height:260px;
+  border:1px solid var(--line);
+  border-radius:28px;
+  background:
+    linear-gradient(145deg,rgba(105,212,223,.16),rgba(255,255,255,.78)),
+    repeating-linear-gradient(90deg,transparent 0 28px,rgba(16,37,45,.035) 28px 29px);
+}
+.library-hero-mark span{
+  display:grid;
+  place-items:center;
+  width:120px;
+  height:150px;
+  border-radius:8px 18px 18px 8px;
+  border:2px solid #10252d;
+  box-shadow:14px 10px 0 rgba(105,212,223,.32);
+  color:#10252d;
+  font-size:1.3rem;
+  font-weight:950;
+  letter-spacing:.12em;
+}
+.library-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:24px;
+}
+.library-card{
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 16px 40px rgba(16,37,45,.055);
+}
+.library-card-cover{
+  display:block;
+  aspect-ratio:4/5;
+  overflow:hidden;
+  background:linear-gradient(145deg,#dcebed,#f7fbfb);
+}
+.library-card-cover img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.library-card-cover.placeholder::after{
+  content:"LIB";
+  display:grid;place-items:center;width:100%;height:100%;
+  color:#0e7582;font-weight:950;letter-spacing:.12em;font-size:1.2rem;
+}
+.library-card-body{padding:20px}
+.library-card-meta{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:10px;color:var(--muted);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+}
+.library-card-meta strong{color:#0e7582;font-size:.92rem}
+.library-card h3{margin:0 0 7px;font-size:1.17rem;line-height:1.35}
+.library-card h3 a{color:#10252d;text-decoration:none}
+.library-card h3 a:hover{color:#0e7582}
+.library-card p{margin:0 0 14px;color:var(--muted);line-height:1.6}
+.library-author{font-weight:750;color:#405a62!important}
+.library-actions{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:16px}
+.library-buy{padding:9px 13px;font-size:.82rem}
+.library-detail-cover{object-fit:contain;background:#eef5f6}
+.library-detail-price{font-size:1.35rem;font-weight:900;color:#0e7582;margin:8px 0 14px}
+.library-detail-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+@media(max-width:980px){.library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.library-grid{grid-template-columns:1fr}.library-hero-mark{min-height:190px}}
+
+/* Admin: library + translations */
+.translation-language-tabs{
+  display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px;
+}
+.translation-language-tabs button{
+  border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer;
+}
+.translation-language-tabs button.active{background:#10252d;color:#fff;border-color:#10252d}
+.admin-payment-note{
+  margin:12px 0 18px;padding:12px 14px;border-left:3px solid #2fc1cf;background:#eef8f9;color:#405a62;font-size:.88rem;line-height:1.55;
+}
+html[dir="rtl"] .admin-payment-note{border-left:0;border-right:3px solid #2fc1cf}
+
+/* V13: the extra Library tab + language switcher need an earlier compact menu. */
+@media(max-width:1380px){
+  .menu-toggle{display:block;order:3}
+  .site-nav{
+    position:absolute;
+    top:72px;
+    left:14px;
+    right:14px;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:0;
+    padding:12px;
+    background:rgba(7,18,23,.985);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    opacity:0;
+    transform:translateY(-7px);
+    pointer-events:none;
+    transition:.2s;
+  }
+  .site-nav.open{opacity:1;transform:none;pointer-events:auto}
+  .site-nav a{padding:12px 10px;font-size:.88rem}
+  .language-switcher{
+    order:2;
+    width:auto;
+    margin-left:auto;
+    padding:0 8px 0 0;
+    border:0;
+  }
+  html[dir="rtl"] .language-switcher{margin-right:auto;margin-left:0;padding:0 0 0 8px}
+}
+@media(max-width:780px){
+  .site-nav{grid-template-columns:1fr}
+  .language-switcher{font-size:.68rem;gap:5px}
+}

@@ -1,26 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Content Manager | Arash Pashazadeh</title>
-  <meta name="description" content="Private website content manager." />
-  <meta name="author" content="Arash Pashazadeh" />
-  <meta name="robots" content="noindex, nofollow" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Content Manager | Arash Pashazadeh" />
-  <meta property="og:description" content="Private website content manager." />
-  <meta property="og:url" content="https://arashpashazadeh1-oss.github.io/admin.html" />
-  <meta property="og:site_name" content="Arash Pashazadeh" />
-  <meta name="twitter:card" content="summary" />
-  <link rel="canonical" href="https://arashpashazadeh1-oss.github.io/admin.html" />
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css?v=12.0" />
-  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.bundle.js"></script>
-  <script type="application/ld+json">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Content Manager | Arash Pashazadeh</title>
+<meta content="Private website content manager." name="description"/>
+<meta content="Arash Pashazadeh" name="author"/>
+<meta content="noindex, nofollow" name="robots"/>
+<meta content="website" property="og:type"/>
+<meta content="Content Manager | Arash Pashazadeh" property="og:title"/>
+<meta content="Private website content manager." property="og:description"/>
+<meta content="https://arashpashazadeh1-oss.github.io/admin.html" property="og:url"/>
+<meta content="Arash Pashazadeh" property="og:site_name"/>
+<meta content="summary" name="twitter:card"/>
+<link href="https://arashpashazadeh1-oss.github.io/admin.html" rel="canonical"/>
+<link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="styles.css?v=13.0" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.bundle.js"></script>
+<script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@type":"Person",
@@ -33,111 +34,143 @@
   }
   </script>
 </head><body data-page="">
-  <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="container nav-wrap">
-      <a class="brand" href="index.html">
-        <span class="brand-mark">AP</span>
-        <span class="brand-text"><strong>Arash Pashazadeh</strong><small>Civil Engineer · Ph.D. Researcher</small></span>
-      </a>
-      <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation"><span></span><span></span><span></span></button>
-      <nav id="site-nav" class="site-nav">
-        <a href="index.html">Home</a>
-        <a href="research.html">Research</a>
-        <a href="projects.html">Projects</a>
-        <a href="publications.html">Publications</a>
-        <a href="conferences.html">Conferences / Events / Activities</a>
-        <a href="insights.html">Insights</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-      </nav>
-    </div>
-  </header>
-<main id="main" class="admin-main">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+<div class="container nav-wrap">
+<a class="brand" href="index.html">
+<span class="brand-mark">AP</span>
+<span class="brand-text"><strong>Arash Pashazadeh</strong><small>Civil Engineer · Ph.D. Researcher</small></span>
+</a>
+<button aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation" class="menu-toggle"><span></span><span></span><span></span></button>
+<nav class="site-nav" id="site-nav"><a href="index.html">Home</a><a href="research.html">Research</a><a href="projects.html">Projects</a><a href="publications.html">Publications</a><a href="conferences.html">Conferences / Events / Activities</a><a href="insights.html">Insights</a><a href="library.html">Library</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
+</div>
+</header>
+<main class="admin-main" id="main">
 <section class="admin-hero"><div class="container"><p class="eyebrow">Private Content Manager</p><h1>Update the website without editing code.</h1><p>Enter the ADMIN_SECRET stored in Cloudflare. The secret is kept only in this browser tab (sessionStorage) and is never included in the website files.</p></div></section>
 <section class="section"><div class="container">
-  <div id="admin-login" class="admin-login-card"><div><h2>Unlock content manager</h2><p>Use the same ADMIN_SECRET value configured in Cloudflare Worker settings.</p></div><form id="admin-login-form" class="admin-login-form"><input id="admin-secret" type="password" autocomplete="current-password" placeholder="ADMIN_SECRET" required><button class="btn btn-primary" type="submit">Unlock</button></form><p id="admin-login-message" class="form-message"></p></div>
-  <div id="admin-dashboard" class="admin-dashboard" hidden>
-    <div class="admin-toolbar"><div><p class="eyebrow">Content Manager</p><h2>Projects, publications, conferences, CV & portfolio</h2></div><div class="admin-toolbar-actions"><a class="btn btn-quiet" href="index.html" target="_blank">Open website ↗</a><button id="admin-logout" class="btn btn-quiet" type="button">Lock</button></div></div>
-    <div class="admin-tabs" role="tablist"><button class="admin-tab active" data-tab="publication" type="button">Publications</button><button class="admin-tab" data-tab="project" type="button">Projects</button><button class="admin-tab" data-tab="conference" type="button">Conferences</button><button class="admin-tab" data-tab="cv" type="button">CV & Portfolio</button><button class="admin-tab" data-tab="analytics" type="button">Analytics</button></div>
-
-    <section class="admin-panel active" data-panel="publication"><div class="admin-two-col"><form id="publication-form" class="content-form"><div class="form-title"><h3 id="publication-form-title">Add publication</h3><button id="publication-reset" class="text-button" type="button">Clear</button></div><input id="publication-id" type="hidden"><div class="doi-row"><label>DOI<input id="pub-doi" type="text" placeholder="10.xxxx/xxxxx"></label><button id="doi-lookup" class="btn btn-quiet" type="button">Auto-fill DOI</button></div><label>Title<input id="pub-title" type="text" required></label><label>Authors<textarea id="pub-authors" rows="2"></textarea></label><div class="form-grid"><label>Journal / Venue<input id="pub-journal" type="text"></label><label>Year<input id="pub-year" type="number" min="1900" max="2100"></label></div><div class="form-grid"><label>Status<select id="pub-status"><option>Published</option><option>Accepted</option><option>In Press</option><option>Under Review</option><option>In Preparation</option></select></label><label class="checkbox-label"><input id="pub-featured" type="checkbox"> Feature on homepage</label></div><label>Publication URL<input id="pub-url" type="url" placeholder="https://..."></label><label>PDF URL<input id="pub-pdf" type="url" placeholder="https://..."></label><label>Abstract / Note<textarea id="pub-abstract" rows="4"></textarea></label><button class="btn btn-primary" type="submit">Save publication</button><p id="publication-message" class="form-message"></p></form><div><div class="admin-list-head"><h3>Existing publications</h3><button class="text-button" data-refresh="publications" type="button">Refresh</button></div><div id="admin-publications" class="admin-list"></div></div></div></section>
-
-    <section class="admin-panel" data-panel="project"><div class="admin-two-col"><form id="project-form" class="content-form"><div class="form-title"><h3 id="project-form-title">Add project</h3><button id="project-reset" class="text-button" type="button">Clear</button></div><input id="project-id" type="hidden"><label>Project title<input id="proj-title" type="text" required></label><div class="form-grid"><label>Category<input id="proj-category" type="text" placeholder="Coastal Engineering"></label><label>Type<select id="proj-kind"><option value="research">Research</option><option value="engineering">Engineering</option><option value="study">Study</option></select></label></div><div class="form-grid"><label>Status<input id="proj-status" type="text" placeholder="Ongoing"></label><label class="checkbox-label"><input id="proj-featured" type="checkbox"> Feature on homepage</label></div><div class="form-grid"><label>Start year<input id="proj-start-year" type="number" min="1900" max="2100"></label><label>End year<input id="proj-end-year" type="number" min="1900" max="2100" placeholder="Leave blank if ongoing"></label></div><label>Short summary<textarea id="proj-summary" rows="3" required></textarea></label><label>Full description<textarea id="proj-description" rows="5"></textarea></label><label>Methods / keywords<input id="proj-methods" type="text" placeholder="Wave flume, OpenFOAM, IMU"></label><label>Legacy image URL <span class="field-hint">(optional fallback)</span><input id="proj-image" type="url" placeholder="https://..."></label><div id="project-image-preview" class="image-preview" hidden><img alt="Project preview"></div><label>External project URL<input id="proj-url" type="url" placeholder="https://..."></label><button class="btn btn-primary" type="submit">Save project</button><p id="project-message" class="form-message"></p>
+<div class="admin-login-card" id="admin-login"><div><h2>Unlock content manager</h2><p>Use the same ADMIN_SECRET value configured in Cloudflare Worker settings.</p></div><form class="admin-login-form" id="admin-login-form"><input autocomplete="current-password" id="admin-secret" placeholder="ADMIN_SECRET" required="" type="password"/><button class="btn btn-primary" type="submit">Unlock</button></form><p class="form-message" id="admin-login-message"></p></div>
+<div class="admin-dashboard" hidden="" id="admin-dashboard">
+<div class="admin-toolbar"><div><p class="eyebrow">Content Manager</p><h2>Projects, publications, conferences, library, translations, CV &amp; portfolio</h2></div><div class="admin-toolbar-actions"><a class="btn btn-quiet" href="index.html" target="_blank">Open website ↗</a><button class="btn btn-quiet" id="admin-logout" type="button">Lock</button></div></div>
+<div class="admin-tabs" role="tablist"><button class="admin-tab active" data-tab="publication" type="button">Publications</button><button class="admin-tab" data-tab="project" type="button">Projects</button><button class="admin-tab" data-tab="conference" type="button">Conferences</button><button class="admin-tab" data-tab="library" type="button">Library</button><button class="admin-tab" data-tab="translation" type="button">Translations</button><button class="admin-tab" data-tab="cv" type="button">CV &amp; Portfolio</button><button class="admin-tab" data-tab="analytics" type="button">Analytics</button></div>
+<section class="admin-panel active" data-panel="publication"><div class="admin-two-col"><form class="content-form" id="publication-form"><div class="form-title"><h3 id="publication-form-title">Add publication</h3><button class="text-button" id="publication-reset" type="button">Clear</button></div><input id="publication-id" type="hidden"/><div class="doi-row"><label>DOI<input id="pub-doi" placeholder="10.xxxx/xxxxx" type="text"/></label><button class="btn btn-quiet" id="doi-lookup" type="button">Auto-fill DOI</button></div><label>Title<input id="pub-title" required="" type="text"/></label><label>Authors<textarea id="pub-authors" rows="2"></textarea></label><div class="form-grid"><label>Journal / Venue<input id="pub-journal" type="text"/></label><label>Year<input id="pub-year" max="2100" min="1900" type="number"/></label></div><div class="form-grid"><label>Status<select id="pub-status"><option>Published</option><option>Accepted</option><option>In Press</option><option>Under Review</option><option>In Preparation</option></select></label><label class="checkbox-label"><input id="pub-featured" type="checkbox"/> Feature on homepage</label></div><label>Publication URL<input id="pub-url" placeholder="https://..." type="url"/></label><label>PDF URL<input id="pub-pdf" placeholder="https://..." type="url"/></label><label>Abstract / Note<textarea id="pub-abstract" rows="4"></textarea></label><button class="btn btn-primary" type="submit">Save publication</button><p class="form-message" id="publication-message"></p></form><div><div class="admin-list-head"><h3>Existing publications</h3><button class="text-button" data-refresh="publications" type="button">Refresh</button></div><div class="admin-list" id="admin-publications"></div></div></div></section>
+<section class="admin-panel" data-panel="project"><div class="admin-two-col"><form class="content-form" id="project-form"><div class="form-title"><h3 id="project-form-title">Add project</h3><button class="text-button" id="project-reset" type="button">Clear</button></div><input id="project-id" type="hidden"/><label>Project title<input id="proj-title" required="" type="text"/></label><div class="form-grid"><label>Category<input id="proj-category" placeholder="Coastal Engineering" type="text"/></label><label>Type<select id="proj-kind"><option value="research">Research</option><option value="engineering">Engineering</option><option value="study">Study</option></select></label></div><div class="form-grid"><label>Status<input id="proj-status" placeholder="Ongoing" type="text"/></label><label class="checkbox-label"><input id="proj-featured" type="checkbox"/> Feature on homepage</label></div><div class="form-grid"><label>Start year<input id="proj-start-year" max="2100" min="1900" type="number"/></label><label>End year<input id="proj-end-year" max="2100" min="1900" placeholder="Leave blank if ongoing" type="number"/></label></div><label>Short summary<textarea id="proj-summary" required="" rows="3"></textarea></label><label>Full description<textarea id="proj-description" rows="5"></textarea></label><label>Methods / keywords<input id="proj-methods" placeholder="Wave flume, OpenFOAM, IMU" type="text"/></label><label>Legacy image URL <span class="field-hint">(optional fallback)</span><input id="proj-image" placeholder="https://..." type="url"/></label><div class="image-preview" hidden="" id="project-image-preview"><img alt="Project preview"/></div><label>External project URL<input id="proj-url" placeholder="https://..." type="url"/></label><button class="btn btn-primary" type="submit">Save project</button><p class="form-message" id="project-message"></p>
 <div class="admin-gallery-manager" id="project-gallery-manager">
-  <div class="gallery-manager-head">
-    <div><h4>Project gallery</h4><p>Save the project first, then upload multiple images.</p></div>
-    <span class="gallery-storage-badge" id="project-gallery-status">Not connected</span>
-  </div>
-  <div class="gallery-dropzone" id="project-dropzone">
-    <input id="project-gallery-files" type="file" accept="image/*" multiple>
-    <strong>Choose or drop project photos</strong>
-    <span>Images are optimized to WebP before upload.</span>
-  </div>
-  <button id="project-upload-images" class="btn btn-quiet" type="button">Upload selected images</button>
-  <p id="project-gallery-message" class="form-message"></p>
-  <div id="project-admin-gallery" class="admin-gallery-grid"></div>
+<div class="gallery-manager-head">
+<div><h4>Project gallery</h4><p>Save the project first, then upload multiple images.</p></div>
+<span class="gallery-storage-badge" id="project-gallery-status">Not connected</span>
 </div>
-</form><div><div class="admin-list-head"><h3>Existing projects</h3><button class="text-button" data-refresh="projects" type="button">Refresh</button></div><div id="admin-projects" class="admin-list"></div></div></div></section>
-
-    <section class="admin-panel" data-panel="conference"><div class="admin-two-col"><form id="conference-form" class="content-form"><div class="form-title"><h3 id="conference-form-title">Add conference</h3><button id="conference-reset" class="text-button" type="button">Clear</button></div><input id="conference-id" type="hidden"><label>Title<input id="conf-title" type="text" required></label><div class="form-grid"><label>Event / Organization<input id="conf-event" type="text"></label><label>Type<input id="conf-type" type="text" placeholder="Conference / Poster / Workshop"></label></div><div class="form-grid"><label>Year<input id="conf-year" type="number" min="1900" max="2100"></label><label>Location<input id="conf-location" type="text"></label></div><label>Description<textarea id="conf-description" rows="4"></textarea></label><label>URL<input id="conf-url" type="url" placeholder="https://..."></label><label class="checkbox-label"><input id="conf-featured" type="checkbox"> Feature on homepage</label><button class="btn btn-primary" type="submit">Save conference</button><p id="conference-message" class="form-message"></p>
+<div class="gallery-dropzone" id="project-dropzone">
+<input accept="image/*" id="project-gallery-files" multiple="" type="file"/>
+<strong>Choose or drop project photos</strong>
+<span>Images are optimized to WebP before upload.</span>
+</div>
+<button class="btn btn-quiet" id="project-upload-images" type="button">Upload selected images</button>
+<p class="form-message" id="project-gallery-message"></p>
+<div class="admin-gallery-grid" id="project-admin-gallery"></div>
+</div>
+</form><div><div class="admin-list-head"><h3>Existing projects</h3><button class="text-button" data-refresh="projects" type="button">Refresh</button></div><div class="admin-list" id="admin-projects"></div></div></div></section>
+<section class="admin-panel" data-panel="conference"><div class="admin-two-col"><form class="content-form" id="conference-form"><div class="form-title"><h3 id="conference-form-title">Add conference</h3><button class="text-button" id="conference-reset" type="button">Clear</button></div><input id="conference-id" type="hidden"/><label>Title<input id="conf-title" required="" type="text"/></label><div class="form-grid"><label>Event / Organization<input id="conf-event" type="text"/></label><label>Type<input id="conf-type" placeholder="Conference / Poster / Workshop" type="text"/></label></div><div class="form-grid"><label>Year<input id="conf-year" max="2100" min="1900" type="number"/></label><label>Location<input id="conf-location" type="text"/></label></div><label>Description<textarea id="conf-description" rows="4"></textarea></label><label>URL<input id="conf-url" placeholder="https://..." type="url"/></label><label class="checkbox-label"><input id="conf-featured" type="checkbox"/> Feature on homepage</label><button class="btn btn-primary" type="submit">Save conference</button><p class="form-message" id="conference-message"></p>
 <div class="admin-gallery-manager" id="conference-gallery-manager">
-  <div class="gallery-manager-head">
-    <div><h4>Conference gallery</h4><p>Save the conference first, then upload event photos, posters, or presentation images.</p></div>
-    <span class="gallery-storage-badge" id="conference-gallery-status">Not connected</span>
-  </div>
-  <div class="gallery-dropzone" id="conference-dropzone">
-    <input id="conference-gallery-files" type="file" accept="image/*" multiple>
-    <strong>Choose or drop conference photos</strong>
-    <span>Images are optimized to WebP before upload.</span>
-  </div>
-  <button id="conference-upload-images" class="btn btn-quiet" type="button">Upload selected images</button>
-  <p id="conference-gallery-message" class="form-message"></p>
-  <div id="conference-admin-gallery" class="admin-gallery-grid"></div>
+<div class="gallery-manager-head">
+<div><h4>Conference gallery</h4><p>Save the conference first, then upload event photos, posters, or presentation images.</p></div>
+<span class="gallery-storage-badge" id="conference-gallery-status">Not connected</span>
 </div>
-</form><div><div class="admin-list-head"><h3>Existing conferences</h3><button class="text-button" data-refresh="conferences" type="button">Refresh</button></div><div id="admin-conferences" class="admin-list"></div></div></div></section>
-
-    <section class="admin-panel" data-panel="cv" id="admin-cv-panel">
-      <div class="admin-toolbar cv-toolbar">
-        <div>
-          <p class="eyebrow">Document Generator</p>
-          <h2>CV & Portfolio Builder</h2>
-          <p>This section uses the same Admin login. No second password is required.</p>
-        </div>
-        <div class="admin-toolbar-actions">
-          <button id="cv-refresh-data" class="btn btn-quiet" type="button">Refresh website data</button>
-        </div>
-      </div>
-
-      <div class="cv-grid-layout">
-        <section class="content-form cv-builder-card">
-          <h3>Personal information</h3>
-          <div class="form-grid">
-            <label>Full name<input id="cv-name" type="text" value="Arash Pashazadeh"></label>
-            <label>Professional title<input id="cv-title" type="text" value="Civil Engineer · Ph.D. Researcher in Systems Engineering"></label>
-          </div>
-          <div class="form-grid">
-            <label>Email<input id="cv-email" type="email" value="ap2329@jagmail.southalabama.edu"></label>
-            <label>Location<input id="cv-location" type="text" value="Mobile, Alabama, USA"></label>
-          </div>
-          <div class="form-grid">
-            <label>Google Scholar<input id="cv-scholar" type="url" value="https://scholar.google.com/citations?user=2cJQkEkAAAAJ&hl=en"></label>
-            <label>LinkedIn<input id="cv-linkedin" type="url" value="https://www.linkedin.com/in/arash-pashazadeh-b34b1a111"></label>
-          </div>
-          <label>Professional summary<textarea id="cv-summary" rows="5">Civil Engineer and Ph.D. Researcher in Systems Engineering with professional experience in hydropower, hydraulic and structural design, pump stations, water infrastructure, hydrologic/hydraulic modeling, and current research in coastal and floating systems, experimental hydrodynamics, CFD/OpenFOAM, sensing, and IMU-based motion reconstruction.</textarea></label>
-          <label>Education<textarea id="cv-education" rows="6">Ph.D. Student in Systems Engineering, University of South Alabama, USA — 2025–Present; Supervisor: Dr. Shenghua Wu
-M.Sc. in Civil Engineering – Water Engineering & Hydraulic Structures, Razi University — 2015–2018; Thesis: Development of Hydrologic Models for Flow Routing in Multiple-Branch Systems; Excellent (19.25/20); Supervisor: Dr. Mitra Javan
+<div class="gallery-dropzone" id="conference-dropzone">
+<input accept="image/*" id="conference-gallery-files" multiple="" type="file"/>
+<strong>Choose or drop conference photos</strong>
+<span>Images are optimized to WebP before upload.</span>
+</div>
+<button class="btn btn-quiet" id="conference-upload-images" type="button">Upload selected images</button>
+<p class="form-message" id="conference-gallery-message"></p>
+<div class="admin-gallery-grid" id="conference-admin-gallery"></div>
+</div>
+</form><div><div class="admin-list-head"><h3>Existing conferences</h3><button class="text-button" data-refresh="conferences" type="button">Refresh</button></div><div class="admin-list" id="admin-conferences"></div></div></div></section>
+<section class="admin-panel" data-panel="library">
+<div class="admin-two-col">
+<form class="content-form" id="library-form">
+<div class="form-title"><h3 id="library-form-title">Add library item</h3><button class="text-button" id="library-reset" type="button">Clear</button></div>
+<input id="library-id" type="hidden"/>
+<label>Title<input id="lib-title" required="" type="text"/></label>
+<div class="form-grid"><label>Author / Creator<input id="lib-author" type="text"/></label><label>Type<select id="lib-type"><option value="book">Book</option><option value="design_notebook">Design notebook</option></select></label></div>
+<div class="form-grid"><label>Year<input id="lib-year" max="2100" min="1900" type="number"/></label><label>Currency<input id="lib-currency" maxlength="8" type="text" value="USD"/></label></div>
+<div class="form-grid"><label>Price<input id="lib-price" min="0" placeholder="29.99" step="0.01" type="number"/></label><label class="checkbox-label"><input id="lib-featured" type="checkbox"/> Featured</label></div>
+<label class="checkbox-label"><input checked="" id="lib-published" type="checkbox"/> Published in public Library</label>
+<label>Short summary<textarea id="lib-summary" rows="3"></textarea></label>
+<label>Full description<textarea id="lib-description" rows="6"></textarea></label>
+<label>Legacy cover image URL <span class="field-hint">(optional fallback; gallery cover is preferred)</span><input id="lib-cover" placeholder="https://..." type="url"/></label>
+<label>Public preview URL <span class="field-hint">(optional sample pages / preview PDF)</span><input id="lib-preview" placeholder="https://..." type="url"/></label>
+<label>Secure purchase / checkout URL<input id="lib-purchase" placeholder="Stripe Payment Link, Gumroad, Payhip, etc." type="url"/></label>
+<div class="admin-payment-note"><strong>Paid-file safety:</strong> use this field for a secure payment-provider checkout. Do not place the paid full PDF at a public GitHub URL. Configure protected digital delivery with the payment provider.</div>
+<button class="btn btn-primary" type="submit">Save library item</button>
+<p class="form-message" id="library-message"></p>
+<div class="admin-gallery-manager" id="library-gallery-manager">
+<div class="gallery-manager-head"><div><h4>Library cover / gallery</h4><p>Save the item first, then upload cover or preview images.</p></div><span class="gallery-storage-badge" id="library-gallery-status">Not connected</span></div>
+<div class="gallery-dropzone" id="library-dropzone"><input accept="image/*" id="library-gallery-files" multiple="" type="file"/><strong>Choose or drop library images</strong><span>Images are optimized to WebP before upload.</span></div>
+<button class="btn btn-quiet" id="library-upload-images" type="button">Upload selected images</button>
+<p class="form-message" id="library-gallery-message"></p>
+<div class="admin-gallery-grid" id="library-admin-gallery"></div>
+</div>
+</form>
+<div><div class="admin-list-head"><h3>Existing library items</h3><button class="text-button" data-refresh="library" type="button">Refresh</button></div><div class="admin-list" id="admin-library"></div></div>
+</div>
+</section><section class="admin-panel" data-panel="translation">
+<div class="admin-toolbar cv-toolbar"><div><p class="eyebrow">Multilingual Content</p><h2>Persian · Spanish · German</h2><p>English remains the base record. Add optional translations here; if a translation is blank, the public site falls back to English.</p></div></div>
+<div class="admin-two-col">
+<form class="content-form" id="translation-form">
+<div class="form-grid"><label>Content type<select id="tr-entity-type"><option value="project">Project / Research</option><option value="conference">Conference</option><option value="publication">Publication</option><option value="library">Library item</option></select></label><label>Item<select id="tr-entity-id"><option value="">Choose an item</option></select></label></div>
+<div class="translation-language-tabs" role="tablist"><button class="active" data-tr-lang="fa" type="button">FA · فارسی</button><button data-tr-lang="es" type="button">ES · Español</button><button data-tr-lang="de" type="button">DE · Deutsch</button></div>
+<input id="tr-lang" type="hidden" value="fa"/>
+<label id="tr-title-wrap">Title<input id="tr-title" type="text"/></label>
+<label id="tr-secondary-wrap"><span id="tr-secondary-label">Category / Event / Journal / Author</span><input id="tr-secondary" type="text"/></label>
+<label id="tr-summary-wrap"><span id="tr-summary-label">Summary / Abstract</span><textarea id="tr-summary" rows="4"></textarea></label>
+<label id="tr-description-wrap"><span id="tr-description-label">Description</span><textarea id="tr-description" rows="7"></textarea></label>
+<label id="tr-extra-wrap"><span id="tr-extra-label">Methods / Location</span><input id="tr-extra" type="text"/></label>
+<label id="tr-status-wrap"><span id="tr-status-label">Status / Type</span><input id="tr-status" type="text"/></label>
+<button class="btn btn-primary" type="submit">Save translation</button>
+<p class="form-message" id="translation-message"></p>
+</form>
+<section class="content-form"><h3>How translations work</h3><p>Static pages already have full Persian, Spanish, and German versions. This panel is only for database-driven content: projects, research, conferences, publications, and Library items.</p><p>Publication titles may remain in their original published language. You can translate the abstract/status only if you prefer.</p><p>After saving a translation, the localized public pages automatically request it from the Cloudflare Worker.</p></section>
+</div>
+</section><section class="admin-panel" data-panel="cv" id="admin-cv-panel">
+<div class="admin-toolbar cv-toolbar">
+<div>
+<p class="eyebrow">Document Generator</p>
+<h2>CV &amp; Portfolio Builder</h2>
+<p>This section uses the same Admin login. No second password is required.</p>
+</div>
+<div class="admin-toolbar-actions">
+<button class="btn btn-quiet" id="cv-refresh-data" type="button">Refresh website data</button>
+</div>
+</div>
+<div class="cv-grid-layout">
+<section class="content-form cv-builder-card">
+<h3>Personal information</h3>
+<div class="form-grid">
+<label>Full name<input id="cv-name" type="text" value="Arash Pashazadeh"/></label>
+<label>Professional title<input id="cv-title" type="text" value="Civil Engineer · Ph.D. Researcher in Systems Engineering"/></label>
+</div>
+<div class="form-grid">
+<label>Email<input id="cv-email" type="email" value="ap2329@jagmail.southalabama.edu"/></label>
+<label>Location<input id="cv-location" type="text" value="Mobile, Alabama, USA"/></label>
+</div>
+<div class="form-grid">
+<label>Google Scholar<input id="cv-scholar" type="url" value="https://scholar.google.com/citations?user=2cJQkEkAAAAJ&amp;hl=en"/></label>
+<label>LinkedIn<input id="cv-linkedin" type="url" value="https://www.linkedin.com/in/arash-pashazadeh-b34b1a111"/></label>
+</div>
+<label>Professional summary<textarea id="cv-summary" rows="5">Civil Engineer and Ph.D. Researcher in Systems Engineering with professional experience in hydropower, hydraulic and structural design, pump stations, water infrastructure, hydrologic/hydraulic modeling, and current research in coastal and floating systems, experimental hydrodynamics, CFD/OpenFOAM, sensing, and IMU-based motion reconstruction.</textarea></label>
+<label>Education<textarea id="cv-education" rows="6">Ph.D. Student in Systems Engineering, University of South Alabama, USA — 2025–Present; Supervisor: Dr. Shenghua Wu
+M.Sc. in Civil Engineering – Water Engineering &amp; Hydraulic Structures, Razi University — 2015–2018; Thesis: Development of Hydrologic Models for Flow Routing in Multiple-Branch Systems; Excellent (19.25/20); Supervisor: Dr. Mitra Javan
 B.Sc. in Civil Engineering, Kurdistan University — 2010–2014
 HSE-MS Certificate — 2018; Cert. No. 137IR0519; 40 hours training</textarea></label>
-          <label>Experience / roles<textarea id="cv-experience" rows="12">Ph.D. Researcher / Graduate Research Assistant — University of South Alabama
-Designer & Technical Office Engineer — TGEM Construction & Hydropower Company — 2024 — Sebzor Hydropower: powerhouse monorail hoists; concrete/ferro-beam and MIV steel systems; HVAC supports; thrust rings; 23 m drainage shafts; roof truss/crane girders; fishpass-intake; gabion protection; penstock manholes; bridge-end steel supports; metal-work specifications
+<label>Experience / roles<textarea id="cv-experience" rows="12">Ph.D. Researcher / Graduate Research Assistant — University of South Alabama
+Designer &amp; Technical Office Engineer — TGEM Construction &amp; Hydropower Company — 2024 — Sebzor Hydropower: powerhouse monorail hoists; concrete/ferro-beam and MIV steel systems; HVAC supports; thrust rings; 23 m drainage shafts; roof truss/crane girders; fishpass-intake; gabion protection; penstock manholes; bridge-end steel supports; metal-work specifications
 Design Engineer — Abvarzan Consulting Engineers — 2018–2024 — 2022 Ahvaz: pump-station hydraulic modeling, 1,400 m² suction pond, stop logs/sluice gates, 300 m² warehouse and 2,500 m² steel pump-station structure
 Design Engineer — Abvarzan Consulting Engineers — 2021 — 2,500 m² pump-station concrete structure, control room, 15,000 m² 3D landscape/building model, Balarood gates and steel pump-station structure
 Design Engineer — Abvarzan Consulting Engineers — 2020 — Balarood diversion dam, approximately 300 m² steel pump-station structure, approximately 250 m² suction pond, approximately 250 m² warehouse, control room; Tehran water-supply tanks 360/216/360 m³ and 20 m elevated tank
 Design Engineer — Arman Pei Alborz Consulting Engineers — 2014–2020 — 2,000 m² steel sports club; water/sewer and street networks; 80,000–90,000 m² urban projects; 16-floor concrete building; 1,200-unit development; retaining walls, pipeline valves and concrete chambers
-Historical role wording in earlier CV: Senior Supervisor & Designer — Abvarzan Consulting Engineers
-Historical role wording in earlier CV: Advisor & Designer — Arman Pei Alborz Consulting Engineers</textarea></label>
-          <label>Skills<textarea id="cv-skills" rows="8">Hydraulic / water: Flow-3D, EPANET, HEC-RAS, HAMMER, WEAP, Water/Sewer CAD; pump stations, suction ponds, gates, diversion-dam components, water/sewer networks, tanks, valve chambers and water-supply mechanical facilities
+Historical role wording in earlier CV: Senior Supervisor &amp; Designer — Abvarzan Consulting Engineers
+Historical role wording in earlier CV: Advisor &amp; Designer — Arman Pei Alborz Consulting Engineers</textarea></label>
+<label>Skills<textarea id="cv-skills" rows="8">Hydraulic / water: Flow-3D, EPANET, HEC-RAS, HAMMER, WEAP, Water/Sewer CAD; pump stations, suction ponds, gates, diversion-dam components, water/sewer networks, tanks, valve chambers and water-supply mechanical facilities
 Programming / data: Python, MATLAB, machine learning, optimization, signal processing, IMU analysis
 CFD / research: OpenFOAM, numerical modeling, wave-flume testing, experimental hydrodynamics, sensing and data synthesis
 Structural / civil: SAP2000, SAFE, ETABS, ABAQUS, Civil 3D, PROKON; concrete, steel, industrial shed and support structures
@@ -145,170 +178,160 @@ Geotechnical: GeoStudio / Geo Office — SEEP/W, SLOPE/W, SIGMA/W, QUAKE/W, CTRA
 AI / intelligent systems: ANN (MLP, RBF), GEP, GP, GeneXproTools, NeuroSolutions, ANFIS, CANFIS
 Optimization / statistics: GA, PSO, ACO, Bat Algorithm; factor, risk, regression, reliability and PCA; SPSS
 Drawing / general: AutoCAD, SketchUp, Photoshop, Microsoft Project, Excel, Word, PowerPoint, Publisher</textarea></label>
-          <label>Languages<textarea id="cv-languages" rows="5">English — TOEFL iBT 104/120 (Sep. 16, 2024): Reading 26, Listening 28, Speaking 21, Writing 29
+<label>Languages<textarea id="cv-languages" rows="5">English — TOEFL iBT 104/120 (Sep. 16, 2024): Reading 26, Listening 28, Speaking 21, Writing 29
 Earlier TOEFL record — 107/120 (Apr. 26, 2022): Reading 30, Listening 30, Speaking 19, Writing 28
 Persian — Fluent in oral, aural and writing
 Kurdish — Fluent in oral, aural and writing
 Arabic — aural and writing proficiency listed in earlier CV material</textarea></label>
-          <label>Research & work interests<textarea id="cv-interests" rows="4">Numerical hydrologic and hydraulic modeling
+<label>Research &amp; work interests<textarea id="cv-interests" rows="4">Numerical hydrologic and hydraulic modeling
 Flood forecasting and stormwater management
 Porous media and permeable pavements
 Machine learning and artificial intelligence
 Hydraulic, aquatic, coastal, and floating structures
 Experimental hydrodynamics, CFD/OpenFOAM, sensing and IMU analysis</textarea></label>
-          <label>Honors & distinctions<textarea id="cv-honors" rows="3">Ranked 30th nationwide in Iran (2018) in the Ph.D. candidate selection examination for Water Resources Management Engineering (NOET).</textarea></label>
-          <label>Professional memberships<textarea id="cv-memberships" rows="3">Tehran Construction Engineering Organization (TCEO)
+<label>Honors &amp; distinctions<textarea id="cv-honors" rows="3">Ranked 30th nationwide in Iran (2018) in the Ph.D. candidate selection examination for Water Resources Management Engineering (NOET).</textarea></label>
+<label>Professional memberships<textarea id="cv-memberships" rows="3">Tehran Construction Engineering Organization (TCEO)
 Iran Value Engineering Association</textarea></label>
-          <label>Certifications<textarea id="cv-certifications" rows="2">HSE-MS Certificate — 2018 — Cert. No. 137IR0519 — 40 hours training</textarea></label>
-        </section>
-
-        <section class="content-form cv-builder-card">
-          <h3>Document options</h3>
-          <div class="form-grid">
-            <label>Portfolio images per project
+<label>Certifications<textarea id="cv-certifications" rows="2">HSE-MS Certificate — 2018 — Cert. No. 137IR0519 — 40 hours training</textarea></label>
+</section>
+<section class="content-form cv-builder-card">
+<h3>Document options</h3>
+<div class="form-grid">
+<label>Portfolio images per project
               <select id="portfolio-image-count">
-                <option value="3">3 images</option>
-                <option value="4" selected>4 images</option>
-              </select>
-            </label>
-            <label>Portfolio text size
+<option value="3">3 images</option>
+<option selected="" value="4">4 images</option>
+</select>
+</label>
+<label>Portfolio text size
               <select id="portfolio-font-size">
-                <option value="11">11 pt</option>
-                <option value="12" selected>12 pt</option>
-                <option value="13">13 pt</option>
-              </select>
-            </label>
-          </div>
-          <div class="form-grid">
-            <label>Include project types
+<option value="11">11 pt</option>
+<option selected="" value="12">12 pt</option>
+<option value="13">13 pt</option>
+</select>
+</label>
+</div>
+<div class="form-grid">
+<label>Include project types
               <select id="portfolio-kind-filter">
-                <option value="all" selected>All projects</option>
-                <option value="research">Research only</option>
-                <option value="engineering">Engineering only</option>
-                <option value="study">Studies only</option>
-              </select>
-            </label>
-            <label>Portfolio format
+<option selected="" value="all">All projects</option>
+<option value="research">Research only</option>
+<option value="engineering">Engineering only</option>
+<option value="study">Studies only</option>
+</select>
+</label>
+<label>Portfolio format
               <select id="portfolio-format">
-                <option value="both" selected>PPTX + PDF</option>
-                <option value="pptx">PPTX only</option>
-                <option value="pdf">PDF only</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="form-grid">
-            <label>Long CV images per project
+<option selected="" value="both">PPTX + PDF</option>
+<option value="pptx">PPTX only</option>
+<option value="pdf">PDF only</option>
+</select>
+</label>
+</div>
+<div class="form-grid">
+<label>Long CV images per project
               <select id="long-cv-image-count">
-                <option value="2" selected>2 images</option>
-                <option value="3">3 images</option>
-                <option value="4">4 images</option>
-              </select>
-            </label>
-            <label>Long CV image layout
+<option selected="" value="2">2 images</option>
+<option value="3">3 images</option>
+<option value="4">4 images</option>
+</select>
+</label>
+<label>Long CV image layout
               <select id="long-cv-image-layout">
-                <option value="below" selected>Two-column images below project text</option>
-              </select>
-            </label>
-          </div>
-          <label class="checkbox-label"><input id="include-conferences" type="checkbox" checked> Include conferences / workshops in CV outputs</label>
-          <label class="checkbox-label"><input id="include-publications" type="checkbox" checked> Include publications in CV outputs</label>
-          <label class="checkbox-label"><input id="portfolio-include-conferences" type="checkbox" checked> Add conference / workshop slides to portfolio</label>
-
-          <div class="cv-actions-stack">
-            <button id="generate-academic-cv" class="btn btn-primary" type="button">Generate Academic CV — Word + PDF</button>
-            <button id="generate-engineering-cv" class="btn btn-primary" type="button">Generate Engineering CV — Word + PDF</button>
-            <button id="generate-europass-cv" class="btn btn-primary" type="button">Generate Europass-style CV — Word + PDF</button>
-            <button id="generate-long-cv" class="btn btn-primary" type="button">Generate Long CV with Images — Word + PDF</button>
-            <button id="generate-portfolio" class="btn btn-primary" type="button">Generate Long Portfolio — PPTX + PDF</button>
-          </div>
-          <p class="cv-engine-version">Generator engine: V11.0</p><p id="cv-status" class="form-message"></p>
-          <div class="cv-data-summary" id="cv-data-summary">Open this tab to load website data.</div>
-        </section>
-      </div>
-
-      <section class="content-form cv-builder-card cv-selection-card">
-        <div class="form-title">
-          <h3>Select projects for portfolio / long CV</h3>
-          <button id="select-featured-projects" class="text-button" type="button">Featured only</button>
-          <button id="select-all-projects" class="text-button" type="button">Select all</button>
-        </div>
-        <p>The same project selection is used for the Long Portfolio and Long CV. Portfolio pages are 16:9; Long CV project sections include project text followed by two-column images with preserved aspect ratio.</p>
-        <div id="cv-project-selector" class="cv-selector-grid"></div>
-      </section>
-    </section>
-
-  </div>
-
-    <section class="admin-panel" data-panel="analytics" id="admin-analytics-panel">
-      <div class="admin-toolbar cv-toolbar">
-        <div>
-          <p class="eyebrow">Private Site Analytics</p>
-          <h2>Visitors & Traffic</h2>
-          <p>Page views, approximate visitor location, referrers, devices, and masked IPs. Raw IP storage is off by default.</p>
-        </div>
-        <div class="admin-toolbar-actions">
-          <label class="analytics-range-label">Range
+<option selected="" value="below">Two-column images below project text</option>
+</select>
+</label>
+</div>
+<label class="checkbox-label"><input checked="" id="include-conferences" type="checkbox"/> Include conferences / workshops in CV outputs</label>
+<label class="checkbox-label"><input checked="" id="include-publications" type="checkbox"/> Include publications in CV outputs</label>
+<label class="checkbox-label"><input checked="" id="portfolio-include-conferences" type="checkbox"/> Add conference / workshop slides to portfolio</label>
+<div class="cv-actions-stack">
+<button class="btn btn-primary" id="generate-academic-cv" type="button">Generate Academic CV — Word + PDF</button>
+<button class="btn btn-primary" id="generate-engineering-cv" type="button">Generate Engineering CV — Word + PDF</button>
+<button class="btn btn-primary" id="generate-europass-cv" type="button">Generate Europass-style CV — Word + PDF</button>
+<button class="btn btn-primary" id="generate-long-cv" type="button">Generate Long CV with Images — Word + PDF</button>
+<button class="btn btn-primary" id="generate-portfolio" type="button">Generate Long Portfolio — PPTX + PDF</button>
+</div>
+<p class="cv-engine-version">Generator engine: V11.0</p><p class="form-message" id="cv-status"></p>
+<div class="cv-data-summary" id="cv-data-summary">Open this tab to load website data.</div>
+</section>
+</div>
+<section class="content-form cv-builder-card cv-selection-card">
+<div class="form-title">
+<h3>Select projects for portfolio / long CV</h3>
+<button class="text-button" id="select-featured-projects" type="button">Featured only</button>
+<button class="text-button" id="select-all-projects" type="button">Select all</button>
+</div>
+<p>The same project selection is used for the Long Portfolio and Long CV. Portfolio pages are 16:9; Long CV project sections include project text followed by two-column images with preserved aspect ratio.</p>
+<div class="cv-selector-grid" id="cv-project-selector"></div>
+</section>
+</section>
+</div>
+<section class="admin-panel" data-panel="analytics" id="admin-analytics-panel">
+<div class="admin-toolbar cv-toolbar">
+<div>
+<p class="eyebrow">Private Site Analytics</p>
+<h2>Visitors &amp; Traffic</h2>
+<p>Page views, approximate visitor location, referrers, devices, and masked IPs. Raw IP storage is off by default.</p>
+</div>
+<div class="admin-toolbar-actions">
+<label class="analytics-range-label">Range
             <select id="analytics-days">
-              <option value="7">7 days</option>
-              <option value="30" selected>30 days</option>
-              <option value="90">90 days</option>
-              <option value="365">1 year</option>
-            </select>
-          </label>
-          <button id="analytics-refresh" class="btn btn-quiet" type="button">Refresh</button>
-        </div>
-      </div>
-
-      <div class="analytics-summary-grid">
-        <div class="analytics-stat"><span>Page views</span><strong id="analytics-pageviews">—</strong></div>
-        <div class="analytics-stat"><span>Unique visitors</span><strong id="analytics-visitors">—</strong></div>
-        <div class="analytics-stat"><span>Countries</span><strong id="analytics-countries-count">—</strong></div>
-        <div class="analytics-stat"><span>IP mode</span><strong id="analytics-ip-mode">Masked</strong></div>
-      </div>
-
-      <div class="analytics-two-col">
-        <section class="content-form">
-          <div class="admin-list-head"><h3>Top countries</h3></div>
-          <div id="analytics-countries" class="analytics-ranked-list"><div class="data-loading">Loading…</div></div>
-        </section>
-        <section class="content-form">
-          <div class="admin-list-head"><h3>Top pages</h3></div>
-          <div id="analytics-pages" class="analytics-ranked-list"><div class="data-loading">Loading…</div></div>
-        </section>
-      </div>
-
-      <section class="content-form analytics-recent-card">
-        <div class="admin-list-head"><h3>Recent visits</h3></div>
-        <div class="analytics-table-wrap">
-          <table class="analytics-table">
-            <thead><tr><th>Time</th><th>Page</th><th>Location</th><th>IP</th><th>Referrer</th><th>Device / Browser</th></tr></thead>
-            <tbody id="analytics-visits"><tr><td colspan="6">Loading…</td></tr></tbody>
-          </table>
-        </div>
-        <p id="analytics-message" class="form-message"></p>
-      </section>
-    </section>
-
+<option value="7">7 days</option>
+<option selected="" value="30">30 days</option>
+<option value="90">90 days</option>
+<option value="365">1 year</option>
+</select>
+</label>
+<button class="btn btn-quiet" id="analytics-refresh" type="button">Refresh</button>
+</div>
+</div>
+<div class="analytics-summary-grid">
+<div class="analytics-stat"><span>Page views</span><strong id="analytics-pageviews">—</strong></div>
+<div class="analytics-stat"><span>Unique visitors</span><strong id="analytics-visitors">—</strong></div>
+<div class="analytics-stat"><span>Countries</span><strong id="analytics-countries-count">—</strong></div>
+<div class="analytics-stat"><span>IP mode</span><strong id="analytics-ip-mode">Masked</strong></div>
+</div>
+<div class="analytics-two-col">
+<section class="content-form">
+<div class="admin-list-head"><h3>Top countries</h3></div>
+<div class="analytics-ranked-list" id="analytics-countries"><div class="data-loading">Loading…</div></div>
+</section>
+<section class="content-form">
+<div class="admin-list-head"><h3>Top pages</h3></div>
+<div class="analytics-ranked-list" id="analytics-pages"><div class="data-loading">Loading…</div></div>
+</section>
+</div>
+<section class="content-form analytics-recent-card">
+<div class="admin-list-head"><h3>Recent visits</h3></div>
+<div class="analytics-table-wrap">
+<table class="analytics-table">
+<thead><tr><th>Time</th><th>Page</th><th>Location</th><th>IP</th><th>Referrer</th><th>Device / Browser</th></tr></thead>
+<tbody id="analytics-visits"><tr><td colspan="6">Loading…</td></tr></tbody>
+</table>
+</div>
+<p class="form-message" id="analytics-message"></p>
+</section>
+</section>
 </div></section></main>
-  <footer class="site-footer">
-    <div class="container footer-stack">
-      <div class="footer-top">
-        <div>
-          <strong>Arash Pashazadeh</strong>
-          <p>Civil Engineering · Research · Innovation</p>
-        </div>
-        <div class="social-links social-links-compact" aria-label="Social and academic profiles">
-      <a class="social-link" href="https://scholar.google.com/citations?user=2cJQkEkAAAAJ&hl=en" target="_blank" rel="noopener noreferrer"><span>GS</span><strong>Google Scholar</strong></a>
-      <a class="social-link" href="https://www.linkedin.com/in/arash-pashazadeh-b34b1a111" target="_blank" rel="noopener noreferrer"><span>in</span><strong>LinkedIn</strong></a>
-      <a class="social-link" href="https://www.instagram.com/arash6612330/" target="_blank" rel="noopener noreferrer"><span>IG</span><strong>Instagram</strong></a>
-    </div>
-      </div>
-      <div class="footer-inner"><p>© <span id="year"></span> Arash Pashazadeh</p><p><a href="admin.html" class="admin-link">Manage content</a></p></div>
-    </div>
-  </footer>
-  <script src="script.js?v=12.0"></script>
-  <script src="admin.js?v=12.0"></script>
-  <script src="admin-cv-v95.js?v=11.0"></script>
+<footer class="site-footer">
+<div class="container footer-stack">
+<div class="footer-top">
+<div>
+<strong>Arash Pashazadeh</strong>
+<p>Civil Engineering · Research · Innovation</p>
+</div>
+<div aria-label="Social and academic profiles" class="social-links social-links-compact">
+<a class="social-link" href="https://scholar.google.com/citations?user=2cJQkEkAAAAJ&amp;hl=en" rel="noopener noreferrer" target="_blank"><span>GS</span><strong>Google Scholar</strong></a>
+<a class="social-link" href="https://www.linkedin.com/in/arash-pashazadeh-b34b1a111" rel="noopener noreferrer" target="_blank"><span>in</span><strong>LinkedIn</strong></a>
+<a class="social-link" href="https://www.instagram.com/arash6612330/" rel="noopener noreferrer" target="_blank"><span>IG</span><strong>Instagram</strong></a>
+</div>
+</div>
+<div class="footer-inner"><p>© <span id="year"></span> Arash Pashazadeh</p><p><a class="admin-link" href="admin.html">Manage content</a></p></div>
+</div>
+</footer>
+<script src="script.js?v=12.0"></script>
+<script src="admin.js?v=13.0"></script>
+<script src="admin-cv-v95.js?v=11.0"></script>
 </body>
 </html>

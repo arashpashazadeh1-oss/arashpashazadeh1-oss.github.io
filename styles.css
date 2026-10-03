@@ -1544,3 +1544,17 @@ html[dir="rtl"] .admin-payment-note{border-left:0;border-right:3px solid #2fc1cf
   .site-nav{grid-template-columns:1fr}
   .language-switcher{font-size:.68rem;gap:5px}
 }
+
+
+/* V13.1 secure Library checkout */
+.library-payment-notice{
+  margin-top:1rem;
+  padding:.9rem 1rem;
+  border:1px solid rgba(96,210,255,.25);
+  border-radius:14px;
+  background:rgba(96,210,255,.07);
+  line-height:1.55;
+}
+.library-secure-download{margin-top:.75rem;display:inline-flex}
+.compact-dropzone{min-height:110px}
+#library-protected-file-info{margin-top:.7rem}

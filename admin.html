@@ -16,7 +16,7 @@
 <meta content="summary" name="twitter:card"/>
 <link href="https://arashpashazadeh1-oss.github.io/admin.html" rel="canonical"/>
 <link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/>
-<link href="styles.css?v=13.0" rel="stylesheet"/>
+<link href="styles.css?v=13.1" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -99,8 +99,8 @@
 <label>Full description<textarea id="lib-description" rows="6"></textarea></label>
 <label>Legacy cover image URL <span class="field-hint">(optional fallback; gallery cover is preferred)</span><input id="lib-cover" placeholder="https://..." type="url"/></label>
 <label>Public preview URL <span class="field-hint">(optional sample pages / preview PDF)</span><input id="lib-preview" placeholder="https://..." type="url"/></label>
-<label>Secure purchase / checkout URL<input id="lib-purchase" placeholder="Stripe Payment Link, Gumroad, Payhip, etc." type="url"/></label>
-<div class="admin-payment-note"><strong>Paid-file safety:</strong> use this field for a secure payment-provider checkout. Do not place the paid full PDF at a public GitHub URL. Configure protected digital delivery with the payment provider.</div>
+<label>External purchase URL <span class="field-hint">(optional fallback)</span><input id="lib-purchase" placeholder="Optional external checkout link" type="url"/></label>
+<div class="admin-payment-note"><strong>Secure paid delivery:</strong> V13.1 can create Stripe Checkout sessions on the server and release the protected PDF only after payment verification. The external URL above is only a fallback.</div>
 <button class="btn btn-primary" type="submit">Save library item</button>
 <p class="form-message" id="library-message"></p>
 <div class="admin-gallery-manager" id="library-gallery-manager">
@@ -110,6 +110,16 @@
 <p class="form-message" id="library-gallery-message"></p>
 <div class="admin-gallery-grid" id="library-admin-gallery"></div>
 </div>
+<div class="admin-gallery-manager" id="library-protected-file-manager">
+<div class="gallery-manager-head"><div><h4>Protected paid PDF</h4><p>Upload the full paid PDF here. It is stored in the private Telegram media channel and is never placed in public GitHub.</p></div><span class="gallery-storage-badge" id="library-payment-status">Save item first</span></div>
+<div class="gallery-dropzone compact-dropzone" id="library-pdf-dropzone"><input accept="application/pdf,.pdf" id="library-protected-file" type="file"/><strong>Choose protected PDF</strong><span>PDF only · maximum configured size 20 MB.</span></div>
+<div class="admin-item-actions">
+<button class="btn btn-quiet" id="library-upload-protected-file" type="button">Upload / replace protected PDF</button>
+<button class="btn btn-quiet danger" id="library-delete-protected-file" type="button">Remove protected PDF</button>
+</div>
+<p class="form-message" id="library-protected-file-message"></p>
+<div class="admin-payment-note" id="library-protected-file-info">Save this Library item first.</div>
+</div>
 </form>
 <div><div class="admin-list-head"><h3>Existing library items</h3><button class="text-button" data-refresh="library" type="button">Refresh</button></div><div class="admin-list" id="admin-library"></div></div>
 </div>
@@ -117,7 +127,7 @@
 <div class="admin-toolbar cv-toolbar"><div><p class="eyebrow">Multilingual Content</p><h2>Persian · Spanish · German</h2><p>English remains the base record. Add optional translations here; if a translation is blank, the public site falls back to English.</p></div></div>
 <div class="admin-two-col">
 <form class="content-form" id="translation-form">
-<div class="form-grid"><label>Content type<select id="tr-entity-type"><option value="project">Project / Research</option><option value="conference">Conference</option><option value="publication">Publication</option><option value="library">Library item</option></select></label><label>Item<select id="tr-entity-id"><option value="">Choose an item</option></select></label></div>
+<div class="form-grid"><label>Content type<select id="tr-entity-type"><option value="project">Project / Research</option><option value="conference">Conference</option><option value="publication">Publication</option></select></label><label>Item<select id="tr-entity-id"><option value="">Choose an item</option></select></label></div>
 <div class="translation-language-tabs" role="tablist"><button class="active" data-tr-lang="fa" type="button">FA · فارسی</button><button data-tr-lang="es" type="button">ES · Español</button><button data-tr-lang="de" type="button">DE · Deutsch</button></div>
 <input id="tr-lang" type="hidden" value="fa"/>
 <label id="tr-title-wrap">Title<input id="tr-title" type="text"/></label>
@@ -129,7 +139,7 @@
 <button class="btn btn-primary" type="submit">Save translation</button>
 <p class="form-message" id="translation-message"></p>
 </form>
-<section class="content-form"><h3>How translations work</h3><p>Static pages already have full Persian, Spanish, and German versions. This panel is only for database-driven content: projects, research, conferences, publications, and Library items.</p><p>Publication titles may remain in their original published language. You can translate the abstract/status only if you prefer.</p><p>After saving a translation, the localized public pages automatically request it from the Cloudflare Worker.</p></section>
+<section class="content-form"><h3>How translations work</h3><p>Static pages already have full Persian, Spanish, and German versions. This panel is only for database-driven projects, research, conferences, and publications. Library items remain in their original English content.</p><p>Publication titles may remain in their original published language. You can translate the abstract/status only if you prefer.</p><p>After saving a translation, the localized public pages automatically request it from the Cloudflare Worker.</p></section>
 </div>
 </section><section class="admin-panel" data-panel="cv" id="admin-cv-panel">
 <div class="admin-toolbar cv-toolbar">
@@ -331,7 +341,7 @@ Iran Value Engineering Association</textarea></label>
 </div>
 </footer>
 <script src="script.js?v=12.0"></script>
-<script src="admin.js?v=13.0"></script>
+<script src="admin.js?v=13.1"></script>
 <script src="admin-cv-v95.js?v=11.0"></script>
 </body>
 </html>

@@ -3,6 +3,7 @@ const SECRET_KEY = "arash_admin_session_secret";
 
 let adminSecret = sessionStorage.getItem(SECRET_KEY) || "";
 let mediaStorageReady = false;
+let stripeCheckoutReady = false;
 let caches = { publications: [], projects: [], conferences: [], library: [] };
 let galleryCaches = { project: [], conference: [], library: [] };
 
@@ -71,6 +72,11 @@ function updateMediaStorageBadges() {
     badge.textContent = mediaStorageReady ? "Telegram media connected" : "Telegram media not connected";
     badge.classList.toggle("ready", mediaStorageReady);
   });
+  const paymentBadge = $("library-payment-status");
+  if (paymentBadge) {
+    paymentBadge.textContent = stripeCheckoutReady ? "Stripe connected" : "Stripe not configured";
+    paymentBadge.classList.toggle("ready", stripeCheckoutReady);
+  }
 }
 
 function showDashboard() {
@@ -89,6 +95,7 @@ async function verifySecret(secret) {
   adminSecret = secret;
   const ping = await adminFetch("/admin/ping", { method: "GET" });
   mediaStorageReady = Boolean(ping.media_storage);
+  stripeCheckoutReady = Boolean(ping.stripe_checkout);
   sessionStorage.setItem(SECRET_KEY, secret);
   showDashboard();
 }
@@ -109,6 +116,7 @@ $("admin-login-form")?.addEventListener("submit", async (event) => {
 $("admin-logout")?.addEventListener("click", () => {
   adminSecret = "";
   mediaStorageReady = false;
+  stripeCheckoutReady = false;
   sessionStorage.removeItem(SECRET_KEY);
   showLogin();
 });
@@ -840,8 +848,13 @@ function resetLibrary() {
   if ($("library-form-title")) $("library-form-title").textContent = "Add library item";
   setMessage("library-message", "");
   setMessage("library-gallery-message", "");
+  setMessage("library-protected-file-message", "");
   setGalleryEnabled("library", false);
   if ($("library-admin-gallery")) $("library-admin-gallery").innerHTML = '<div class="gallery-empty">Save this item first to enable photo uploads.</div>';
+  if ($("library-protected-file")) $("library-protected-file").value = "";
+  if ($("library-protected-file-info")) $("library-protected-file-info").textContent = "Save this Library item first.";
+  if ($("library-upload-protected-file")) $("library-upload-protected-file").disabled = true;
+  if ($("library-delete-protected-file")) $("library-delete-protected-file").disabled = true;
 }
 
 function fillLibrary(item) {
@@ -861,6 +874,7 @@ function fillLibrary(item) {
   $("lib-purchase").value = item.purchase_url || "";
   $("library-form-title").textContent = "Edit library item";
   loadAdminGallery("library", item.id);
+  loadLibraryProtectedFile(item.id);
 }
 
 $("library-reset")?.addEventListener("click", resetLibrary);
@@ -892,11 +906,88 @@ $("library-form")?.addEventListener("submit", async (event) => {
     const savedId = Number(id || result.id);
     $("library-id").value = savedId;
     $("library-form-title").textContent = "Edit library item";
-    setMessage("library-message", "Saved. Add translations or cover images if needed.", "success");
+    setMessage("library-message", "Saved. Add cover images or the protected paid PDF if needed.", "success");
     await refreshResource("library");
     await loadAdminGallery("library", savedId);
+    await loadLibraryProtectedFile(savedId);
   } catch (error) {
     setMessage("library-message", error.message, "error");
+  }
+});
+
+
+async function loadLibraryProtectedFile(itemId) {
+  const info = $("library-protected-file-info");
+  const upload = $("library-upload-protected-file");
+  const remove = $("library-delete-protected-file");
+  if (!itemId) {
+    if (info) info.textContent = "Save this Library item first.";
+    if (upload) upload.disabled = true;
+    if (remove) remove.disabled = true;
+    return;
+  }
+  if (upload) upload.disabled = false;
+  setMessage("library-protected-file-message", "Checking protected file…");
+  try {
+    const data = await adminFetch(`/admin/library-file?library_id=${encodeURIComponent(itemId)}`, { method: "GET" });
+    if (data.configured && data.file) {
+      const mb = Number(data.file.file_size || 0) / (1024 * 1024);
+      if (info) info.textContent = `Protected file: ${data.file.original_name || "PDF"}${mb ? ` · ${mb.toFixed(2)} MB` : ""}`;
+      if (remove) remove.disabled = false;
+      setMessage("library-protected-file-message", stripeCheckoutReady
+        ? "Protected PDF ready for Stripe delivery."
+        : "Protected PDF uploaded. Configure Stripe before accepting payments.", stripeCheckoutReady ? "success" : "");
+    } else {
+      if (info) info.textContent = "No protected PDF uploaded yet.";
+      if (remove) remove.disabled = true;
+      setMessage("library-protected-file-message", "");
+    }
+  } catch (error) {
+    if (info) info.textContent = "Unable to read protected-file status.";
+    if (remove) remove.disabled = true;
+    setMessage("library-protected-file-message", error.message, "error");
+  }
+}
+
+$("library-upload-protected-file")?.addEventListener("click", async () => {
+  const itemId = Number($("library-id")?.value || 0);
+  const file = $("library-protected-file")?.files?.[0];
+  if (!itemId) {
+    setMessage("library-protected-file-message", "Save the Library item first.", "error");
+    return;
+  }
+  if (!file) {
+    setMessage("library-protected-file-message", "Choose a PDF first.", "error");
+    return;
+  }
+  if (file.type && file.type !== "application/pdf") {
+    setMessage("library-protected-file-message", "Only PDF files are allowed.", "error");
+    return;
+  }
+  if (file.size > 20 * 1024 * 1024) {
+    setMessage("library-protected-file-message", "PDF is larger than the configured 20 MB limit.", "error");
+    return;
+  }
+  setMessage("library-protected-file-message", "Uploading protected PDF…");
+  try {
+    await adminBinaryFetch(`/admin/library-file?library_id=${encodeURIComponent(itemId)}`, file, file.name || "library-file.pdf");
+    $("library-protected-file").value = "";
+    await loadLibraryProtectedFile(itemId);
+  } catch (error) {
+    setMessage("library-protected-file-message", error.message, "error");
+  }
+});
+
+$("library-delete-protected-file")?.addEventListener("click", async () => {
+  const itemId = Number($("library-id")?.value || 0);
+  if (!itemId) return;
+  if (!confirm("Remove the protected paid PDF for this Library item?")) return;
+  setMessage("library-protected-file-message", "Removing protected PDF…");
+  try {
+    await adminFetch(`/admin/library-file?library_id=${encodeURIComponent(itemId)}`, { method: "DELETE" });
+    await loadLibraryProtectedFile(itemId);
+  } catch (error) {
+    setMessage("library-protected-file-message", error.message, "error");
   }
 });
 
@@ -906,12 +997,11 @@ $("library-form")?.addEventListener("submit", async (event) => {
 const translationFieldMap = {
   project: { secondary:["category","Category"], summary:["summary","Short summary"], description:["description","Full description"], extra:["methods","Methods / keywords"], status:["status","Status"] },
   conference: { secondary:["event","Event / Organization"], summary:null, description:["description","Description"], extra:["location","Location"], status:["type","Type"] },
-  publication: { secondary:["journal","Journal / Venue"], summary:["abstract","Abstract / Note"], description:null, extra:null, status:["status","Status"] },
-  library: { secondary:["author","Author / Creator"], summary:["summary","Short summary"], description:["description","Full description"], extra:null, status:null }
+  publication: { secondary:["journal","Journal / Venue"], summary:["abstract","Abstract / Note"], description:null, extra:null, status:["status","Status"] }
 };
 
 function translationCacheFor(type) {
-  return type === "project" ? caches.projects : type === "conference" ? caches.conferences : type === "publication" ? caches.publications : caches.library;
+  return type === "project" ? caches.projects : type === "conference" ? caches.conferences : caches.publications;
 }
 function refreshTranslationItemOptions() {
   const type = $("tr-entity-type")?.value || "project";

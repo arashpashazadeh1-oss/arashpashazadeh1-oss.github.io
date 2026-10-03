@@ -1,14 +1,18 @@
-V13.5.4 — Restore previous About auto-update capability only.
+V13.5.5 — Dynamic About PDF
 
-Changed files:
+This restores a truly dynamic PDF workflow.
+
+How it works:
+- About page loads current Publications, Research, Projects, and Conferences from the website database.
+- The old static PDF link is replaced by "Generate current PDF".
+- When clicked, the page waits for the live About data to finish loading.
+- It then opens the browser's native print/PDF dialog using the current live About content.
+- Choose "Save as PDF" to save the current version.
+- The filename/title is date-stamped automatically.
+
+Files to upload to repository root:
 - about.html
 - about.js
+- about-pdf.js
 
-Restored exactly the previous live About behavior:
-- Publications synchronize from Publications database
-- Current Research synchronizes from Projects database (kind=research)
-- Current Engineering Projects / Technical Studies synchronize from Projects database
-- Current Conferences / Workshops synchronize from Conferences database
-
-No CSS, slideshow, footer logo, language flags, Library, payment, or other page changes are included.
-Upload both files to the repository ROOT and replace the existing files.
+No CSS, Home slideshow, footer logo, flags, Library, Stripe, or Cloudflare changes are included.

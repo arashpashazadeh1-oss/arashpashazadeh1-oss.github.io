@@ -143,6 +143,9 @@
       setMessage(researchList, "Current research data is temporarily unavailable.");
       setMessage(projectList, "Current project data is temporarily unavailable.");
       setMessage(conferenceList, "Current conference data is temporarily unavailable.");
+    } finally {
+      document.documentElement.dataset.aboutReady = "true";
+      window.dispatchEvent(new CustomEvent("about-data-ready"));
     }
   }
 

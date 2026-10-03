@@ -38,15 +38,13 @@ function enhanceLanguageSwitcher(){
     if(link.querySelector(".lang-code")) return;
     const lang=String(link.dataset.langLink || link.getAttribute("hreflang") || link.textContent || "").trim().toLowerCase();
     if(!(lang in LANGUAGE_FLAGS)) return;
-    const flag=LANGUAGE_FLAGS[lang];
     const code=(link.textContent || lang).trim().toUpperCase();
     link.textContent="";
-    const codeSpan=document.createElement("span");codeSpan.className="lang-code";codeSpan.textContent=code;
-    const flagSpan=document.createElement("span");flagSpan.className=`lang-flag${lang==="fa"?" lang-flag-fa":""}`;
-    if(lang!=="fa") flagSpan.textContent=flag;
+    const codeSpan=document.createElement("span"); codeSpan.className="lang-code"; codeSpan.textContent=code;
+    const flagSpan=document.createElement("span"); flagSpan.className=`lang-flag${lang==="fa"?" lang-flag-fa":""}`;
+    if(lang!=="fa") flagSpan.textContent=LANGUAGE_FLAGS[lang];
     flagSpan.setAttribute("aria-hidden","true");
     link.append(codeSpan,flagSpan);
-    link.setAttribute("aria-label",`${code} ${lang}`);
   });
 }
 function injectFooterCornerBadge(){
@@ -54,10 +52,9 @@ function injectFooterCornerBadge(){
   if(!footer || footer.querySelector(".footer-corner-badge")) return;
   const host=footer.querySelector(".footer-stack") || footer.querySelector(".footer-inner") || footer.querySelector(".container") || footer;
   host.classList.add("footer-badge-host");
-  const badge=document.createElement("div");badge.className="footer-corner-badge";badge.setAttribute("aria-hidden","true");
-  const img=document.createElement("img");img.alt="";img.loading="lazy";img.decoding="async";img.src=`${ASSET_PREFIX}assets/decor/arash-footer-badge.gif?v=13.3`;
-  badge.appendChild(img);
-  host.appendChild(badge);
+  const badge=document.createElement("div"); badge.className="footer-corner-badge"; badge.setAttribute("aria-hidden","true");
+  const img=document.createElement("img"); img.alt=""; img.loading="lazy"; img.decoding="async"; img.src=`${ASSET_PREFIX}assets/decor/arash-footer-badge.gif?v=13.3.2`;
+  badge.appendChild(img); host.appendChild(badge);
 }
 enhanceLanguageSwitcher();
 injectFooterCornerBadge();

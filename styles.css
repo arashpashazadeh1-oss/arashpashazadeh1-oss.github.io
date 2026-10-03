@@ -495,13 +495,11 @@ p{margin:0;color:var(--muted)}
 
 .footer-badge-host{position:relative;overflow:visible}
 .footer-badge-host.footer-stack .footer-top,
-.footer-badge-host.footer-stack .footer-legal,
 .footer-badge-host.footer-stack .footer-inner,
 .footer-badge-host.footer-inner{padding-right:150px}
 .footer-corner-badge{position:absolute;right:14px;bottom:10px;width:min(130px,14vw);z-index:2;pointer-events:none;user-select:none}
 .footer-corner-badge img{display:block;width:100%;height:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.28))}
 html[dir="rtl"] .footer-badge-host.footer-stack .footer-top,
-html[dir="rtl"] .footer-badge-host.footer-stack .footer-legal,
 html[dir="rtl"] .footer-badge-host.footer-stack .footer-inner,
 html[dir="rtl"] .footer-badge-host.footer-inner{padding-left:150px;padding-right:0}
 html[dir="rtl"] .footer-corner-badge{right:auto;left:14px}
@@ -1575,12 +1573,10 @@ html[dir="rtl"] .admin-payment-note{border-left:0;border-right:3px solid #2fc1cf
   .language-switcher{font-size:.68rem;gap:5px}
 
   .footer-badge-host.footer-stack .footer-top,
-  .footer-badge-host.footer-stack .footer-legal,
   .footer-badge-host.footer-stack .footer-inner,
   .footer-badge-host.footer-inner{padding-right:0}
   .footer-corner-badge{position:static;width:92px;margin-top:12px;margin-left:auto}
   html[dir="rtl"] .footer-badge-host.footer-stack .footer-top,
-  html[dir="rtl"] .footer-badge-host.footer-stack .footer-legal,
   html[dir="rtl"] .footer-badge-host.footer-stack .footer-inner,
   html[dir="rtl"] .footer-badge-host.footer-inner{padding-left:0}
   html[dir="rtl"] .footer-corner-badge{margin-left:0;margin-right:auto}
@@ -1599,32 +1595,3 @@ html[dir="rtl"] .admin-payment-note{border-left:0;border-right:3px solid #2fc1cf
 .library-secure-download{margin-top:.75rem;display:inline-flex}
 .compact-dropzone{min-height:110px}
 #library-protected-file-info{margin-top:.7rem}
-
-/* V13.2 live-payment readiness */
-.footer-legal{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.65rem 1rem;
-  padding:.9rem 0;
-  border-top:1px solid rgba(255,255,255,.08);
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-.footer-legal a{
-  font-size:.9rem;
-  opacity:.84;
-}
-.footer-legal a:hover{opacity:1}
-.policy-layout{
-  max-width:900px;
-}
-.policy-effective{
-  margin-bottom:1.5rem;
-  opacity:.78;
-}
-.policy-section{
-  padding:1.25rem 0;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.policy-section:first-of-type{border-top:0}
-.policy-section h2{margin-bottom:.55rem}
-.policy-section p{max-width:78ch;line-height:1.75}

@@ -32,7 +32,7 @@ document.querySelectorAll("[data-lang-link]").forEach((link)=>{
 
 
 
-const LANGUAGE_FLAGS = {en:"🇺🇸",fa:"",es:"🇪🇸",de:"🇩🇪"};
+const LANGUAGE_FLAGS = {en:"us",fa:"ir",es:"es",de:"de"};
 function enhanceLanguageSwitcher(){
   document.querySelectorAll(".language-switcher .language-link").forEach((link)=>{
     if(link.querySelector(".lang-code")) return;
@@ -41,8 +41,8 @@ function enhanceLanguageSwitcher(){
     const code=(link.textContent || lang).trim().toUpperCase();
     link.textContent="";
     const codeSpan=document.createElement("span"); codeSpan.className="lang-code"; codeSpan.textContent=code;
-    const flagSpan=document.createElement("span"); flagSpan.className=`lang-flag${lang==="fa"?" lang-flag-fa":""}`;
-    if(lang!=="fa") flagSpan.textContent=LANGUAGE_FLAGS[lang];
+    const flagSpan=document.createElement("span");
+    flagSpan.className=`lang-flag lang-flag-${LANGUAGE_FLAGS[lang]}`;
     flagSpan.setAttribute("aria-hidden","true");
     link.append(codeSpan,flagSpan);
   });

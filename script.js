@@ -4,6 +4,7 @@ const TELEGRAM_MEDIA_URL = `${API_BASE}/media`;
 
 const SITE_LANG = (["en","fa","es","de"].includes(document.documentElement.lang) ? document.documentElement.lang : "en");
 const SITE_LOCALE = {en:"en-US",fa:"fa-IR",es:"es-ES",de:"de-DE"}[SITE_LANG] || "en-US";
+const ASSET_PREFIX = (["fa","es","de"].includes(SITE_LANG) ? "../" : "");
 const UI_TEXT = {
   en:{
     contentUnavailable:"Content is temporarily unavailable.",present:"Present",project:"Project",research:"Research",engineering:"Engineering",study:"Study",viewProject:"View project →",academicEvent:"Academic Event",viewDetails:"View details →",eventMaterial:"Event / material ↗",loading:"Loading",noPhoto:"No photo",event:"Event",year:"Year",location:"Location",type:"Type",status:"Status",category:"Category",period:"Period",externalProject:"External project link ↗",projectGallery:"Project Gallery",conferenceGallery:"Conference Gallery",photoGallery:"Photo Gallery",conference:"Conference",missingProjectId:"Project ID is missing.",projectNotFound:"Project not found.",missingConferenceId:"Conference ID is missing.",conferenceNotFound:"Conference entry not found.",noResearch:"No matching research projects.",noProjects:"No matching projects.",noPublications:"No matching publications.",noConferences:"No matching conference entries.",cite:"Cite",copied:"Copied",copyFailed:"Copy failed",civilInsights:"Civil Engineering Insights",openOriginal:"Open original post ↗",mediaUpdate:"Media update published on Telegram.",refreshing:"Refreshing...",refreshFeed:"Refresh feed",showAll:"Show all posts",hideTest:"Hide test posts",noTelegram:"No Telegram posts have been published yet.",noEngineeringPosts:"No engineering posts are available yet.",insightsUnavailable:"Engineering insights are temporarily unavailable.",book:"Book",designNotebook:"Design notebook",libraryItem:"Library item",viewItem:"View details →",preview:"Preview ↗",purchase:"Purchase securely ↗",price:"Price",author:"Author",resourceType:"Resource type",libraryUnavailable:"Library is temporarily unavailable.",noLibrary:"No matching library items.",missingLibraryId:"Library item ID is missing.",libraryNotFound:"Library item not found.",comingSoon:"Checkout coming soon",free:"Free",processingPayment:"Opening secure checkout…",paymentSuccess:"Payment verified. Your protected download is ready.",paymentCancelled:"Payment was cancelled. No charge was completed.",downloadFile:"Download protected PDF",paymentPending:"Payment is still being verified. Refresh this page in a moment.",checkoutUnavailable:"Secure checkout is unavailable for this item.",downloadsRemaining:"Downloads remaining"
@@ -28,6 +29,38 @@ document.querySelectorAll("[data-lang-link]").forEach((link)=>{
     link.setAttribute("href",base+location.search);
   }
 });
+
+
+
+const LANGUAGE_FLAGS = {en:"🇺🇸",fa:"",es:"🇪🇸",de:"🇩🇪"};
+function enhanceLanguageSwitcher(){
+  document.querySelectorAll(".language-switcher .language-link").forEach((link)=>{
+    if(link.querySelector(".lang-code")) return;
+    const lang=String(link.dataset.langLink || link.getAttribute("hreflang") || link.textContent || "").trim().toLowerCase();
+    if(!(lang in LANGUAGE_FLAGS)) return;
+    const flag=LANGUAGE_FLAGS[lang];
+    const code=(link.textContent || lang).trim().toUpperCase();
+    link.textContent="";
+    const codeSpan=document.createElement("span");codeSpan.className="lang-code";codeSpan.textContent=code;
+    const flagSpan=document.createElement("span");flagSpan.className=`lang-flag${lang==="fa"?" lang-flag-fa":""}`;
+    if(lang!=="fa") flagSpan.textContent=flag;
+    flagSpan.setAttribute("aria-hidden","true");
+    link.append(codeSpan,flagSpan);
+    link.setAttribute("aria-label",`${code} ${lang}`);
+  });
+}
+function injectFooterCornerBadge(){
+  const footer=[...document.querySelectorAll("footer.site-footer")].pop();
+  if(!footer || footer.querySelector(".footer-corner-badge")) return;
+  const host=footer.querySelector(".footer-stack") || footer.querySelector(".footer-inner") || footer.querySelector(".container") || footer;
+  host.classList.add("footer-badge-host");
+  const badge=document.createElement("div");badge.className="footer-corner-badge";badge.setAttribute("aria-hidden","true");
+  const img=document.createElement("img");img.alt="";img.loading="lazy";img.decoding="async";img.src=`${ASSET_PREFIX}assets/decor/arash-footer-badge.gif?v=13.3`;
+  badge.appendChild(img);
+  host.appendChild(badge);
+}
+enhanceLanguageSwitcher();
+injectFooterCornerBadge();
 
 const menuToggle = document.querySelector(".menu-toggle");
 const nav = document.querySelector(".site-nav");

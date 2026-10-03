@@ -1605,12 +1605,14 @@ html[dir="rtl"] .admin-payment-note{border-left:0;border-right:3px solid #2fc1cf
    ===================================================== */
 .site-footer{
   position:relative;
+  min-height:112px;
+  overflow:hidden;
 }
 .site-footer::after{
   content:"";
   position:absolute;
   right:18px;
-  bottom:12px;
+  bottom:0;
   width:clamp(88px,7.5vw,132px);
   aspect-ratio:420/296;
   background:url("assets/decor/arash-footer-badge.gif?v=13.4") center/contain no-repeat;
@@ -1633,7 +1635,7 @@ html[dir="rtl"] .site-footer::after{
   .site-footer::after{
     width:82px;
     right:10px;
-    bottom:8px;
+    bottom:0;
   }
   .site-footer .footer-inner,
   .site-footer .footer-stack .footer-inner{
@@ -1793,3 +1795,6 @@ html[dir="rtl"] .home-cover-caption{text-align:right}
   .home-cover-loading{animation:none}
   .home-cover-slide{transition:none;transform:none}
 }
+
+/* V13.5.3 — remove old large injected footer logo */
+.footer-corner-badge{display:none!important}

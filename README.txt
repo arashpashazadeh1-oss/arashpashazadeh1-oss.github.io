@@ -1,18 +1,19 @@
-V13.5.5 — Dynamic About PDF
+V13.5.6 — About automatic categorization
 
-This restores a truly dynamic PDF workflow.
+This update changes only the About workflow.
 
-How it works:
-- About page loads current Publications, Research, Projects, and Conferences from the website database.
-- The old static PDF link is replaced by "Generate current PDF".
-- When clicked, the page waits for the live About data to finish loading.
-- It then opens the browser's native print/PDF dialog using the current live About content.
-- Choose "Save as PDF" to save the current version.
-- The filename/title is date-stamped automatically.
+New site records are automatically categorized inside the relevant About sections:
+- Publications -> Publications
+- Projects / technical studies -> Current Projects and Technical Studies
+- Research projects (kind=research) -> Current Research
+- Conferences / workshops -> Conferences and Workshops
 
-Files to upload to repository root:
+The old generic "Current Website Record" block is removed.
+The dynamic PDF still prints these live categorized sections automatically.
+
+Files:
 - about.html
 - about.js
 - about-pdf.js
 
-No CSS, Home slideshow, footer logo, flags, Library, Stripe, or Cloudflare changes are included.
+No CSS, Home slideshow, footer logo, language flags, Library, Stripe, Cloudflare, or other page changes.

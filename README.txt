@@ -1,7 +1,9 @@
-V13.5.7 — About section heading update only.
+V13.5.8 — About portrait fix only.
 
-Changed:
-- Conferences and Workshops
-  -> Teaching Assistant, Conferences and Workshops
+Upload/replace:
+- about.html in repository root
+- assets/profile/arash-portrait-3x4.jpg
+- assets/profile/arash-cv-portrait.jpg
 
-No other site sections or functionality changed.
+The second image is only a fallback if the primary portrait fails to load.
+No About dynamic categories, dynamic PDF, Home slideshow, footer logo, flags, Library, Stripe, or Cloudflare behavior is changed.

@@ -679,6 +679,7 @@ $("library-upload-images")?.addEventListener("click", () => uploadSelectedImages
 // Projects
 // -----------------------------------------------------
 function resetProject() {
+  $("portfolio-static-fields") && ($("portfolio-static-fields").hidden = true);
   $("project-form").reset();
   $("project-id").value = "";
   $("project-form-title").textContent = "Add project";
@@ -1196,3 +1197,144 @@ $("analytics-days")?.addEventListener("change",loadAnalytics);
 document.querySelector('.admin-tab[data-tab="analytics"]')?.addEventListener("click",()=>{
   if(!analyticsLoaded) loadAnalytics();
 });
+
+// -----------------------------------------------------
+// Static engineering portfolio manager (portfolio-projects.js)
+// -----------------------------------------------------
+let staticPortfolioDirty = false;
+
+function isStaticProjectEdit() {
+  return String($("project-id")?.value || "").startsWith("static:");
+}
+
+function staticPortfolioItem(id) {
+  return (window.PORTFOLIO_PROJECTS || []).find(x => String(x.id) === String(id));
+}
+
+function renderStaticPortfolioProjects() {
+  const el = $("admin-portfolio-projects");
+  if (!el) return;
+  el.innerHTML = "";
+  const rows = Array.isArray(window.PORTFOLIO_PROJECTS) ? window.PORTFOLIO_PROJECTS : [];
+  rows.forEach(item => {
+    const row = document.createElement("div");
+    row.className = "admin-item";
+    const info = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = item.title || "Untitled portfolio project";
+    const meta = document.createElement("span");
+    meta.textContent = [item.category, item.year, item.status, `${item.gallery?.length || 0} gallery images`, "Static portfolio"].filter(Boolean).join(" · ");
+    info.append(title, meta);
+    const actions = document.createElement("div");
+    actions.className = "admin-item-actions";
+    const edit = document.createElement("button");
+    edit.type = "button";
+    edit.textContent = "Edit";
+    edit.addEventListener("click", () => fillStaticPortfolioProject(item));
+    actions.append(edit);
+    row.append(info, actions);
+    el.appendChild(row);
+  });
+  if (!rows.length) el.innerHTML = '<div class="data-loading">No static portfolio projects found.</div>';
+}
+
+function fillStaticPortfolioProject(item) {
+  $("project-id").value = `static:${item.id}`;
+  $("proj-title").value = item.title || "";
+  $("proj-category").value = item.category || "";
+  $("proj-kind").value = item.kind || "engineering";
+  $("proj-status").value = item.status || "";
+  $("proj-featured").checked = Boolean(item.featured);
+  $("proj-start-year").value = item.year || item.start_year || "";
+  $("proj-end-year").value = item.end_year || "";
+  $("proj-summary").value = item.summary || "";
+  $("proj-description").value = item.description || item.overview || "";
+  $("proj-methods").value = item.methods || "";
+  $("proj-image").value = item.image_url || "";
+  $("proj-url").value = item.project_url || "";
+  $("proj-role").value = item.role || "";
+  $("proj-organization").value = item.organization || "";
+  $("proj-location").value = item.location || "";
+  $("proj-overview").value = item.overview || "";
+  $("proj-highlights").value = (item.highlights || []).join("\n");
+  $("proj-sections").value = (item.sections || []).map(x => x.join(" | ")).join("\n");
+  $("portfolio-static-fields").hidden = false;
+  $("project-form-title").textContent = "Edit portfolio project";
+  updateImagePreview();
+  renderStaticGallery(item);
+  setMessage("project-message", "Static portfolio project loaded. Save changes, then download the updated portfolio-projects.js file.");
+  document.querySelector('.admin-tab[data-tab="project"]')?.click();
+  window.scrollTo({top: document.querySelector('.admin-panel[data-panel="project"]').offsetTop - 90, behavior:"smooth"});
+}
+
+function renderStaticGallery(item) {
+  setGalleryEnabled("project", false);
+  const gallery = $("project-admin-gallery");
+  if (!gallery) return;
+  gallery.innerHTML = "";
+  const rows = item.gallery || [];
+  if (!rows.length) { gallery.innerHTML = '<div class="gallery-empty">No embedded gallery images.</div>'; return; }
+  rows.forEach(([url, caption], index) => {
+    const card = document.createElement("div"); card.className = "admin-gallery-card";
+    const visual = document.createElement("div"); visual.className = "admin-gallery-visual";
+    const img = document.createElement("img"); img.src = url; img.alt = caption || item.title || "Portfolio image"; visual.appendChild(img);
+    const body = document.createElement("div"); body.className = "admin-gallery-body";
+    const cap = document.createElement("div"); cap.textContent = `${index === 0 ? "Cover · " : ""}${caption || `Image ${index+1}`}`;
+    body.appendChild(cap); card.append(visual, body); gallery.appendChild(card);
+  });
+  setMessage("project-gallery-message", `${rows.length} embedded portfolio images. Protected previews remain embedded in portfolio-projects.js.`);
+}
+
+function saveStaticPortfolioFromForm() {
+  const raw = $("project-id").value.replace(/^static:/, "");
+  const item = staticPortfolioItem(raw);
+  if (!item) throw new Error("Portfolio project not found.");
+  item.title = $("proj-title").value.trim();
+  item.category = $("proj-category").value.trim();
+  item.kind = $("proj-kind").value;
+  item.status = $("proj-status").value.trim();
+  item.featured = $("proj-featured").checked;
+  item.year = Number($("proj-start-year").value) || item.year || null;
+  item.summary = $("proj-summary").value.trim();
+  item.description = $("proj-description").value.trim();
+  item.methods = $("proj-methods").value.trim();
+  item.image_url = $("proj-image").value.trim();
+  item.project_url = $("proj-url").value.trim();
+  item.role = $("proj-role").value.trim();
+  item.organization = $("proj-organization").value.trim();
+  item.location = $("proj-location").value.trim();
+  item.overview = $("proj-overview").value.trim();
+  item.highlights = $("proj-highlights").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  item.sections = $("proj-sections").value.split(/\r?\n/).map(line => line.split("|").map(x=>x.trim())).filter(x=>x.length>=2).map((x,i)=>[x[0]||String(i+1).padStart(2,"0"),x[1]||"",x.slice(2).join(" | ")||""]);
+  staticPortfolioDirty = true;
+  renderStaticPortfolioProjects();
+  renderStaticGallery(item);
+  setMessage("project-message", "Portfolio project updated in this browser. Download portfolio-projects.js to publish it.", "success");
+}
+
+function downloadStaticPortfolioFile() {
+  const payload = "window.PORTFOLIO_PROJECTS = " + JSON.stringify(window.PORTFOLIO_PROJECTS || [], null, 2) + ";\n";
+  const blob = new Blob([payload], {type:"text/javascript;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "portfolio-projects.js"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  staticPortfolioDirty = false;
+}
+
+$("portfolio-download")?.addEventListener("click", downloadStaticPortfolioFile);
+
+// Intercept static portfolio saves before the database project submit handler acts.
+$("project-form")?.addEventListener("submit", (event) => {
+  if (!isStaticProjectEdit()) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  try { saveStaticPortfolioFromForm(); } catch (error) { setMessage("project-message", error.message, "error"); }
+}, true);
+
+// Restore normal DB project behavior when Clear is used.
+$("project-reset")?.addEventListener("click", () => {
+  $("portfolio-static-fields").hidden = true;
+  setGalleryEnabled("project", false);
+}, true);
+
+renderStaticPortfolioProjects();

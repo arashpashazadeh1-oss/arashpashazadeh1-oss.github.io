@@ -300,6 +300,7 @@ async function loadProjectPages(){
   const allEl=document.getElementById("all-projects");
   if(!researchEl && !allEl) return;
   try{allProjectsCache=await apiGet("/projects");
+    if(Array.isArray(window.PORTFOLIO_PROJECTS)) allProjectsCache=[...window.PORTFOLIO_PROJECTS, ...allProjectsCache.filter(x=>!window.PORTFOLIO_PROJECTS.some(p=>String(p.id)===String(x.id)))];
     if(researchEl){const search=document.getElementById("project-search"), status=document.getElementById("project-status-filter");[...new Set(allProjectsCache.filter(x=>x.kind==="research").map(x=>x.status).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;status.appendChild(o);});const render=()=>{clear(researchEl);const q=(search.value||"").toLowerCase();const s=status.value;const rows=allProjectsCache.filter(x=>x.kind==="research").filter(x=>(!q||`${x.title} ${x.summary} ${x.category} ${x.methods}`.toLowerCase().includes(q))&&(!s||x.status===s));rows.forEach(r=>researchEl.appendChild(createProjectRow(r)));if(!rows.length)showError(researchEl,t("noResearch"));observeReveals(researchEl);};search.addEventListener("input",render);status.addEventListener("change",render);render();}
     if(allEl){const search=document.getElementById("all-project-search"),kind=document.getElementById("project-kind-filter"),category=document.getElementById("project-category-filter");[...new Set(allProjectsCache.map(x=>x.category).filter(Boolean))].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;category.appendChild(o);});const render=()=>{clear(allEl);const q=(search.value||"").toLowerCase();const k=kind.value,c=category.value;const rows=allProjectsCache.filter(x=>(!q||`${x.title} ${x.summary} ${x.category} ${x.methods}`.toLowerCase().includes(q))&&(!k||x.kind===k)&&(!c||x.category===c));rows.forEach(r=>allEl.appendChild(createProjectCard(r)));if(!rows.length)showError(allEl,t("noProjects"));observeReveals(allEl);};[search,kind,category].forEach(el=>el.addEventListener(el.tagName==="INPUT"?"input":"change",render));render();}
   }catch{showError(researchEl||allEl);}
@@ -310,6 +311,25 @@ async function loadProjectDetail(){
   const el=document.getElementById("project-detail");if(!el)return;
   const id=new URLSearchParams(location.search).get("id");if(!id){showError(el,t("missingProjectId"));return;}
   try{
+    const staticItem=(window.PORTFOLIO_PROJECTS||[]).find(p=>String(p.id)===String(id));
+    if(staticItem){
+      clear(el);
+      const main=document.createElement("article");main.className="project-detail-main portfolio-static-detail";
+      if(staticItem.image_url){const img=document.createElement("img");img.className="project-detail-image";img.src=staticItem.image_url;img.alt=staticItem.title;main.appendChild(img);}
+      const copy=document.createElement("div");copy.className="project-detail-copy";
+      const e=document.createElement("p");e.className="eyebrow";e.textContent=staticItem.category||"Engineering Project";
+      const h=document.createElement("h1");h.textContent=staticItem.title;
+      const sm=document.createElement("p");sm.className="summary";sm.textContent=staticItem.summary||"";copy.append(e,h,sm);
+      const chips=document.createElement("div");chips.className="chip-row";splitMethods(staticItem.methods).forEach(m=>{const sp=document.createElement("span");sp.textContent=m;chips.appendChild(sp);});copy.appendChild(chips);
+      if(staticItem.overview){const oh=document.createElement("h2");oh.textContent="Project Overview";const op=document.createElement("p");op.className="project-detail-description";op.textContent=staticItem.overview;copy.append(oh,op);}
+      main.appendChild(copy);
+      const side=document.createElement("aside");side.className="project-detail-side";[["Type",kindLabel(staticItem.kind)],["Status",staticItem.status],["Year",staticItem.year],["Role",staticItem.role],["Organization",staticItem.organization],["Location",staticItem.location]].filter(x=>x[1]).forEach(([k,v])=>{const f=document.createElement("div");f.className="detail-fact";const sp=document.createElement("span");sp.textContent=k;const st=document.createElement("strong");st.textContent=v;f.append(sp,st);side.appendChild(f);});
+      el.append(main,side);
+      if(staticItem.highlights?.length){const sec=document.createElement("section");sec.className="portfolio-project-section";sec.innerHTML="<h2>Key Project Facts</h2>";const grid=document.createElement("div");grid.className="portfolio-facts-grid";staticItem.highlights.forEach(v=>{const d=document.createElement("div");d.className="portfolio-fact";d.textContent=v;grid.appendChild(d);});sec.appendChild(grid);el.parentElement.appendChild(sec);}
+      if(staticItem.sections?.length){const sec=document.createElement("section");sec.className="portfolio-project-section";sec.innerHTML="<h2>Design & Engineering Work Packages</h2>";const grid=document.createElement("div");grid.className="portfolio-design-grid";staticItem.sections.forEach(([num,title,text])=>{const a=document.createElement("article");a.className="portfolio-design-card";const n=document.createElement("span");n.className="portfolio-design-number";n.textContent=num;const hh=document.createElement("h3");hh.textContent=title;const pp=document.createElement("p");pp.textContent=text;a.append(n,hh,pp);grid.appendChild(a);});sec.appendChild(grid);el.parentElement.appendChild(sec);}
+      if(staticItem.gallery?.length){const gallery=staticItem.gallery.map(([url,caption])=>({url,caption,alt_text:caption}));const gs=createGallerySection(gallery,t("projectGallery"));gs.classList.add("project-gallery-wide");el.parentElement.appendChild(gs);}
+      document.title=`${staticItem.title} | Arash Pashazadeh`;return;
+    }
     const [rows,gallery]=await Promise.all([apiGet(`/projects?id=${encodeURIComponent(id)}`),loadGallery("project",id)]);
     const item=Array.isArray(rows)?rows[0]:rows;if(!item){showError(el,t("projectNotFound"));return;}clear(el);
     const main=document.createElement("article");main.className="project-detail-main";

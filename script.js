@@ -547,3 +547,32 @@ function trackSiteVisit(){
   }catch{}
 }
 trackSiteVisit();
+
+
+// =====================================================
+// ANALYTICS V2 — PROFESSIONAL ENGAGEMENT EVENTS
+// =====================================================
+function trackPortfolioEvent(eventType, details={}){
+  try{
+    if(location.protocol==="file:" || navigator.doNotTrack==="1") return;
+    fetch(`${API_BASE}/track-event`,{
+      method:"POST",headers:{"Content-Type":"application/json"},keepalive:true,
+      body:JSON.stringify({
+        event_type:eventType,path:`${location.pathname}${location.search}`,
+        title:document.title,referrer:document.referrer||"",language:navigator.language||"",
+        screen_width:window.screen?.width||null,screen_height:window.screen?.height||null,
+        ...details
+      })
+    }).catch(()=>{});
+  }catch{}
+}
+document.addEventListener("click",e=>{
+  const a=e.target.closest("a"); if(!a)return;
+  const href=a.getAttribute("href")||""; const label=(a.textContent||"").trim().slice(0,120);
+  if(/Arash-Pashazadeh.*CV|about\.html|profile\/download/i.test(href)) trackPortfolioEvent("cv_activity",{target:href,label});
+  else if(/linkedin\.com/i.test(href)) trackPortfolioEvent("professional_link",{target:"LinkedIn",label});
+  else if(/scholar\.google/i.test(href)) trackPortfolioEvent("professional_link",{target:"Google Scholar",label});
+  else if(/github\.com/i.test(href)) trackPortfolioEvent("professional_link",{target:"GitHub",label});
+  else if(/project\.html|projects\.html/i.test(href)) trackPortfolioEvent("project_click",{target:href,label});
+  else if(/^https?:\/\//i.test(href) && !href.includes(location.hostname)) trackPortfolioEvent("outbound_click",{target:href,label});
+},{passive:true});

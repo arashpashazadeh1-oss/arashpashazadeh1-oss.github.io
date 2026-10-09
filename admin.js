@@ -1096,107 +1096,96 @@ $("translation-form")?.addEventListener("submit", async (event) => {
 });
 
 // =====================================================
-// PRIVATE ANALYTICS DASHBOARD
-// =====================================================
-let analyticsLoaded = false;
-
-function analyticsText(value){
-  return String(value ?? "");
+// PRIVATE ANALYTICS DASHBOARD V2
+// Uses /admin/analytics-v2 when available and gracefully falls back to the original /admin/analytics endpoint.
+let analyticsLoaded=false;
+const analyticsText=v=>String(v??"");
+const $a=id=>document.getElementById(id);
+function setAText(id,v){const el=$a(id);if(el)el.textContent=v??"—";}
+function renderAnalyticsRanked(id,rows,labelKey="label",valueKey="count"){
+  const c=$a(id); if(!c)return; c.innerHTML="";
+  if(!rows?.length){c.innerHTML='<div class="data-loading">No data yet.</div>';return;}
+  rows.slice(0,10).forEach((r,i)=>{const d=document.createElement("div");d.className="analytics-ranked-item";
+    const s=document.createElement("span");s.textContent=`${i+1}. ${analyticsText(r[labelKey]??r.label??"Unknown")}`;
+    const b=document.createElement("strong");b.textContent=analyticsText(r[valueKey]??0);d.append(s,b);c.appendChild(d);});
 }
-
-function renderAnalyticsRanked(id, rows, labelKey, valueKey="count"){
-  const container = $(id);
-  if(!container) return;
-  container.innerHTML = "";
-  if(!rows?.length){
-    container.innerHTML = '<div class="data-loading">No data yet.</div>';
-    return;
-  }
-  rows.forEach((row, index)=>{
-    const item=document.createElement("div");
-    item.className="analytics-ranked-item";
-    const label=document.createElement("span");
-    label.textContent=`${index+1}. ${analyticsText(row[labelKey] || "Unknown")}`;
-    const value=document.createElement("strong");
-    value.textContent=analyticsText(row[valueKey] || 0);
-    item.append(label,value);
-    container.appendChild(item);
-  });
+function shortReferrer(v){if(!v)return"Direct";try{return new URL(v).hostname.replace(/^www\./,"")||v}catch{return v}}
+function classifySource(v){
+  const h=shortReferrer(v).toLowerCase(); if(h==="direct")return"Direct";
+  if(h.includes("google."))return"Google"; if(h.includes("linkedin."))return"LinkedIn";
+  if(h.includes("instagram."))return"Instagram"; if(h.includes("github."))return"GitHub";
+  if(h.includes("facebook."))return"Facebook"; if(h.includes("bing."))return"Bing"; return shortReferrer(v);
 }
-
-function shortReferrer(value){
-  if(!value) return "Direct";
-  try{
-    const u=new URL(value);
-    return u.hostname.replace(/^www\./,"") || value;
-  }catch{
-    return value;
-  }
+function parseUA(ua=""){
+  ua=String(ua); let device=/mobile|iphone|android/i.test(ua)?"Mobile":/ipad|tablet/i.test(ua)?"Tablet":"Desktop";
+  let browser=/edg\//i.test(ua)?"Edge":/opr\//i.test(ua)?"Opera":/firefox\//i.test(ua)?"Firefox":/chrome\//i.test(ua)?"Chrome":/safari\//i.test(ua)?"Safari":"Other";
+  let os=/windows/i.test(ua)?"Windows":/iphone|ipad|ios/i.test(ua)?"iOS":/android/i.test(ua)?"Android":/mac os|macintosh/i.test(ua)?"macOS":/linux/i.test(ua)?"Linux":"Other";
+  return{device,browser,os};
 }
-
+function aggregate(rows,keyFn){const m=new Map;rows.forEach(r=>{const k=keyFn(r)||"Unknown";m.set(k,(m.get(k)||0)+1)});return[...m].map(([label,count])=>({label,count})).sort((a,b)=>b.count-a.count)}
+function normalizeV2(data){
+  const visits=data.visits||[]; const now=Date.now();
+  const sources=data.sources||aggregate(visits,v=>classifySource(v.referrer));
+  const devices=data.devices||aggregate(visits,v=>v.device||parseUA(v.user_agent).device);
+  const browsers=data.browsers||aggregate(visits,v=>v.browser||parseUA(v.user_agent).browser);
+  const os=data.operating_systems||data.os||aggregate(visits,v=>v.os||parseUA(v.user_agent).os);
+  const networks=data.networks||aggregate(visits,v=>v.as_org||v.network_org||v.asn_org||"Unknown");
+  const cities=data.cities||aggregate(visits,v=>[v.city,v.region].filter(Boolean).join(", ")||v.country||"Unknown");
+  const projects=data.projects||aggregate(visits.filter(v=>/project/i.test(v.path||"")),v=>v.project_title||v.path);
+  const actions=data.actions||[];
+  const live=data.summary?.live_30m??visits.filter(v=>now-new Date(v.visited_at).getTime()<=1800000).length;
+  return{...data,sources,devices,browsers,os,networks,cities,projects,actions,live};
+}
+function renderJourney(rows){
+  const c=$a("analytics-journey"); if(!c)return;c.innerHTML="";
+  if(!rows?.length){c.innerHTML='<div class="data-loading">Journey data will appear as visits accumulate.</div>';return;}
+  rows.slice(0,8).forEach((r,i)=>{const d=document.createElement("div");d.className="analytics-journey-row";
+    d.innerHTML=`<span>${i+1}</span><strong></strong><em></em>`;d.querySelector("strong").textContent=r.path||r.label||"—";
+    d.querySelector("em").textContent=`${r.count||r.views||0} visits`;c.appendChild(d);});
+}
 async function loadAnalytics(){
-  const tbody=$("analytics-visits");
-  if(!tbody) return;
-  setMessage("analytics-message","Loading analytics…");
-
+  const tbody=$a("analytics-visits");if(!tbody)return;setMessage("analytics-message","Loading analytics…");
   try{
-    const days=Number($("analytics-days")?.value || 30);
-    const data=await adminFetch(`/admin/analytics?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});
-
-    $("analytics-pageviews").textContent=data.summary?.pageviews ?? 0;
-    $("analytics-visitors").textContent=data.summary?.unique_visitors ?? 0;
-    $("analytics-countries-count").textContent=data.summary?.country_count ?? 0;
-    $("analytics-ip-mode").textContent=data.raw_ip_storage ? "Raw IP" : "Masked";
-
-    renderAnalyticsRanked("analytics-countries",data.countries || [],"country");
-    renderAnalyticsRanked("analytics-pages",data.pages || [],"path");
-
-    tbody.innerHTML="";
-    const visits=data.visits || [];
-    if(!visits.length){
-      tbody.innerHTML='<tr><td colspan="6">No visits recorded in this period yet.</td></tr>';
-    }else{
-      visits.forEach((visit)=>{
-        const tr=document.createElement("tr");
-        const when=document.createElement("td");
-        const dt=new Date(visit.visited_at);
-        when.textContent=Number.isNaN(dt.getTime()) ? analyticsText(visit.visited_at) : dt.toLocaleString();
-
-        const page=document.createElement("td");
-        page.textContent=visit.path || "/";
-
-        const location=document.createElement("td");
-        location.textContent=[visit.city,visit.region,visit.country].filter(Boolean).join(", ") || "Unknown";
-
-        const ip=document.createElement("td");
-        ip.textContent=visit.ip_address || "—";
-
-        const ref=document.createElement("td");
-        ref.textContent=shortReferrer(visit.referrer);
-
-        const ua=document.createElement("td");
-        ua.textContent=visit.user_agent || "—";
-
-        tr.append(when,page,location,ip,ref,ua);
-        tbody.appendChild(tr);
-      });
-    }
-
-    analyticsLoaded=true;
-    setMessage("analytics-message",`Showing the last ${days} days.`,"success");
-  }catch(error){
-    console.error("ANALYTICS LOAD ERROR",error);
-    tbody.innerHTML='<tr><td colspan="6">Analytics backend is not ready yet.</td></tr>';
-    setMessage("analytics-message",error.message || "Analytics could not be loaded.","error");
-  }
+    const days=Number($a("analytics-days")?.value||30); let data;
+    try{data=await adminFetch(`/admin/analytics-v2?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});}
+    catch{data=await adminFetch(`/admin/analytics?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});}
+    data=normalizeV2(data||{}); const s=data.summary||{};
+    setAText("analytics-pageviews",s.pageviews??0);setAText("analytics-visitors",s.unique_visitors??0);
+    setAText("analytics-live",data.live??0);setAText("analytics-countries-count",s.country_count??0);
+    setAText("analytics-project-views",s.project_views??data.projects.reduce((n,x)=>n+(+x.count||0),0));
+    setAText("analytics-cv-views",s.cv_activity??s.cv_views??0);setAText("analytics-returning",s.returning_visitors??"—");
+    setAText("analytics-ip-mode",data.raw_ip_storage?"Raw IP":"Masked");
+    renderAnalyticsRanked("analytics-countries",data.countries||[],"country");
+    renderAnalyticsRanked("analytics-pages",data.pages||[],"path");
+    renderAnalyticsRanked("analytics-sources",data.sources);
+    renderAnalyticsRanked("analytics-networks",data.networks);
+    renderAnalyticsRanked("analytics-projects",data.projects);
+    renderAnalyticsRanked("analytics-actions",data.actions);
+    renderAnalyticsRanked("analytics-devices",data.devices);
+    renderAnalyticsRanked("analytics-browsers",data.browsers);
+    renderAnalyticsRanked("analytics-os",data.os);
+    renderAnalyticsRanked("analytics-cities",data.cities);
+    renderJourney(data.journey||data.pages||[]);
+    tbody.innerHTML="";const visits=data.visits||[];
+    if(!visits.length)tbody.innerHTML='<tr><td colspan="7">No visits recorded in this period yet.</td></tr>';
+    else visits.forEach(v=>{const tr=document.createElement("tr");const dt=new Date(v.visited_at);const ua=parseUA(v.user_agent);
+      const vals=[
+        Number.isNaN(dt.getTime())?v.visited_at:dt.toLocaleString(),
+        v.path||"/",
+        [v.city,v.region,v.country].filter(Boolean).join(", ")||"Unknown",
+        v.as_org||v.network_org||v.asn_org||"Unknown",
+        classifySource(v.referrer),
+        `${v.device||ua.device} · ${v.browser||ua.browser} · ${v.os||ua.os}`,
+        v.returning?"Returning":"New"
+      ];
+      vals.forEach(x=>{const td=document.createElement("td");td.textContent=analyticsText(x);tr.appendChild(td)});tbody.appendChild(tr);
+    });
+    analyticsLoaded=true;setMessage("analytics-message",`Showing the last ${days} day${days===1?"":"s"}. Network organization identifies the network/provider, not a person's employer.`,"success");
+  }catch(error){console.error("ANALYTICS V2 LOAD ERROR",error);tbody.innerHTML='<tr><td colspan="7">Analytics backend is not ready yet.</td></tr>';setMessage("analytics-message",error.message||"Analytics could not be loaded.","error");}
 }
-
-$("analytics-refresh")?.addEventListener("click",loadAnalytics);
-$("analytics-days")?.addEventListener("change",loadAnalytics);
-
-document.querySelector('.admin-tab[data-tab="analytics"]')?.addEventListener("click",()=>{
-  if(!analyticsLoaded) loadAnalytics();
-});
+$a("analytics-refresh")?.addEventListener("click",loadAnalytics);
+$a("analytics-days")?.addEventListener("change",loadAnalytics);
+document.querySelector('.admin-tab[data-tab="analytics"]')?.addEventListener("click",()=>{if(!analyticsLoaded)loadAnalytics();});
 
 // -----------------------------------------------------
 // Static engineering portfolio manager (portfolio-projects.js)
@@ -1231,36 +1220,11 @@ function renderStaticPortfolioProjects() {
     edit.type = "button";
     edit.textContent = "Edit";
     edit.addEventListener("click", () => fillStaticPortfolioProject(item));
-
-    const del = document.createElement("button");
-    del.type = "button";
-    del.textContent = "Delete";
-    del.className = "danger";
-    del.addEventListener("click", () => deleteStaticPortfolioProject(item));
-
-    actions.append(edit, del);
+    actions.append(edit);
     row.append(info, actions);
     el.appendChild(row);
   });
   if (!rows.length) el.innerHTML = '<div class="data-loading">No static portfolio projects found.</div>';
-}
-
-function deleteStaticPortfolioProject(item) {
-  if (!item) return;
-  const title = item.title || "Untitled portfolio project";
-  const galleryCount = Array.isArray(item.gallery) ? item.gallery.length : 0;
-  const extra = galleryCount ? ` This will also remove ${galleryCount} embedded gallery image${galleryCount === 1 ? "" : "s"} from the downloaded portfolio file.` : "";
-  if (!confirm(`Delete “${title}” from the static portfolio?${extra}`)) return;
-
-  const rows = Array.isArray(window.PORTFOLIO_PROJECTS) ? window.PORTFOLIO_PROJECTS : [];
-  const index = rows.findIndex(x => String(x.id) === String(item.id));
-  if (index < 0) return;
-  rows.splice(index, 1);
-  staticPortfolioDirty = true;
-
-  if (String($("project-id")?.value || "") === `static:${item.id}`) resetProject();
-  renderStaticPortfolioProjects();
-  setMessage("project-message", `“${title}” deleted in this browser. Download the updated portfolio-projects.js file to publish the deletion.`, "success");
 }
 
 function fillStaticPortfolioProject(item) {

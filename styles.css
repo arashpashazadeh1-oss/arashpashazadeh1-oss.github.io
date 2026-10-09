@@ -1806,3 +1806,19 @@ html[dir="rtl"] .home-cover-caption{text-align:right}
 .detail-gallery-item.protected-preview{cursor:not-allowed;user-select:none;-webkit-user-select:none}
 .detail-gallery-item.protected-preview:hover img{transform:none}
 .detail-gallery-item.protected-preview::after{content:"Protected preview";position:absolute;top:10px;right:10px;z-index:3;padding:6px 9px;border-radius:999px;background:rgba(7,23,29,.82);color:#fff;font-size:.64rem;font-weight:850;letter-spacing:.04em;text-transform:uppercase;backdrop-filter:blur(5px)}
+
+/* Analytics V2 — scoped to analytics components */
+.analytics-summary-grid-v2{grid-template-columns:repeat(4,minmax(0,1fr))}
+.analytics-stat small{display:block;margin-top:.35rem;font-size:.72rem;opacity:.62;line-height:1.25}
+.analytics-three-col{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1rem 0}
+.analytics-section-title{display:flex;justify-content:space-between;align-items:end;gap:1rem;margin:1.6rem 0 .7rem}
+.analytics-section-title h3{margin:0}.analytics-section-title span{font-size:.8rem;opacity:.62}
+.analytics-footnote{font-size:.75rem;opacity:.65;margin:.65rem 0 0}
+.analytics-badge{font-size:.72rem;padding:.25rem .55rem;border-radius:999px;background:rgba(14,117,130,.09);color:#0e7582}
+.analytics-journey{display:grid;gap:.55rem}
+.analytics-journey-row{display:grid;grid-template-columns:26px 1fr auto;gap:.6rem;align-items:center;padding:.55rem 0;border-bottom:1px solid rgba(127,127,127,.16)}
+.analytics-journey-row:last-child{border-bottom:0}.analytics-journey-row>span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(14,117,130,.1);font-size:.72rem}
+.analytics-journey-row strong{font-size:.83rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.analytics-journey-row em{font-size:.74rem;opacity:.65;font-style:normal}
+.analytics-table-v2{min-width:1120px}
+@media(max-width:1050px){.analytics-summary-grid-v2{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-three-col{grid-template-columns:1fr}}
+@media(max-width:620px){.analytics-summary-grid-v2{grid-template-columns:1fr}.analytics-section-title{align-items:start;flex-direction:column}}

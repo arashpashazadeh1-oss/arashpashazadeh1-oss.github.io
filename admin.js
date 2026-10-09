@@ -1231,11 +1231,36 @@ function renderStaticPortfolioProjects() {
     edit.type = "button";
     edit.textContent = "Edit";
     edit.addEventListener("click", () => fillStaticPortfolioProject(item));
-    actions.append(edit);
+
+    const del = document.createElement("button");
+    del.type = "button";
+    del.textContent = "Delete";
+    del.className = "danger";
+    del.addEventListener("click", () => deleteStaticPortfolioProject(item));
+
+    actions.append(edit, del);
     row.append(info, actions);
     el.appendChild(row);
   });
   if (!rows.length) el.innerHTML = '<div class="data-loading">No static portfolio projects found.</div>';
+}
+
+function deleteStaticPortfolioProject(item) {
+  if (!item) return;
+  const title = item.title || "Untitled portfolio project";
+  const galleryCount = Array.isArray(item.gallery) ? item.gallery.length : 0;
+  const extra = galleryCount ? ` This will also remove ${galleryCount} embedded gallery image${galleryCount === 1 ? "" : "s"} from the downloaded portfolio file.` : "";
+  if (!confirm(`Delete “${title}” from the static portfolio?${extra}`)) return;
+
+  const rows = Array.isArray(window.PORTFOLIO_PROJECTS) ? window.PORTFOLIO_PROJECTS : [];
+  const index = rows.findIndex(x => String(x.id) === String(item.id));
+  if (index < 0) return;
+  rows.splice(index, 1);
+  staticPortfolioDirty = true;
+
+  if (String($("project-id")?.value || "") === `static:${item.id}`) resetProject();
+  renderStaticPortfolioProjects();
+  setMessage("project-message", `“${title}” deleted in this browser. Download the updated portfolio-projects.js file to publish the deletion.`, "success");
 }
 
 function fillStaticPortfolioProject(item) {

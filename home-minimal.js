@@ -170,7 +170,13 @@
       ]);
 
       const allProjects = Array.isArray(projectRows) ? projectRows : [];
-      const projects = allProjects.filter((item) => String(item.kind || "").toLowerCase() !== "research");
+      const databaseProjects = allProjects.filter((item) => String(item.kind || "").toLowerCase() !== "research");
+      const portfolioProjects = Array.isArray(window.PORTFOLIO_PROJECTS)
+        ? window.PORTFOLIO_PROJECTS.filter((item) => String(item.kind || "").toLowerCase() !== "research")
+        : [];
+      // Keep the existing Home card component and dimensions; only extend its data source.
+      // Static portfolio projects are placed first so the newest portfolio work appears on Home.
+      const projects = [...portfolioProjects].reverse().concat(databaseProjects);
       const research = allProjects.filter((item) => String(item.kind || "").toLowerCase() === "research");
       const conferences = Array.isArray(conferenceRows) ? conferenceRows : [];
       const publications = Array.isArray(publicationRows) ? publicationRows : [];

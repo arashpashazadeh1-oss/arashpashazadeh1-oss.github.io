@@ -13,6 +13,24 @@
     observeReveals(container);
   }
 
+
+  function setHomeSectionCount(id, count, singular, plural = `${singular}s`) {
+    const link = document.getElementById(id);
+    if (!link) return;
+    const safeCount = Number.isFinite(Number(count)) ? Number(count) : 0;
+    const noun = safeCount === 1 ? singular : plural;
+    link.textContent = `+${safeCount} ${noun} added here — click to see more`;
+    link.setAttribute("aria-label", `${safeCount} ${noun} available. Click to see more.`);
+  }
+
+  function mergeProjectPageItems(databaseItems) {
+    const portfolioItems = Array.isArray(window.PORTFOLIO_PROJECTS) ? window.PORTFOLIO_PROJECTS : [];
+    return [
+      ...portfolioItems,
+      ...databaseItems.filter((item) => !portfolioItems.some((p) => String(p.id) === String(item.id)))
+    ];
+  }
+
   function slideDetailHref(type, id) {
     return `${type === "project" ? "project.html" : "conference.html"}?id=${encodeURIComponent(id)}`;
   }
@@ -170,6 +188,7 @@
       ]);
 
       const allProjects = Array.isArray(projectRows) ? projectRows : [];
+      const projectPageItems = mergeProjectPageItems(allProjects);
       const databaseProjects = allProjects.filter((item) => String(item.kind || "").toLowerCase() !== "research");
       const portfolioProjects = Array.isArray(window.PORTFOLIO_PROJECTS)
         ? window.PORTFOLIO_PROJECTS.filter((item) => String(item.kind || "").toLowerCase() !== "research")
@@ -177,9 +196,16 @@
       // Keep the existing Home card component and dimensions; only extend its data source.
       // Static portfolio projects are placed first so the newest portfolio work appears on Home.
       const projects = [...portfolioProjects].reverse().concat(databaseProjects);
-      const research = allProjects.filter((item) => String(item.kind || "").toLowerCase() === "research");
+      const research = projectPageItems.filter((item) => String(item.kind || "").toLowerCase() === "research");
       const conferences = Array.isArray(conferenceRows) ? conferenceRows : [];
       const publications = Array.isArray(publicationRows) ? publicationRows : [];
+
+      // These totals use the same underlying collections as the destination pages,
+      // so they automatically update whenever projects, research, conferences, or publications change.
+      setHomeSectionCount("home-project-count", projectPageItems.length, "project");
+      setHomeSectionCount("home-conference-count", conferences.length, "conference / event", "conferences / events");
+      setHomeSectionCount("home-research-count", research.length, "research project", "research projects");
+      setHomeSectionCount("home-publication-count", publications.length, "publication");
 
       renderThree(projectsEl, projects, createProjectCard, "noProjects");
       renderThree(conferencesEl, conferences, createConferenceCompactRow, "noConferences");

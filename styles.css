@@ -1280,6 +1280,54 @@ body[data-page="about"]{
 .home-section-link-light:hover{
   color:#69d4df;
 }
+
+.home-section-heading{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:16px 28px;
+  flex-wrap:wrap;
+}
+.home-section-heading h2{
+  margin:0;
+}
+.home-section-count{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  color:#0e7582;
+  font-size:.9rem;
+  font-weight:750;
+  line-height:1.4;
+  text-decoration:none;
+  border-bottom:1px solid rgba(14,117,130,.28);
+  transition:color .2s ease,border-color .2s ease,transform .2s ease;
+}
+.home-section-count:hover{
+  color:#085963;
+  border-color:currentColor;
+  transform:translateY(-1px);
+}
+.home-section-count:empty{
+  display:none;
+}
+.home-section-count-light{
+  color:#8fe3eb;
+  border-color:rgba(143,227,235,.38);
+}
+.home-section-count-light:hover{
+  color:#d4f7fa;
+}
+@media(max-width:620px){
+  .home-section-heading{
+    align-items:flex-start;
+    gap:10px;
+  }
+  .home-section-count{
+    width:100%;
+    font-size:.84rem;
+  }
+}
 .home-contact-only{
   padding:58px 0 78px;
   background:#f4f8f9;

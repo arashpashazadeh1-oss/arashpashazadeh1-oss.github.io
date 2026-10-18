@@ -1283,10 +1283,10 @@ body[data-page="about"]{
 
 .home-section-heading{
   display:flex;
-  align-items:baseline;
-  justify-content:space-between;
-  gap:16px 28px;
-  flex-wrap:wrap;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:10px;
 }
 .home-section-heading h2{
   margin:0;
@@ -1294,13 +1294,14 @@ body[data-page="about"]{
 .home-section-count{
   display:inline-flex;
   align-items:center;
-  gap:.35rem;
+  gap:.45rem;
   color:#0e7582;
-  font-size:.9rem;
-  font-weight:750;
-  line-height:1.4;
+  font-size:clamp(1.7rem,2.3vw,2.7rem);
+  font-weight:850;
+  line-height:1.08;
+  letter-spacing:-.03em;
   text-decoration:none;
-  border-bottom:1px solid rgba(14,117,130,.28);
+  border-bottom:2px solid rgba(14,117,130,.28);
   transition:color .2s ease,border-color .2s ease,transform .2s ease;
 }
 .home-section-count:hover{
@@ -1320,12 +1321,12 @@ body[data-page="about"]{
 }
 @media(max-width:620px){
   .home-section-heading{
-    align-items:flex-start;
-    gap:10px;
+    gap:8px;
   }
   .home-section-count{
-    width:100%;
-    font-size:.84rem;
+    width:auto;
+    font-size:clamp(1.2rem,5.4vw,1.7rem);
+    line-height:1.15;
   }
 }
 .home-contact-only{

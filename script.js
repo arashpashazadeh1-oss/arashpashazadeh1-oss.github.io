@@ -1,3 +1,5 @@
+// Enable only after completing analytics-server/SETUP.md
+const ANALYTICS_V3_ENABLED = true;
 const API_BASE = "https://arash-api.arash-pashazadeh1.workers.dev";
 const TELEGRAM_API_URL = `${API_BASE}/posts`;
 const TELEGRAM_MEDIA_URL = `${API_BASE}/media`;
@@ -524,7 +526,7 @@ function trackSiteVisit(){
     if(
       location.protocol==="file:" ||
       /(?:^|\/)(admin|cv-builder)\.html$/i.test(location.pathname) ||
-      navigator.doNotTrack==="1"
+      (navigator.doNotTrack==="1" || localStorage.getItem("arash_analytics_owner")==="1")
     ) return;
 
     const key=`arash_visit_${path}`;
@@ -533,7 +535,7 @@ function trackSiteVisit(){
     if(previous && now-previous<30000) return;
     sessionStorage.setItem(key,String(now));
 
-    fetch(`${API_BASE}/track`,{
+    fetch(`${API_BASE}/${ANALYTICS_V3_ENABLED ? "track-v3" : "track"}`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       keepalive:true,
@@ -554,8 +556,8 @@ trackSiteVisit();
 // =====================================================
 function trackPortfolioEvent(eventType, details={}){
   try{
-    if(location.protocol==="file:" || navigator.doNotTrack==="1") return;
-    fetch(`${API_BASE}/track-event`,{
+    if(location.protocol==="file:" || (navigator.doNotTrack==="1" || localStorage.getItem("arash_analytics_owner")==="1")) return;
+    fetch(`${API_BASE}/${ANALYTICS_V3_ENABLED ? "track-event-v3" : "track-event"}`,{
       method:"POST",headers:{"Content-Type":"application/json"},keepalive:true,
       body:JSON.stringify({
         event_type:eventType,path:`${location.pathname}${location.search}`,

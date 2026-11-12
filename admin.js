@@ -1133,7 +1133,7 @@ function normalizeV2(data){
   const cities=data.cities||aggregate(visits,v=>[v.city,v.region].filter(Boolean).join(", ")||v.country||"Unknown");
   const projects=data.projects||aggregate(visits.filter(v=>/project/i.test(v.path||"")),v=>v.project_title||v.path);
   const actions=data.actions||[];
-  const live=data.summary?.live_30m??visits.filter(v=>now-new Date(v.visited_at).getTime()<=1800000).length;
+  const live=data.summary?.live_30m??visits.filter(v=>now-analyticsDate(v.visited_at).getTime()<=1800000).length;
   return{...data,sources,devices,browsers,os,networks,cities,projects,actions,live};
 }
 function renderJourney(rows){
@@ -1147,9 +1147,9 @@ async function loadAnalytics(){
   const tbody=$a("analytics-visits");if(!tbody)return;setMessage("analytics-message","Loading analytics…");
   try{
     const days=Number($a("analytics-days")?.value||30); let data;
-    try{data=await adminFetch(`/admin/analytics-v2?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});}
-    catch{data=await adminFetch(`/admin/analytics?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});}
-    data=normalizeV2(data||{}); const s=data.summary||{};
+    try{data=await adminFetch(`/admin/analytics-v3?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});}
+    catch{try{data=await adminFetch(`/admin/analytics-v2?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});}catch{data=await adminFetch(`/admin/analytics?days=${encodeURIComponent(days)}&limit=250`,{method:"GET"});}}
+    data=normalizeV2(data||{}); renderAnalyticsV3(data); const s=data.summary||{};
     setAText("analytics-pageviews",s.pageviews??0);setAText("analytics-visitors",s.unique_visitors??0);
     setAText("analytics-live",data.live??0);setAText("analytics-countries-count",s.country_count??0);
     setAText("analytics-project-views",s.project_views??data.projects.reduce((n,x)=>n+(+x.count||0),0));
@@ -1168,7 +1168,7 @@ async function loadAnalytics(){
     renderJourney(data.journey||data.pages||[]);
     tbody.innerHTML="";const visits=data.visits||[];
     if(!visits.length)tbody.innerHTML='<tr><td colspan="7">No visits recorded in this period yet.</td></tr>';
-    else visits.forEach(v=>{const tr=document.createElement("tr");const dt=new Date(v.visited_at);const ua=parseUA(v.user_agent);
+    else visits.forEach(v=>{const tr=document.createElement("tr");const dt=analyticsDate(v.visited_at);const ua=parseUA(v.user_agent);
       const vals=[
         Number.isNaN(dt.getTime())?v.visited_at:dt.toLocaleString(),
         v.path||"/",
@@ -1176,7 +1176,7 @@ async function loadAnalytics(){
         v.as_org||v.network_org||v.asn_org||"Unknown",
         classifySource(v.referrer),
         `${v.device||ua.device} · ${v.browser||ua.browser} · ${v.os||ua.os}`,
-        v.returning?"Returning":"New"
+        v.returning===true?"Returning":v.returning===false?"New":"Unknown"
       ];
       vals.forEach(x=>{const td=document.createElement("td");td.textContent=analyticsText(x);tr.appendChild(td)});tbody.appendChild(tr);
     });
@@ -1327,3 +1327,32 @@ $("project-reset")?.addEventListener("click", () => {
 }, true);
 
 renderStaticPortfolioProjects();
+
+// V3 exploration applies to the returned recent-visit sample only.
+function renderAnalyticsV3(data){
+ let box=document.getElementById('analytics-v3');
+ if(!box){box=document.createElement('section');box.id='analytics-v3';box.className='admin-card';
+ document.getElementById('analytics-visits').closest('table').parentElement.before(box);}
+ box.replaceChildren();
+ const heading=document.createElement('h3');heading.textContent='Mobile & network explorer';box.append(heading);
+ const note=document.createElement('p');note.textContent='Recent-visit sample only (up to 250 rows). IP location is approximate; neighborhoods and employer identity cannot be determined. Missing historical metadata cannot be recovered.';box.append(note);
+ const owner=document.createElement('button');owner.type='button';
+ const ownerLabel=()=>owner.textContent=localStorage.getItem('arash_analytics_owner')==='1'?'Resume tracking this device':'Exclude this device from future tracking';ownerLabel();
+ owner.onclick=()=>{if(localStorage.getItem('arash_analytics_owner')==='1')localStorage.removeItem('arash_analytics_owner');else localStorage.setItem('arash_analytics_owner','1');ownerLabel();};box.append(owner);
+ const filter=document.createElement('select');filter.setAttribute('aria-label','Visit location');
+ for(const [value,label] of [['mobile','Mobile, Alabama, US'],['all','All locations']]){const o=document.createElement('option');o.value=value;o.textContent=label;filter.append(o);}box.append(filter);
+ const report=document.createElement('div');box.append(report);
+ const csv=document.createElement('button');csv.type='button';csv.textContent='Export filtered CSV';box.append(csv);
+ const rows=()=> (data.visits||[]).filter(v=>filter.value==='all'||(String(v.city).toLowerCase()==='mobile'&&/^(AL|Alabama)$/i.test(v.region||'')&&/^(US|USA|United States)$/i.test(v.country||'')));
+ const render=()=>{report.replaceChildren();const visits=rows(),ids=new Set(visits.map(v=>v.visitor_hash).filter(Boolean));
+ const title=document.createElement('p');title.textContent=`${visits.length} page views in sample · ${ids.size||'Unavailable'} distinct visitor identifiers (approximate)`;report.append(title);
+ const counts=new Map();for(const v of visits){const name=v.as_org||v.network_org||v.asn_org||'Unknown';const key=`${name}${v.asn?' (AS'+v.asn+')':''}`;counts.set(key,(counts.get(key)||0)+1);}
+ for(const [name,n] of [...counts].sort((a,b)=>b[1]-a[1])){const line=document.createElement('p');line.textContent=`${name}: ${n} page views`;report.append(line);}
+ };filter.onchange=render;render();
+ csv.onclick=()=>{const keys=['visited_at','path','city','region','country','postal_code','asn','as_org','visitor_hash','referrer'];
+ const cell=x=>'"'+String(x??'').replace(/^[=+@\-\t\r]/,"'$&").replace(/"/g,'""')+'"';
+ const content=[keys.map(cell).join(','),...rows().map(v=>keys.map(k=>cell(v[k])).join(','))].join('\r\n');
+ const url=URL.createObjectURL(new Blob(['\ufeff'+content],{type:'text/csv;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='analytics-filtered.csv';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+}
+
+function analyticsDate(value){const s=String(value||"");return new Date(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(s)?s.replace(" ","T")+"Z":s);}
